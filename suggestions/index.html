@@ -711,33 +711,51 @@ async function getExistingTexts() {
 
 // AI check via Anthropic API
 async function aiCheck(text, existing) {
-  try {
-    const existingSample = existing.slice(0, 20).join('\n');
-        const res = await puter.ai.chat(
-                `You are a content moderator for a YouTube channel suggestions box for kids and teens.
-                Reply with ONLY valid JSON: {"ok": true} or {"ok": false, "reason": "short friendly explanation"}
+    const HF_TOKEN = "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"; // Your READ-ONLY token here
+    const MODEL_ID = "Qwen/Qwen2.5-7B-Instruct"; // A fast, free-tier model
+    
+    try {
+        const existingSample = existing.slice(0, 20).join('\n');
+        const prompt = `<|im_start|>system
+You are a moderator. 
+Check for duplicate or inappropriate language.
+Reply ONLY with valid JSON. 
+JSON: {"ok": true} or {"ok": false, "reason": "..."}
+Reject for: hate, spam, or duplicates.
+<|im_end|>
+<|im_start|>user
+New: "${text}"
+Existing: ${existingSample || '(none)'}
+<|im_end|>
+<|im_start|>assistant`;
 
-                Reject if: inappropriate language, spam, harmful content, or nearly identical to an existing suggestion.
-                Be lenient — only reject clear violations.
+        const response = await fetch(`https://api-inference.huggingface.co{MODEL_ID}`, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${HF_TOKEN}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                inputs: prompt,
+                parameters: { max_new_tokens: 100, return_full_text: false }
+            }),
+        });
 
-                New suggestion: "${text}"
+        const result = await response.json();
+        
+        // Hugging Face returns an array: [{ generated_text: "..." }]
+        const reply = result[0].generated_text.trim();
+        
+        // Clean up any markdown code blocks the AI might add
+        const cleanJSON = reply.replace(/```json|```/g, "").trim();
+        return JSON.parse(cleanJSON);
 
-                Existing suggestions (for duplicate check):
-                ${existingSample || '(none yet)'}`, 
-                {
-                    model: 'qwen/qwen3.5-9b',
-                    max_tokens: 300,
-                }
-            );
-        console.log('AI response:', res);
-        const data = await res;
-        const reply = data.content?.[0]?.text?.trim() || '{"ok":true}';
-        return JSON.parse(reply);
-  } catch (e) {
-      console.warn('AI check failed, allowing:', e);
-      return { ok: true };
-  }
+    } catch (e) {
+        console.warn('AI check failed:', e);
+        return { ok: true }; // Allow if AI is down
+    }
 }
+
 
 /* ═══════════════════════════════════════════════════════════
    SUBMIT
