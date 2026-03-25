@@ -726,7 +726,7 @@ async function aiCheck(text, existing) {
                 ${existingSample || '(none yet)'}`, 
                 {
                     model: 'qwen/qwen3.5-9b',
-                    max_tokens: 80
+                    max_tokens: 300,
                 }
             );
         console.log('AI response:', res);
