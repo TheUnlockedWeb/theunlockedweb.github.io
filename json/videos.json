@@ -4,7 +4,7 @@
     "title": "Grief",
     "url": "https://www.youtube.com/watch?v=j2z7dKYZTXA",
     "thumbnail": "https://i.ytimg.com/vi/j2z7dKYZTXA/hqdefault.jpg",
-    "published": "22 hours ago",
+    "published": "1 day ago",
     "isShort": false
   },
   {
@@ -12,7 +12,7 @@
     "title": "Press Start - 100% (All coins)",
     "url": "https://www.youtube.com/watch?v=IyEJDp0XvzM",
     "thumbnail": "https://i.ytimg.com/vi/IyEJDp0XvzM/hqdefault.jpg",
-    "published": "22 hours ago",
+    "published": "1 day ago",
     "isShort": false
   },
   {
@@ -20,7 +20,7 @@
     "title": "\"I'm so good\"\ud83d\udc80",
     "url": "https://www.youtube.com/watch?v=fxZhp4E6nKI",
     "thumbnail": "https://i.ytimg.com/vi/fxZhp4E6nKI/hqdefault.jpg",
-    "published": "22 hours ago",
+    "published": "1 day ago",
     "isShort": false
   },
   {
@@ -45,7 +45,7 @@
     "url": "https://www.youtube.com/watch?v=_xD2t8Exowc",
     "thumbnail": "https://i.ytimg.com/vi/_xD2t8Exowc/hqdefault.jpg",
     "published": "4 days ago",
-    "isShort": false
+    "isShort": true
   },
   {
     "id": "NHY10HbtC1U",
@@ -125,7 +125,7 @@
     "url": "https://www.youtube.com/watch?v=9knhIvLbNnk",
     "thumbnail": "https://i.ytimg.com/vi/9knhIvLbNnk/hqdefault.jpg",
     "published": "9 days ago",
-    "isShort": false
+    "isShort": true
   },
   {
     "id": "xHo2qqcytys",
@@ -133,7 +133,7 @@
     "url": "https://www.youtube.com/watch?v=xHo2qqcytys",
     "thumbnail": "https://i.ytimg.com/vi/xHo2qqcytys/hqdefault.jpg",
     "published": "9 days ago",
-    "isShort": false
+    "isShort": true
   },
   {
     "id": "xTdT0C7ocj4",
@@ -141,7 +141,7 @@
     "url": "https://www.youtube.com/watch?v=xTdT0C7ocj4",
     "thumbnail": "https://i.ytimg.com/vi/xTdT0C7ocj4/hqdefault.jpg",
     "published": "9 days ago",
-    "isShort": false
+    "isShort": true
   },
   {
     "id": "1iCSYhGDxcs",
@@ -164,8 +164,8 @@
     "title": "NEVER call GD Colon a FURRY! \ud83e\udd2f",
     "url": "https://www.youtube.com/watch?v=fTqsWvdj6UU",
     "thumbnail": "https://i.ytimg.com/vi/fTqsWvdj6UU/hqdefault.jpg",
-    "published": "12 days ago",
-    "isShort": false
+    "published": "13 days ago",
+    "isShort": true
   },
   {
     "id": "YiBOHfbLzJE",
@@ -213,7 +213,7 @@
     "url": "https://www.youtube.com/watch?v=CJvWlEOsKkw",
     "thumbnail": "https://i.ytimg.com/vi/CJvWlEOsKkw/hqdefault.jpg",
     "published": "2 weeks ago",
-    "isShort": false
+    "isShort": true
   },
   {
     "id": "WsrKkj171ZA",
@@ -221,13 +221,21 @@
     "url": "https://www.youtube.com/watch?v=WsrKkj171ZA",
     "thumbnail": "https://i.ytimg.com/vi/WsrKkj171ZA/hqdefault.jpg",
     "published": "2 weeks ago",
-    "isShort": false
+    "isShort": true
   },
   {
     "id": "aYR5670Rqzc",
     "title": "I finally got Latias in Pokemon Legends ZA!",
     "url": "https://www.youtube.com/watch?v=aYR5670Rqzc",
     "thumbnail": "https://i.ytimg.com/vi/aYR5670Rqzc/hqdefault.jpg",
+    "published": "2 weeks ago",
+    "isShort": true
+  },
+  {
+    "id": "UcWPHmqsyHE",
+    "title": "GD Ganster Rap - 100%",
+    "url": "https://www.youtube.com/watch?v=UcWPHmqsyHE",
+    "thumbnail": "https://i.ytimg.com/vi/UcWPHmqsyHE/hqdefault.jpg",
     "published": "2 weeks ago",
     "isShort": false
   }
