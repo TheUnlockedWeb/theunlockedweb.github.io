@@ -1,31 +1,31 @@
-- name: Inject secrets into suggestions page
-  env:
-    FIREBASE_CONFIG:  ${{ secrets.FIREBASE_CONFIG }}
-    AI_MOD_KEY:       ${{ secrets.AI_MOD_KEY }}
-    ADMIN_USER_HASH:  ${{ secrets.ADMIN_USER_HASH }}
-    ADMIN_PASS_HASH:  ${{ secrets.ADMIN_PASS_HASH }}
-  run: |
-    python3 - <<'EOF'
-    import os, json
+name: Inject secrets into suggestions page
+env:
+FIREBASE_CONFIG:  ${{ secrets.FIREBASE_CONFIG }}
+AI_MOD_KEY:       ${{ secrets.AI_MOD_KEY }}
+ADMIN_USER_HASH:  ${{ secrets.ADMIN_USER_HASH }}
+ADMIN_PASS_HASH:  ${{ secrets.ADMIN_PASS_HASH }}
+run: |
+python3 - <<'EOF'
+import os, json
 
-    path = 'suggestions/index.html'
-    with open(path) as f:
-      html = f.read()
+path = 'suggestions/index.html'
+with open(path) as f:
+    html = f.read()
 
-    raw = os.environ.get('FIREBASE_CONFIG', '{}')
-    try:
-      json.loads(raw)
-    except Exception as e:
-      print(f'Invalid Firebase config: {e}')
-      exit(1)
+raw = os.environ.get('FIREBASE_CONFIG', '{}')
+try:
+    json.loads(raw)
+except Exception as e:
+    print(f'Invalid Firebase config: {e}')
+    exit(1)
 
-    html = html.replace('%%FIREBASE_CONFIG%%', raw)
-    html = html.replace('%%AI_MOD_KEY%%', os.environ.get('AI_MOD_KEY', ''))
-    html = html.replace('%%ADMIN_USER_HASH%%', os.environ.get('ADMIN_USER_HASH', ''))
-    html = html.replace('%%ADMIN_PASS_HASH%%', os.environ.get('ADMIN_PASS_HASH', ''))
+html = html.replace('%%FIREBASE_CONFIG%%', raw)
+html = html.replace('%%AI_MOD_KEY%%', os.environ.get('AI_MOD_KEY', ''))
+html = html.replace('%%ADMIN_USER_HASH%%', os.environ.get('ADMIN_USER_HASH', ''))
+html = html.replace('%%ADMIN_PASS_HASH%%', os.environ.get('ADMIN_PASS_HASH', ''))
 
-    with open(path, 'w') as f:
-      f.write(html)
+with open(path, 'w') as f:
+    f.write(html)
 
-    print('Secrets injected')
-    EOF
+print('Secrets injected')
+EOF
