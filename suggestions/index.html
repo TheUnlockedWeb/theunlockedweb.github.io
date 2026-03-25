@@ -7,115 +7,106 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="../assets/style.css">
-  <link rel="icon" href="../assets/resources/favicon.ico">
+  <link rel="stylesheet" href="../style.css">
+
   <style>
     body { overflow: hidden; }
 
-    /* ── Physics arena ─────────────────────── */
     .arena {
       position: fixed;
       top: var(--nav-h, 58px); left: 0; right: 0; bottom: 0;
-      z-index: 2;
-      overflow: hidden;
+      z-index: 2; overflow: hidden;
     }
 
-    /* ── Bubble ────────────────────────────── */
+    /* ── Bubble ── */
     .bubble {
       position: absolute;
-      max-width: 220px; min-width: 100px;
-      padding: 13px 16px;
-      border-radius: 14px;
-      border: 1px solid;
+      max-width: 220px; min-width: 110px;
+      padding: 13px 16px 10px;
+      border-radius: 14px; border: 1px solid;
       font-family: 'Manrope', sans-serif;
-      font-size: .82rem; font-weight: 500;
-      line-height: 1.5;
-      cursor: grab;
-      user-select: none;
+      font-size: .82rem; font-weight: 500; line-height: 1.5;
+      cursor: grab; user-select: none;
       transform: translate(-50%, -50%);
-      transition: box-shadow .2s, border-color .2s;
-      will-change: transform;
+      transition: box-shadow .2s;
+      will-change: left, top;
       word-break: break-word;
     }
     .bubble:active { cursor: grabbing; }
-    .bubble.grabbed {
-      box-shadow: 0 16px 40px rgba(0,0,0,.5);
-      z-index: 50 !important;
+    .bubble.grabbed { box-shadow: 0 16px 40px rgba(0,0,0,.55); z-index: 50 !important; }
+
+    .bubble-text { color: var(--text); margin-bottom: 5px; }
+    .bubble-meta { font-size: .67rem; font-weight: 600; letter-spacing: .5px; opacity: .5; }
+
+    .bubble.c-gold   { background:rgba(245,158,11,.1);  border-color:rgba(245,158,11,.3);  color:var(--gold);   }
+    .bubble.c-purple { background:rgba(88,101,242,.1);  border-color:rgba(88,101,242,.3);  color:var(--purple); }
+    .bubble.c-green  { background:rgba(52,211,153,.1);  border-color:rgba(52,211,153,.3);  color:var(--green);  }
+    .bubble.c-blue   { background:rgba(56,189,248,.1);  border-color:rgba(56,189,248,.3);  color:#38bdf8;       }
+    .bubble.c-pink   { background:rgba(244,114,182,.1); border-color:rgba(244,114,182,.3); color:#f472b6;       }
+
+    /* Admin controls on bubble */
+    .bubble-admin {
+      display: none;
+      gap: 6px; margin-top: 8px;
+      border-top: 1px solid currentColor;
+      padding-top: 7px; opacity: .6;
     }
-
-    .bubble-text { margin-bottom: 6px; color: var(--text); }
-    .bubble-meta {
-      font-size: .68rem; font-weight: 600;
-      letter-spacing: .5px; opacity: .55;
+    .bubble-admin.visible { display: flex; }
+    .bubble-admin button {
+      background: none; border: none; cursor: pointer;
+      font-size: .7rem; font-weight: 700; color: inherit;
+      display: flex; align-items: center; gap: 4px;
+      transition: opacity .15s;
     }
+    .bubble-admin button:hover { opacity: 1; }
 
-    /* Colour variants */
-    .bubble.c-gold   { background: rgba(245,158,11,.1);  border-color: rgba(245,158,11,.3);  color: var(--gold);   }
-    .bubble.c-purple { background: rgba(88,101,242,.1);  border-color: rgba(88,101,242,.3);  color: var(--purple); }
-    .bubble.c-green  { background: rgba(52,211,153,.1);  border-color: rgba(52,211,153,.3);  color: var(--green);  }
-    .bubble.c-blue   { background: rgba(56,189,248,.1);  border-color: rgba(56,189,248,.3);  color: #38bdf8;       }
-    .bubble.c-pink   { background: rgba(244,114,182,.1); border-color: rgba(244,114,182,.3); color: #f472b6;       }
-
-    /* Entrance animation */
     @keyframes popIn {
-      0%   { opacity: 0; transform: translate(-50%,-50%) scale(.4); }
-      70%  { transform: translate(-50%,-50%) scale(1.08); }
-      100% { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+      0%   { opacity:0; transform:translate(-50%,-50%) scale(.3); }
+      70%  { transform:translate(-50%,-50%) scale(1.06); }
+      100% { opacity:1; transform:translate(-50%,-50%) scale(1); }
     }
-    .bubble.entering { animation: popIn .45s cubic-bezier(.22,1,.36,1) forwards; }
+    .bubble.entering { animation: popIn .4s cubic-bezier(.22,1,.36,1) forwards; }
 
-    /* ── Submit form ───────────────────────── */
+    /* ── Submit form ── */
     .submit-wrap {
-      position: fixed;
-      bottom: 28px; left: 50%;
+      position: fixed; bottom: 24px; left: 50%;
       transform: translateX(-50%);
-      z-index: 10;
-      display: flex; gap: 10px; align-items: flex-end;
+      z-index: 10; display: flex; gap: 10px; align-items: flex-end;
       width: min(520px, 92vw);
     }
-
     .submit-box {
       flex: 1;
-      background: rgba(10,10,20,.85);
+      background: rgba(8,8,18,.88);
       backdrop-filter: blur(16px);
-      border: 1px solid var(--border);
-      border-radius: 14px;
+      border: 1px solid var(--border); border-radius: 14px;
       padding: 13px 16px;
-      overflow: hidden;
       transition: border-color .2s, box-shadow .2s;
     }
     .submit-box:focus-within {
       border-color: rgba(245,158,11,.4);
-      box-shadow: 0 0 0 3px rgba(245,158,11,.08);
+      box-shadow: 0 0 0 3px rgba(245,158,11,.07);
     }
-
     .submit-box textarea {
       width: 100%; resize: none;
       background: none; border: none; outline: none;
-      font-family: 'Manrope', sans-serif;
-      font-size: .88rem; font-weight: 500;
-      color: var(--text); line-height: 1.5;
-      max-height: 120px;
+      font-family: 'Manrope', sans-serif; font-size: .88rem;
+      font-weight: 500; color: var(--text); line-height: 1.5;
+      max-height: 110px;
     }
     .submit-box textarea::placeholder { color: var(--muted); }
-
     .submit-footer {
       display: flex; align-items: center;
-      justify-content: space-between;
-      margin-top: 8px;
+      justify-content: space-between; margin-top: 8px;
     }
     .submit-name {
-      font-size: .72rem; color: var(--muted);
       background: none; border: none; outline: none;
-      font-family: 'Manrope', sans-serif; font-weight: 500;
-      width: 130px; color: var(--sub);
       border-bottom: 1px solid var(--border);
-      padding-bottom: 2px;
+      font-family: 'Manrope', sans-serif; font-size: .72rem;
+      font-weight: 500; color: var(--sub); width: 130px; padding-bottom: 2px;
       transition: border-color .2s;
     }
     .submit-name:focus { border-color: var(--gold); }
     .submit-name::placeholder { color: var(--muted); }
-
     .char-count { font-size: .68rem; color: var(--muted); }
 
     .submit-btn {
@@ -125,42 +116,110 @@
       display: flex; align-items: center; justify-content: center;
       transition: background .15s, transform .2s cubic-bezier(.22,1,.36,1), box-shadow .2s;
     }
-    .submit-btn:hover { background: #fbbf24; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(245,158,11,.35); }
-    .submit-btn:active { transform: scale(.95); }
-    .submit-btn:disabled { opacity: .4; cursor: default; transform: none; box-shadow: none; }
+    .submit-btn:hover:not(:disabled) { background:#fbbf24; transform:translateY(-2px); box-shadow:0 8px 24px rgba(245,158,11,.35); }
+    .submit-btn:disabled { opacity:.35; cursor:default; }
+    .submit-btn .spin { animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── Empty state ───────────────────────── */
+    /* ── Empty ── */
     .empty {
       position: absolute; inset: 0;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       gap: 12px; pointer-events: none;
     }
-    .empty i { font-size: 2.5rem; color: var(--muted); }
+    .empty i { font-size: 2.4rem; color: var(--muted); }
     .empty p  { font-size: .88rem; color: var(--muted); font-family: 'Manrope', sans-serif; }
 
-    /* ── Toast ─────────────────────────────── */
+    /* ── Toast ── */
     .toast {
-      position: fixed; bottom: 100px; left: 50%;
-      transform: translateX(-50%) translateY(10px);
+      position: fixed; bottom: 96px; left: 50%;
+      transform: translateX(-50%) translateY(8px);
       background: var(--card); border: 1px solid var(--border);
-      border-radius: 10px; padding: 10px 18px;
+      border-radius: 10px; padding: 9px 18px;
       font-size: .82rem; font-weight: 500; color: var(--text);
-      font-family: 'Manrope', sans-serif;
-      z-index: 20; opacity: 0;
-      transition: opacity .25s, transform .25s;
-      pointer-events: none;
+      font-family: 'Manrope', sans-serif; z-index: 30;
+      opacity: 0; transition: opacity .22s, transform .22s;
+      pointer-events: none; white-space: nowrap;
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.error { border-color: rgba(239,68,68,.35); color: #f87171; }
 
-    /* ── Config banner ─────────────────────── */
-    .config-banner {
-      position: fixed; top: calc(var(--nav-h, 58px) + 12px); left: 50%;
-      transform: translateX(-50%);
-      background: rgba(239,68,68,.15); border: 1px solid rgba(239,68,68,.35);
-      color: #f87171; border-radius: 10px; padding: 10px 18px;
-      font-size: .78rem; font-weight: 600; font-family: 'Manrope', sans-serif;
-      z-index: 20; display: none; align-items: center; gap: 8px;
+    /* ── Admin button ── */
+    .admin-fab {
+      position: fixed; bottom: 24px; right: 24px;
+      width: 40px; height: 40px; border-radius: 10px;
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--muted); font-size: .85rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 10; transition: color .15s, border-color .15s;
+    }
+    .admin-fab:hover { color: var(--text); border-color: var(--border-h); }
+    .admin-fab.active { color: var(--gold); border-color: rgba(245,158,11,.4); background: var(--gold-gl); }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 100;
+      background: rgba(0,0,0,.78); backdrop-filter: blur(8px);
+      display: none; align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px; width: 90%; max-width: 380px;
+      position: relative;
+    }
+    .modal h3 {
+      font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700;
+      color: var(--text); margin-bottom: 18px;
+    }
+    .modal-close {
+      position: absolute; top: 16px; right: 18px;
+      background: none; border: none; color: var(--muted);
+      font-size: 1.3rem; cursor: pointer; line-height: 1;
+      transition: color .15s, transform .15s;
+    }
+    .modal-close:hover { color: #ef4444; transform: rotate(90deg); }
+
+    .modal-field { margin-bottom: 14px; }
+    .modal-field label { display: block; font-size: .72rem; font-weight: 600; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+    .modal-field input {
+      width: 100%; background: var(--surface, #0d0d1b); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text); padding: 9px 12px;
+      font-family: 'Manrope', sans-serif; font-size: .88rem;
+      transition: border-color .15s; outline: none;
+    }
+    .modal-field input:focus { border-color: var(--gold); }
+
+    .modal-btn {
+      width: 100%; padding: 11px;
+      background: var(--gold); color: #000; border: none;
+      border-radius: 10px; font-family: 'Syne', sans-serif;
+      font-weight: 700; font-size: .95rem; cursor: pointer;
+      transition: background .15s, transform .15s;
+      margin-top: 4px;
+    }
+    .modal-btn:hover { background: #fbbf24; transform: translateY(-1px); }
+
+    .modal-err { font-size: .78rem; color: #f87171; margin-top: 8px; display: none; }
+
+    /* Edit modal textarea */
+    .modal-field textarea {
+      width: 100%; background: var(--surface, #0d0d1b); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text); padding: 9px 12px;
+      font-family: 'Manrope', sans-serif; font-size: .88rem;
+      transition: border-color .15s; outline: none; resize: vertical;
+      min-height: 80px;
+    }
+    .modal-field textarea:focus { border-color: var(--gold); }
+
+    /* Moderation badge */
+    .mod-checking {
+      position: absolute; inset: 0; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(6,6,13,.7); backdrop-filter: blur(2px);
+      font-size: .7rem; color: var(--muted); gap: 6px;
+      font-family: 'Manrope', sans-serif;
     }
   </style>
 </head>
@@ -173,7 +232,6 @@
   <div class="orb orb-3"></div>
 </div>
 
-<!-- Nav -->
 <nav class="nav">
   <a href="../" class="nav-brand">TUW</a>
   <div class="nav-divider"></div>
@@ -193,13 +251,6 @@
   </div>
 </nav>
 
-<!-- Config warning -->
-<div class="config-banner" id="configBanner">
-  <i class="fa-solid fa-triangle-exclamation"></i>
-  Firebase not configured — add your config in suggestions/index.html
-</div>
-
-<!-- Physics arena -->
 <div class="arena" id="arena">
   <div class="empty" id="emptyState">
     <i class="fa-regular fa-comment-dots"></i>
@@ -210,309 +261,435 @@
 <!-- Submit -->
 <div class="submit-wrap">
   <div class="submit-box">
-    <textarea
-      id="suggestionText"
-      rows="2"
-      placeholder="Got an idea or suggestion? Drop it here..."
-      maxlength="200"
-    ></textarea>
+    <textarea id="suggestionText" rows="2" placeholder="Got an idea? Drop it here..." maxlength="200"></textarea>
     <div class="submit-footer">
       <input class="submit-name" id="authorName" type="text" placeholder="Your name (optional)" maxlength="30">
       <span class="char-count" id="charCount">0 / 200</span>
     </div>
   </div>
-  <button class="submit-btn" id="submitBtn" title="Send suggestion">
-    <i class="fa-solid fa-paper-plane"></i>
+  <button class="submit-btn" id="submitBtn" disabled>
+    <i class="fa-solid fa-paper-plane" id="submitIcon"></i>
   </button>
+</div>
+
+<!-- Admin FAB -->
+<button class="admin-fab" id="adminFab" title="Admin">
+  <i class="fa-solid fa-lock"></i>
+</button>
+
+<!-- Admin login modal -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal">
+    <button class="modal-close" id="loginClose">×</button>
+    <h3><i class="fa-solid fa-shield-halved" style="margin-right:8px;color:var(--gold)"></i>Admin Login</h3>
+    <div class="modal-field">
+      <label>Username</label>
+      <input type="text" id="loginUser" placeholder="Enter username" autocomplete="off">
+    </div>
+    <div class="modal-field">
+      <label>Password</label>
+      <input type="password" id="loginPass" placeholder="Enter password">
+    </div>
+    <div class="modal-err" id="loginErr">Incorrect credentials.</div>
+    <button class="modal-btn" id="loginBtn">Log in</button>
+  </div>
+</div>
+
+<!-- Edit suggestion modal -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <button class="modal-close" id="editClose">×</button>
+    <h3>Edit Suggestion</h3>
+    <div class="modal-field">
+      <label>Text</label>
+      <textarea id="editText"></textarea>
+    </div>
+    <div class="modal-field">
+      <label>Author</label>
+      <input type="text" id="editAuthor">
+    </div>
+    <button class="modal-btn" id="editSave">Save changes</button>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<!-- ═══════════════════════════════════════════════
-  Firebase SDK
-  ═══════════════════════════════════════════════ -->
+<!-- ═══ Injected secrets ═══════════════════════════════════
+  These placeholders are replaced by the GitHub Actions
+  workflow at deploy time. Never hardcode real values here.
+═════════════════════════════════════════════════════════ -->
+<script>
+  window.__FIREBASE_CONFIG__  = '%%FIREBASE_CONFIG%%';
+  window.__PERSPECTIVE_KEY__  = '%%PERSPECTIVE_KEY%%';
+  window.__ADMIN_USER_HASH__  = '%%ADMIN_USER_HASH%%';
+  window.__ADMIN_PASS_HASH__  = '%%ADMIN_PASS_HASH%%';
+</script>
+
+<!-- ═══ Firebase SDK ═══════════════════════════════════════ -->
 <script type="module">
-  import { initializeApp }                       from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-  import { getDatabase, ref, push, onChildAdded } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+  import { initializeApp }                              from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+  import { getDatabase, ref, push, onChildAdded,
+           update, remove, get }                        from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
-  /* ─────────────────────────────────────────────────────────
-     STEP 1: Paste your Firebase config here.
-     Get it from: Firebase Console → Project Settings → Your apps → SDK setup
-  ───────────────────────────────────────────────────────── */
-  const FIREBASE_CONFIG = {
-    apiKey: "AIzaSyBiyJSbW0k5RrSxgjoFm6rrKlDlUH8LuQY",
-    authDomain: "suggestions-4555a.firebaseapp.com",
-    projectId: "suggestions-4555a",
-    storageBucket: "suggestions-4555a.firebasestorage.app",
-    messagingSenderId: "309774516985",
-    appId: "1:309774516985:web:a010c94d8646bfd1101828"
-  };
-
-  /* ─────────────────────────────────────────────────────────
-     STEP 2: In Firebase Console → Realtime Database → Rules, set:
-     {
-       "rules": {
-         "suggestions": {
-           ".read": true,
-           ".write": true
-         }
-       }
-     }
-  ───────────────────────────────────────────────────────── */
-
-  const COLOURS = ['c-gold', 'c-purple', 'c-green', 'c-blue', 'c-pink'];
-
-  /* ── Init ─────────────────────────────────────────────── */
-  const configured = FIREBASE_CONFIG.apiKey !== 'YOUR_API_KEY';
-
-  if (!configured) {
-    document.getElementById('configBanner').style.display = 'flex';
+  /* ── Parse injected config ─────────────────────────── */
+  let firebaseConfig;
+  try {
+    firebaseConfig = JSON.parse(window.__FIREBASE_CONFIG__);
+  } catch {
+    firebaseConfig = null;
   }
 
-  const app = configured ? initializeApp(FIREBASE_CONFIG) : null;
+  const PERSPECTIVE_KEY = window.__PERSPECTIVE_KEY__;
+  const ADMIN_USER_HASH = window.__ADMIN_USER_HASH__;
+  const ADMIN_PASS_HASH = window.__ADMIN_PASS_HASH__;
+
+  const configured = firebaseConfig && firebaseConfig.apiKey && !firebaseConfig.apiKey.startsWith('%%');
+
+  const app = configured ? initializeApp(firebaseConfig) : null;
   const db  = configured ? getDatabase(app) : null;
 
-  /* ── Physics state ────────────────────────────────────── */
-  const arena    = document.getElementById('arena');
-  const empty    = document.getElementById('emptyState');
-  const bubbles  = []; // { el, x, y, vx, vy, w, h }
+  /* ── SHA-256 helper ────────────────────────────────── */
+  async function sha256(str) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,'0')).join('');
+  }
 
+  /* ── Perspective API moderation ────────────────────── */
+  async function moderate(text) {
+    if (!PERSPECTIVE_KEY || PERSPECTIVE_KEY.startsWith('%%')) return { ok: true };
+    try {
+      const res = await fetch(
+        `https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key=${PERSPECTIVE_KEY}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            comment: { text },
+            requestedAttributes: {
+              TOXICITY: {}, SPAM: {}, INSULT: {}
+            },
+            languages: ['en'],
+          }),
+        }
+      );
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error?.message || 'Moderation error');
+
+      const toxicity = data.attributeScores?.TOXICITY?.summaryScore?.value || 0;
+      const spam     = data.attributeScores?.SPAM?.summaryScore?.value     || 0;
+      const insult   = data.attributeScores?.INSULT?.summaryScore?.value   || 0;
+
+      console.log('[Mod] toxicity:', toxicity, 'spam:', spam, 'insult:', insult);
+
+      if (toxicity > 0.85) return { ok: false, reason: "That seems a bit toxic. Please keep it friendly 😊" };
+      if (spam     > 0.85) return { ok: false, reason: "That looks like spam. Try a real suggestion!" };
+      if (insult   > 0.85) return { ok: false, reason: "Let's keep it respectful 👍" };
+
+      return { ok: true };
+    } catch (e) {
+      console.warn('[Mod] Perspective API error:', e.message, '— allowing through');
+      return { ok: true }; // fail open so a broken API key doesn't block all submissions
+    }
+  }
+
+  /* ── Physics ───────────────────────────────────────── */
+  const COLOURS  = ['c-gold','c-purple','c-green','c-blue','c-pink'];
   const DAMPING  = 0.985;
   const MIN_SPD  = 0.4;
   const MAX_SPD  = 2.2;
-
-  function randBetween(a, b) { return a + Math.random() * (b - a); }
+  const arena    = document.getElementById('arena');
+  const empty    = document.getElementById('emptyState');
+  const bubbles  = [];
+  let   adminMode = false;
 
   function clampSpeed(b) {
-    const spd = Math.hypot(b.vx, b.vy);
-    if (spd < MIN_SPD && spd > 0) {
-      const s = MIN_SPD / spd;
-      b.vx *= s; b.vy *= s;
-    }
-    if (spd > MAX_SPD) {
-      const s = MAX_SPD / spd;
-      b.vx *= s; b.vy *= s;
-    }
+    const s = Math.hypot(b.vx, b.vy);
+    if (s > 0 && s < MIN_SPD) { b.vx *= MIN_SPD/s; b.vy *= MIN_SPD/s; }
+    if (s > MAX_SPD)           { b.vx *= MAX_SPD/s; b.vy *= MAX_SPD/s; }
   }
 
-  /* ── Create bubble DOM ────────────────────────────────── */
-  function spawnBubble(data) {
+  function spawnBubble(id, data) {
     empty.style.display = 'none';
-
-    const aw = arena.clientWidth;
-    const ah = arena.clientHeight;
-
+    const aw = arena.clientWidth, ah = arena.clientHeight;
     const el = document.createElement('div');
-    el.className = 'bubble entering ' + COLOURS[Math.floor(Math.random() * COLOURS.length)];
-
+    el.className = 'bubble entering ' + COLOURS[Math.floor(Math.random()*COLOURS.length)];
+    el.dataset.id = id;
     el.innerHTML = `
-      <div class="bubble-text">${escHtml(data.text)}</div>
-      <div class="bubble-meta">${data.author ? escHtml(data.author) : 'Anonymous'}</div>
-    `;
+      <div class="bubble-text">${esc(data.text)}</div>
+      <div class="bubble-meta">${data.author ? esc(data.author) : 'Anonymous'}</div>
+      <div class="bubble-admin${adminMode ? ' visible' : ''}">
+        <button class="edit-btn"><i class="fa-solid fa-pen"></i> Edit</button>
+        <button class="del-btn" style="color:#f87171"><i class="fa-solid fa-trash"></i> Delete</button>
+      </div>`;
     el.style.zIndex = bubbles.length + 1;
     arena.appendChild(el);
 
-    // Measure after append
-    const w = el.offsetWidth;
-    const h = el.offsetHeight;
+    const w = el.offsetWidth, h = el.offsetHeight;
+    const x = Math.random()*(aw-w-20)+w/2+10;
+    const y = Math.random()*(ah-h-20)+h/2+10;
+    const a = Math.random()*Math.PI*2, spd = (MIN_SPD + Math.random()*(MAX_SPD*0.7-MIN_SPD));
+    const b = { el, id, x, y, vx: Math.cos(a)*spd, vy: Math.sin(a)*spd, w, h, dragging: false };
 
-    const x = randBetween(w / 2 + 10, aw - w / 2 - 10);
-    const y = randBetween(h / 2 + 10, ah - h / 2 - 10);
-    const angle = Math.random() * Math.PI * 2;
-    const spd   = randBetween(MIN_SPD, MAX_SPD * 0.7);
-
-    const b = {
-      el, x, y,
-      vx: Math.cos(angle) * spd,
-      vy: Math.sin(angle) * spd,
-      w, h,
-      dragging: false,
-    };
-
-    el.style.left = x + 'px';
-    el.style.top  = y + 'px';
-
-    // Remove entering class after animation
+    el.style.left = b.x+'px'; el.style.top = b.y+'px';
     setTimeout(() => el.classList.remove('entering'), 500);
 
-    // Drag
+    // Admin controls
+    el.querySelector('.del-btn').addEventListener('click', e => { e.stopPropagation(); deleteSuggestion(b); });
+    el.querySelector('.edit-btn').addEventListener('click', e => { e.stopPropagation(); openEdit(b, data); });
+
     attachDrag(b);
     bubbles.push(b);
   }
 
-  /* ── Physics loop ─────────────────────────────────────── */
   function tick() {
-    const aw = arena.clientWidth;
-    const ah = arena.clientHeight;
-
+    const aw = arena.clientWidth, ah = arena.clientHeight;
     for (const b of bubbles) {
       if (b.dragging) continue;
-
-      b.x += b.vx;
-      b.y += b.vy;
-
-      // Wall bounce
-      const hw = b.w / 2, hh = b.h / 2;
-      if (b.x - hw < 0)    { b.x = hw;      b.vx =  Math.abs(b.vx); }
-      if (b.x + hw > aw)   { b.x = aw - hw; b.vx = -Math.abs(b.vx); }
-      if (b.y - hh < 0)    { b.y = hh;      b.vy =  Math.abs(b.vy); }
-      if (b.y + hh > ah)   { b.y = ah - hh; b.vy = -Math.abs(b.vy); }
-
-      b.vx *= DAMPING;
-      b.vy *= DAMPING;
+      b.x += b.vx; b.y += b.vy;
+      const hw = b.w/2, hh = b.h/2;
+      if (b.x-hw < 0)    { b.x=hw;      b.vx= Math.abs(b.vx); }
+      if (b.x+hw > aw)   { b.x=aw-hw;   b.vx=-Math.abs(b.vx); }
+      if (b.y-hh < 0)    { b.y=hh;      b.vy= Math.abs(b.vy); }
+      if (b.y+hh > ah)   { b.y=ah-hh;   b.vy=-Math.abs(b.vy); }
+      b.vx *= DAMPING; b.vy *= DAMPING;
       clampSpeed(b);
-
-      b.el.style.left = b.x + 'px';
-      b.el.style.top  = b.y  + 'px';
+      b.el.style.left = b.x+'px'; b.el.style.top = b.y+'px';
     }
-
     requestAnimationFrame(tick);
   }
-
   requestAnimationFrame(tick);
 
-  /* ── Drag ─────────────────────────────────────────────── */
+  /* ── Drag ──────────────────────────────────────────── */
   function attachDrag(b) {
-    let ox = 0, oy = 0;
-    let lastX = 0, lastY = 0, lastT = 0;
-    let velX = 0, velY = 0;
-
-    function onMove(e) {
-      const cx = e.touches ? e.touches[0].clientX : e.clientX;
-      const cy = e.touches ? e.touches[0].clientY : e.clientY;
-      const ar = arena.getBoundingClientRect();
-
-      const now = performance.now();
-      const dt  = now - lastT || 1;
-      velX = (cx - lastX) / dt * 16;
-      velY = (cy - lastY) / dt * 16;
-      lastX = cx; lastY = cy; lastT = now;
-
-      b.x = cx - ar.left - ox;
-      b.y = cy - ar.top  - oy;
-      b.el.style.left = b.x + 'px';
-      b.el.style.top  = b.y + 'px';
-    }
-
-    function onUp() {
-      b.dragging = false;
-      b.el.classList.remove('grabbed');
-      b.vx = velX;
-      b.vy = velY;
-      clampSpeed(b);
-      document.removeEventListener('mousemove', onMove);
-      document.removeEventListener('mouseup',   onUp);
-      document.removeEventListener('touchmove', onMove);
-      document.removeEventListener('touchend',  onUp);
-    }
-
-    function onDown(e) {
+    let ox=0, oy=0, lx=0, ly=0, lt=0, vx=0, vy=0;
+    const onMove = e => {
+      const cx=e.touches?e.touches[0].clientX:e.clientX;
+      const cy=e.touches?e.touches[0].clientY:e.clientY;
+      const ar=arena.getBoundingClientRect();
+      const now=performance.now(), dt=now-lt||1;
+      vx=(cx-lx)/dt*16; vy=(cy-ly)/dt*16;
+      lx=cx; ly=cy; lt=now;
+      b.x=cx-ar.left-ox; b.y=cy-ar.top-oy;
+      b.el.style.left=b.x+'px'; b.el.style.top=b.y+'px';
+    };
+    const onUp = () => {
+      b.dragging=false; b.el.classList.remove('grabbed');
+      b.vx=vx; b.vy=vy; clampSpeed(b);
+      document.removeEventListener('mousemove',onMove);
+      document.removeEventListener('mouseup',onUp);
+      document.removeEventListener('touchmove',onMove);
+      document.removeEventListener('touchend',onUp);
+    };
+    const onDown = e => {
+      if (e.target.closest('.bubble-admin')) return;
       e.preventDefault();
-      const cx = e.touches ? e.touches[0].clientX : e.clientX;
-      const cy = e.touches ? e.touches[0].clientY : e.clientY;
-      const ar = arena.getBoundingClientRect();
-
-      ox = cx - ar.left - b.x;
-      oy = cy - ar.top  - b.y;
-      lastX = cx; lastY = cy; lastT = performance.now();
-      velX = velY = 0;
-
-      b.dragging = true;
-      b.el.classList.add('grabbed');
-      b.el.style.zIndex = 50;
-
-      document.addEventListener('mousemove', onMove);
-      document.addEventListener('mouseup',   onUp);
-      document.addEventListener('touchmove', onMove, { passive: false });
-      document.addEventListener('touchend',  onUp);
-    }
-
-    b.el.addEventListener('mousedown',  onDown);
-    b.el.addEventListener('touchstart', onDown, { passive: false });
+      const cx=e.touches?e.touches[0].clientX:e.clientX;
+      const cy=e.touches?e.touches[0].clientY:e.clientY;
+      const ar=arena.getBoundingClientRect();
+      ox=cx-ar.left-b.x; oy=cy-ar.top-b.y;
+      lx=cx; ly=cy; lt=performance.now(); vx=vy=0;
+      b.dragging=true; b.el.classList.add('grabbed'); b.el.style.zIndex=50;
+      document.addEventListener('mousemove',onMove);
+      document.addEventListener('mouseup',onUp);
+      document.addEventListener('touchmove',onMove,{passive:false});
+      document.addEventListener('touchend',onUp);
+    };
+    b.el.addEventListener('mousedown',onDown);
+    b.el.addEventListener('touchstart',onDown,{passive:false});
   }
 
-  /* ── Submit ───────────────────────────────────────────── */
+  /* ── Admin mode ────────────────────────────────────── */
+  function setAdminMode(val) {
+    adminMode = val;
+    document.getElementById('adminFab').classList.toggle('active', val);
+    document.getElementById('adminFab').title = val ? 'Admin active' : 'Admin';
+    document.querySelectorAll('.bubble-admin').forEach(el => {
+      el.classList.toggle('visible', val);
+    });
+    if (val) showToast('Admin mode on — you can now edit or delete bubbles');
+    else     showToast('Admin mode off');
+  }
+
+  /* ── Admin login ───────────────────────────────────── */
+  const loginModal  = document.getElementById('loginModal');
+  const loginErr    = document.getElementById('loginErr');
+  const adminFab    = document.getElementById('adminFab');
+
+  adminFab.addEventListener('click', () => {
+    if (adminMode) { setAdminMode(false); return; }
+    loginErr.style.display = 'none';
+    document.getElementById('loginUser').value = '';
+    document.getElementById('loginPass').value = '';
+    loginModal.classList.add('open');
+    setTimeout(() => document.getElementById('loginUser').focus(), 100);
+  });
+
+  document.getElementById('loginClose').addEventListener('click', () => loginModal.classList.remove('open'));
+
+  document.getElementById('loginBtn').addEventListener('click', async () => {
+    const user = document.getElementById('loginUser').value.trim();
+    const pass = document.getElementById('loginPass').value;
+    const [uh, ph] = await Promise.all([sha256(user), sha256(pass)]);
+    if (uh === ADMIN_USER_HASH && ph === ADMIN_PASS_HASH) {
+      loginModal.classList.remove('open');
+      setAdminMode(true);
+    } else {
+      loginErr.style.display = 'block';
+    }
+  });
+
+  // Enter key in login fields
+  ['loginUser','loginPass'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', e => {
+      if (e.key === 'Enter') document.getElementById('loginBtn').click();
+    });
+  });
+
+  /* ── Edit suggestion ───────────────────────────────── */
+  const editModal = document.getElementById('editModal');
+  let   editTarget = null;
+
+  document.getElementById('editClose').addEventListener('click', () => editModal.classList.remove('open'));
+
+  function openEdit(b, data) {
+    editTarget = b;
+    document.getElementById('editText').value   = data.text   || '';
+    document.getElementById('editAuthor').value  = data.author || '';
+    editModal.classList.add('open');
+    setTimeout(() => document.getElementById('editText').focus(), 100);
+  }
+
+  document.getElementById('editSave').addEventListener('click', async () => {
+    if (!editTarget || !db) return;
+    const text   = document.getElementById('editText').value.trim();
+    const author = document.getElementById('editAuthor').value.trim();
+    if (!text) return;
+    try {
+      await update(ref(db, 'suggestions/' + editTarget.id), { text, author: author || null });
+      // Update bubble DOM
+      editTarget.el.querySelector('.bubble-text').textContent = text;
+      editTarget.el.querySelector('.bubble-meta').textContent = author || 'Anonymous';
+      editModal.classList.remove('open');
+      showToast('Suggestion updated ✓');
+    } catch (e) {
+      showToast('Update failed: ' + e.message, true);
+    }
+  });
+
+  /* ── Delete suggestion ─────────────────────────────── */
+  async function deleteSuggestion(b) {
+    if (!db) return;
+    try {
+      await remove(ref(db, 'suggestions/' + b.id));
+      b.el.style.transition = 'opacity .3s, transform .3s';
+      b.el.style.opacity = '0';
+      b.el.style.transform = 'translate(-50%,-50%) scale(.5)';
+      setTimeout(() => {
+        b.el.remove();
+        const idx = bubbles.indexOf(b);
+        if (idx > -1) bubbles.splice(idx, 1);
+        if (!bubbles.length) empty.style.display = 'flex';
+      }, 320);
+      showToast('Suggestion deleted');
+    } catch (e) {
+      showToast('Delete failed: ' + e.message, true);
+    }
+  }
+
+  /* ── Submit ────────────────────────────────────────── */
   const textarea  = document.getElementById('suggestionText');
   const nameInput = document.getElementById('authorName');
   const submitBtn = document.getElementById('submitBtn');
+  const submitIcon= document.getElementById('submitIcon');
   const charCount = document.getElementById('charCount');
 
   textarea.addEventListener('input', () => {
     charCount.textContent = textarea.value.length + ' / 200';
-    submitBtn.disabled = textarea.value.trim().length === 0;
+    submitBtn.disabled = !textarea.value.trim();
   });
 
-  submitBtn.disabled = true;
-
   submitBtn.addEventListener('click', async () => {
-    const text = textarea.value.trim();
+    const text   = textarea.value.trim();
+    const author = nameInput.value.trim();
     if (!text) return;
 
-    if (!configured) {
-      showToast('Firebase not configured yet!');
+    // Start loading spinner
+    submitBtn.disabled = true;
+    submitIcon.className = 'fa-solid fa-circle-notch spin';
+
+    // Moderate
+    const modResult = await moderate(text);
+    if (!modResult.ok) {
+      showToast(modResult.reason, true);
+      submitBtn.disabled = false;
+      submitIcon.className = 'fa-solid fa-paper-plane';
       return;
     }
 
-    submitBtn.disabled = true;
+    if (!configured) {
+      // Demo: spawn locally
+      spawnBubble('demo-' + Date.now(), { text, author: author || null });
+      textarea.value = ''; nameInput.value = ''; charCount.textContent = '0 / 200';
+      showToast('Suggestion added! (demo mode)');
+      submitIcon.className = 'fa-solid fa-paper-plane';
+      return;
+    }
 
     try {
       await push(ref(db, 'suggestions'), {
-        text,
-        author: nameInput.value.trim() || null,
-        ts:     Date.now(),
+        text, author: author || null, ts: Date.now()
       });
-      textarea.value  = '';
-      nameInput.value = '';
-      charCount.textContent = '0 / 200';
+      textarea.value = ''; nameInput.value = ''; charCount.textContent = '0 / 200';
       showToast('Suggestion sent! 🎉');
     } catch (e) {
-      console.error(e);
-      showToast('Failed to send — check your Firebase rules.');
+      showToast('Failed to send — check Firebase rules.', true);
       submitBtn.disabled = false;
     }
+    submitIcon.className = 'fa-solid fa-paper-plane';
   });
 
-  // Submit on Ctrl/Cmd+Enter
   textarea.addEventListener('keydown', e => {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') submitBtn.click();
+    if ((e.ctrlKey||e.metaKey) && e.key==='Enter') submitBtn.click();
   });
 
-  /* ── Listen for new suggestions ───────────────────────── */
+  /* ── Load from Firebase ────────────────────────────── */
   if (configured) {
     onChildAdded(ref(db, 'suggestions'), snap => {
       const data = snap.val();
-      if (data?.text) spawnBubble(data);
+      if (data?.text) spawnBubble(snap.key, data);
     });
   } else {
-    // Demo bubbles so the page isn't empty
+    // Demo bubbles
     const demos = [
-      { text: 'Add more LEGO animations!',    author: 'Fan123'    },
-      { text: 'More Brawl Stars content 🎮',  author: 'GamerGuy'  },
-      { text: 'Can you do a speedrun video?', author: null        },
-      { text: 'Love the site!',               author: 'Visitor'   },
+      { text: 'Add more LEGO animations!',     author: 'Fan123'   },
+      { text: 'More Brawl Stars content 🎮',   author: 'GamerGuy' },
+      { text: 'Can you do a speedrun video?',  author: null       },
+      { text: 'Love the site design!',         author: 'Visitor'  },
     ];
-    setTimeout(() => demos.forEach((d, i) =>
-      setTimeout(() => spawnBubble(d), i * 300)
-    ), 400);
+    setTimeout(() => demos.forEach((d,i) => setTimeout(() => spawnBubble('demo-'+i, d), i*250)), 300);
   }
 
-  /* ── Helpers ──────────────────────────────────────────── */
-  function escHtml(str) {
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  /* ── Helpers ───────────────────────────────────────── */
+  function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
   let toastTimer;
-  function showToast(msg) {
+  function showToast(msg, isError=false) {
     const t = document.getElementById('toast');
     t.textContent = msg;
-    t.classList.add('show');
+    t.className   = 'toast' + (isError ? ' error' : '') + ' show';
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
   }
 
-  // Re-measure bubbles on resize
   window.addEventListener('resize', () => {
-    bubbles.forEach(b => { b.w = b.el.offsetWidth; b.h = b.el.offsetHeight; });
+    bubbles.forEach(b => { b.w=b.el.offsetWidth; b.h=b.el.offsetHeight; });
+  });
+
+  // Close modals on background click
+  [loginModal, editModal].forEach(m => {
+    m.addEventListener('click', e => { if (e.target===m) m.classList.remove('open'); });
   });
 </script>
 </body>
