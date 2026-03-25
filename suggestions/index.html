@@ -729,7 +729,8 @@ async function aiCheck(text, existing) {
                     max_tokens: 80
                 }
             );
-        const data = await res.json();
+        console.log('AI response:', res);
+        const data = await res;
         const reply = data.content?.[0]?.text?.trim() || '{"ok":true}';
         return JSON.parse(reply);
   } catch (e) {
