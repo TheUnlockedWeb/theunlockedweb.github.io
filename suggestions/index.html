@@ -725,7 +725,7 @@ async function aiCheck(text, existing) {
                 Existing suggestions (for duplicate check):
                 ${existingSample || '(none yet)'}`, 
                 {
-                    model: 'claude-3-haiku', // Use 'claude-3-5-sonnet' if you need higher accuracy
+                    model: 'qwen/qwen3.5-9b',
                     max_tokens: 80
                 }
             );
