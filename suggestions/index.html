@@ -7,7 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script src="https://js.puter.com/v2/"></script>
 
   <style>
     body { overflow: hidden; }
@@ -376,13 +377,12 @@ import {
    ═══════════════════════════════════════════════════════════ */
 
 const FIREBASE_CONFIG = {
-  apiKey:            'YOUR_API_KEY',
-  authDomain:        'YOUR_PROJECT.firebaseapp.com',
-  databaseURL:       'https://YOUR_PROJECT-default-rtdb.firebaseio.com',
-  projectId:         'YOUR_PROJECT',
-  storageBucket:     'YOUR_PROJECT.appspot.com',
-  messagingSenderId: 'YOUR_SENDER_ID',
-  appId:             'YOUR_APP_ID',
+    apiKey: "AIzaSyBiyJSbW0k5RrSxgjoFm6rrKlDlUH8LuQY",
+    authDomain: "suggestions-4555a.firebaseapp.com",
+    projectId: "suggestions-4555a",
+    storageBucket: "suggestions-4555a.firebasestorage.app",
+    messagingSenderId: "309774516985",
+    appId: "1:309774516985:web:a010c94d8646bfd1101828"
 };
 
 /*
@@ -397,8 +397,8 @@ const FIREBASE_CONFIG = {
 
   Then paste the resulting hashes below:
 */
-const ADMIN_USER_HASH = 'YOUR_USERNAME_SHA256_HASH';
-const ADMIN_PASS_HASH = 'YOUR_PASSWORD_SHA256_HASH';
+const ADMIN_USER_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918';
+const ADMIN_PASS_HASH = '3b6a7b881d0eb43c19e3c4d4583ef0dad179e006e151a73ced91e7eb429d438d';
 
 /*
   AI moderation — optional but recommended.
@@ -722,38 +722,28 @@ async function aiCheck(text, existing) {
   if (!ANTHROPIC_KEY) return { ok: true };
   try {
     const existingSample = existing.slice(0, 20).join('\n');
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type':         'application/json',
-        'x-api-key':            ANTHROPIC_KEY,
-        'anthropic-version':    '2023-06-01',
-        'anthropic-dangerous-allow-browser': 'true',
-      },
-      body: JSON.stringify({
-        model:      'claude-haiku-4-5-20251001',
-        max_tokens: 80,
-        messages: [{
-          role: 'user',
-          content: `You are a content moderator for a YouTube channel suggestions box for kids and teens.
-Reply with ONLY valid JSON: {"ok": true} or {"ok": false, "reason": "short friendly explanation"}
+        const res = await puter.ai.chat(
+                `You are a content moderator for a YouTube channel suggestions box for kids and teens.
+                Reply with ONLY valid JSON: {"ok": true} or {"ok": false, "reason": "short friendly explanation"}
 
-Reject if: inappropriate language, spam, harmful content, or nearly identical to an existing suggestion.
-Be lenient — only reject clear violations.
+                Reject if: inappropriate language, spam, harmful content, or nearly identical to an existing suggestion.
+                Be lenient — only reject clear violations.
 
-New suggestion: "${text}"
+                New suggestion: "${text}"
 
-Existing suggestions (for duplicate check):
-${existingSample || '(none yet)'}`,
-        }],
-      }),
-    });
-    const data = await res.json();
-    const reply = data.content?.[0]?.text?.trim() || '{"ok":true}';
-    return JSON.parse(reply);
+                Existing suggestions (for duplicate check):
+                ${existingSample || '(none yet)'}`, 
+                {
+                    model: 'claude-3-haiku', // Use 'claude-3-5-sonnet' if you need higher accuracy
+                    max_tokens: 80
+                }
+            );
+        const data = await res.json();
+        const reply = data.content?.[0]?.text?.trim() || '{"ok":true}';
+        return JSON.parse(reply);
   } catch (e) {
-    console.warn('AI check failed, allowing:', e);
-    return { ok: true };
+      console.warn('AI check failed, allowing:', e);
+      return { ok: true };
   }
 }
 
