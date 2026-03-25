@@ -7,117 +7,121 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="../assets/style.css">
-  <link rel="icon" href="../assets/resources/favicon.ico">
+  <link rel="stylesheet" href="../style.css">
+
   <style>
     body { overflow: hidden; }
 
-    /* ── Physics arena ─────────────────────── */
+    /* ═══════════ ARENA ═══════════ */
     .arena {
       position: fixed;
       top: var(--nav-h, 58px); left: 0; right: 0; bottom: 0;
-      z-index: 2;
-      overflow: hidden;
+      z-index: 2; overflow: hidden;
     }
 
-    /* ── Bubble ────────────────────────────── */
+    /* ═══════════ BUBBLE ═══════════ */
     .bubble {
       position: absolute;
-      max-width: 220px; min-width: 100px;
-      padding: 13px 16px;
-      border-radius: 14px;
-      border: 1px solid;
+      max-width: 230px; min-width: 110px;
+      padding: 12px 15px 10px;
+      border-radius: 14px; border: 1px solid;
       font-family: 'Manrope', sans-serif;
-      font-size: .82rem; font-weight: 500;
-      line-height: 1.5;
-      cursor: grab;
-      user-select: none;
+      font-size: .82rem; font-weight: 500; line-height: 1.5;
+      cursor: grab; user-select: none;
+      /* position is CENTER-based — left/top = center coords */
       transform: translate(-50%, -50%);
-      transition: box-shadow .2s, border-color .2s;
-      will-change: transform;
+      will-change: left, top;
       word-break: break-word;
+      transition: box-shadow .2s;
     }
     .bubble:active { cursor: grabbing; }
-    .bubble.grabbed {
-      box-shadow: 0 16px 40px rgba(0,0,0,.5);
-      z-index: 50 !important;
-    }
+    .bubble.grabbed { box-shadow: 0 18px 44px rgba(0,0,0,.6); z-index: 50 !important; }
 
-    .bubble-text { margin-bottom: 6px; color: var(--text); }
-    .bubble-meta {
-      font-size: .68rem; font-weight: 600;
-      letter-spacing: .5px; opacity: .55;
-    }
+    .bubble-text { color: var(--text); margin-bottom: 5px; }
+    .bubble-meta { font-size: .67rem; font-weight: 600; letter-spacing: .5px; opacity: .5; }
 
-    /* Colour variants */
-    .bubble.c-gold   { background: rgba(245,158,11,.1);  border-color: rgba(245,158,11,.3);  color: var(--gold);   }
-    .bubble.c-purple { background: rgba(88,101,242,.1);  border-color: rgba(88,101,242,.3);  color: var(--purple); }
-    .bubble.c-green  { background: rgba(52,211,153,.1);  border-color: rgba(52,211,153,.3);  color: var(--green);  }
-    .bubble.c-blue   { background: rgba(56,189,248,.1);  border-color: rgba(56,189,248,.3);  color: #38bdf8;       }
-    .bubble.c-pink   { background: rgba(244,114,182,.1); border-color: rgba(244,114,182,.3); color: #f472b6;       }
+    /* colour variants */
+    .bubble.c-gold   { background:rgba(245,158,11,.1);  border-color:rgba(245,158,11,.3);  color:var(--gold);   }
+    .bubble.c-purple { background:rgba(88,101,242,.1);  border-color:rgba(88,101,242,.3);  color:var(--purple); }
+    .bubble.c-green  { background:rgba(52,211,153,.1);  border-color:rgba(52,211,153,.3);  color:var(--green);  }
+    .bubble.c-blue   { background:rgba(56,189,248,.1);  border-color:rgba(56,189,248,.3);  color:#38bdf8;       }
+    .bubble.c-pink   { background:rgba(244,114,182,.1); border-color:rgba(244,114,182,.3); color:#f472b6;       }
 
-    /* Entrance animation */
     @keyframes popIn {
-      0%   { opacity: 0; transform: translate(-50%,-50%) scale(.4); }
-      70%  { transform: translate(-50%,-50%) scale(1.08); }
-      100% { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+      0%   { opacity:0; transform:translate(-50%,-50%) scale(.3); }
+      70%  {            transform:translate(-50%,-50%) scale(1.07); }
+      100% { opacity:1; transform:translate(-50%,-50%) scale(1); }
     }
     .bubble.entering { animation: popIn .45s cubic-bezier(.22,1,.36,1) forwards; }
 
-    /* ── Submit form ───────────────────────── */
-    .submit-wrap {
-      position: fixed;
-      bottom: 28px; left: 50%;
-      transform: translateX(-50%);
-      z-index: 10;
-      display: flex; gap: 10px; align-items: flex-end;
-      width: min(520px, 92vw);
+    /* ── Votes row ── */
+    .bubble-votes {
+      display: flex; align-items: center; gap: 8px;
+      margin-top: 8px;
     }
+    .vote-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: .7rem; font-weight: 700; letter-spacing: .5px;
+      background: none; border: 1px solid rgba(255,255,255,.1);
+      color: var(--muted); border-radius: 6px;
+      padding: 3px 8px; cursor: pointer;
+      transition: background .15s, color .15s, border-color .15s, transform .15s;
+      font-family: 'Manrope', sans-serif;
+    }
+    .vote-btn:hover { background: rgba(255,255,255,.06); color: var(--sub); transform: scale(1.05); }
+    .vote-btn.voted-like    { color: var(--green);  border-color: rgba(52,211,153,.4); background: rgba(52,211,153,.1); }
+    .vote-btn.voted-dislike { color: #f87171;       border-color: rgba(248,113,113,.4); background: rgba(248,113,113,.1); }
 
+    /* ── Admin controls on bubble ── */
+    .bubble-admin { display: none; gap: 5px; margin-top: 6px; }
+    .bubble-admin.visible { display: flex; }
+
+    .adm-btn {
+      font-size: .68rem; font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
+      padding: 3px 8px; border-radius: 6px; border: 1px solid; cursor: pointer;
+      font-family: 'Manrope', sans-serif; transition: background .14s, transform .14s;
+    }
+    .adm-btn:hover { transform: scale(1.04); }
+    .adm-btn-del  { background: rgba(248,113,113,.12); border-color: rgba(248,113,113,.3); color: #f87171; }
+    .adm-btn-del:hover  { background: rgba(248,113,113,.22); }
+    .adm-btn-edit { background: rgba(245,158,11,.1); border-color: rgba(245,158,11,.3); color: var(--gold); }
+    .adm-btn-edit:hover { background: rgba(245,158,11,.2); }
+
+    /* ═══════════ SUBMIT BAR ═══════════ */
+    .submit-wrap {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%); z-index: 10;
+      display: flex; gap: 10px; align-items: flex-end;
+      width: min(540px, 92vw);
+    }
     .submit-box {
-      flex: 1;
-      background: rgba(10,10,20,.85);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 13px 16px;
-      overflow: hidden;
+      flex: 1; background: rgba(8,8,18,.88);
+      backdrop-filter: blur(18px);
+      border: 1px solid var(--border); border-radius: 14px;
+      padding: 12px 15px; overflow: hidden;
       transition: border-color .2s, box-shadow .2s;
     }
     .submit-box:focus-within {
       border-color: rgba(245,158,11,.4);
-      box-shadow: 0 0 0 3px rgba(245,158,11,.08);
+      box-shadow: 0 0 0 3px rgba(245,158,11,.07);
     }
-
     .submit-box textarea {
-      width: 100%; resize: none;
-      background: none; border: none; outline: none;
-      font-family: 'Manrope', sans-serif;
-      font-size: .88rem; font-weight: 500;
-      color: var(--text); line-height: 1.5;
-      max-height: 120px;
+      width: 100%; resize: none; background: none; border: none; outline: none;
+      font-family: 'Manrope', sans-serif; font-size: .88rem; font-weight: 500;
+      color: var(--text); line-height: 1.5; max-height: 120px;
     }
     .submit-box textarea::placeholder { color: var(--muted); }
-
-    .submit-footer {
-      display: flex; align-items: center;
-      justify-content: space-between;
-      margin-top: 8px;
-    }
+    .submit-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; }
     .submit-name {
-      font-size: .72rem; color: var(--muted);
-      background: none; border: none; outline: none;
+      font-size: .72rem; background: none; border: none; outline: none;
       font-family: 'Manrope', sans-serif; font-weight: 500;
       width: 130px; color: var(--sub);
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 2px;
+      border-bottom: 1px solid var(--border); padding-bottom: 2px;
       transition: border-color .2s;
     }
     .submit-name:focus { border-color: var(--gold); }
     .submit-name::placeholder { color: var(--muted); }
-
     .char-count { font-size: .68rem; color: var(--muted); }
-
     .submit-btn {
       width: 48px; height: 48px; border-radius: 12px;
       background: var(--gold); color: #000; border: none;
@@ -127,9 +131,93 @@
     }
     .submit-btn:hover { background: #fbbf24; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(245,158,11,.35); }
     .submit-btn:active { transform: scale(.95); }
-    .submit-btn:disabled { opacity: .4; cursor: default; transform: none; box-shadow: none; }
+    .submit-btn:disabled { opacity: .35; cursor: default; transform: none !important; box-shadow: none !important; }
 
-    /* ── Empty state ───────────────────────── */
+    /* AI checking indicator */
+    .checking-badge {
+      font-size: .7rem; color: var(--purple); font-family: 'Manrope', sans-serif;
+      font-weight: 600; display: none; align-items: center; gap: 5px;
+    }
+    .checking-badge.visible { display: flex; }
+
+    /* ═══════════ MODALS ═══════════ */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 100;
+      background: rgba(0,0,0,.82); backdrop-filter: blur(8px);
+      display: none; align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px; width: 94%; max-width: 380px;
+      position: relative;
+    }
+    .modal h3 {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 1.1rem; color: var(--text); margin-bottom: 18px;
+    }
+    .modal-close {
+      position: absolute; top: 14px; right: 16px;
+      background: none; border: none; color: var(--muted);
+      font-size: 1.4rem; cursor: pointer; line-height: 1;
+      transition: color .15s, transform .15s;
+    }
+    .modal-close:hover { color: #f87171; transform: rotate(90deg); }
+
+    .modal label {
+      display: block; font-size: .72rem; font-weight: 600;
+      color: var(--gold); text-transform: uppercase; letter-spacing: 1px;
+      margin-bottom: 6px; margin-top: 14px;
+    }
+    .modal label:first-of-type { margin-top: 0; }
+
+    .modal input, .modal textarea {
+      width: 100%; background: var(--surface, #0d0d1b);
+      border: 1px solid var(--border); border-radius: 8px;
+      color: var(--text); padding: 9px 12px;
+      font-family: 'Manrope', sans-serif; font-size: .88rem;
+      transition: border-color .15s; resize: vertical;
+    }
+    .modal input:focus, .modal textarea:focus {
+      outline: none; border-color: var(--gold);
+    }
+    .modal input[type="password"] { letter-spacing: 2px; }
+
+    .modal-error {
+      font-size: .78rem; color: #f87171;
+      margin-top: 10px; min-height: 18px;
+      font-family: 'Manrope', sans-serif;
+    }
+    .modal-btns { display: flex; gap: 10px; margin-top: 18px; }
+    .modal-btns button {
+      flex: 1; padding: 10px; border-radius: 8px; border: none;
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: .88rem;
+      cursor: pointer; transition: opacity .15s, transform .15s;
+    }
+    .modal-btns button:hover { opacity: .85; transform: translateY(-1px); }
+    .btn-confirm { background: var(--gold); color: #000; }
+    .btn-cancel  { background: var(--border, rgba(255,255,255,.07)); color: var(--sub); }
+
+    /* Admin badge in nav area */
+    .admin-badge {
+      position: fixed; top: calc(var(--nav-h, 58px) + 10px); right: 14px;
+      z-index: 20; display: flex; align-items: center; gap: 7px;
+    }
+    .admin-pill {
+      font-size: .7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+      padding: 5px 12px; border-radius: 99px; font-family: 'Manrope', sans-serif;
+      border: 1px solid; cursor: pointer;
+      transition: background .15s, transform .15s;
+    }
+    .admin-pill.login  { color: var(--muted); border-color: var(--border); background: none; }
+    .admin-pill.login:hover { color: var(--sub); border-color: var(--border-h); background: rgba(255,255,255,.04); }
+    .admin-pill.active { color: var(--gold); border-color: rgba(245,158,11,.35); background: var(--gold-gl); }
+    .admin-pill.active:hover { background: rgba(245,158,11,.2); }
+    .admin-pill.logout { color: #f87171; border-color: rgba(248,113,113,.3); background: none; }
+    .admin-pill.logout:hover { background: rgba(248,113,113,.1); }
+
+    /* ═══════════ MISC ═══════════ */
     .empty {
       position: absolute; inset: 0;
       display: flex; flex-direction: column;
@@ -139,29 +227,30 @@
     .empty i { font-size: 2.5rem; color: var(--muted); }
     .empty p  { font-size: .88rem; color: var(--muted); font-family: 'Manrope', sans-serif; }
 
-    /* ── Toast ─────────────────────────────── */
     .toast {
-      position: fixed; bottom: 100px; left: 50%;
+      position: fixed; bottom: 90px; left: 50%;
       transform: translateX(-50%) translateY(10px);
       background: var(--card); border: 1px solid var(--border);
       border-radius: 10px; padding: 10px 18px;
       font-size: .82rem; font-weight: 500; color: var(--text);
       font-family: 'Manrope', sans-serif;
-      z-index: 20; opacity: 0;
+      z-index: 30; opacity: 0; pointer-events: none;
       transition: opacity .25s, transform .25s;
-      pointer-events: none;
+      white-space: nowrap; max-width: 90vw;
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-    /* ── Config banner ─────────────────────── */
     .config-banner {
-      position: fixed; top: calc(var(--nav-h, 58px) + 12px); left: 50%;
+      position: fixed; top: calc(var(--nav-h, 58px) + 10px); left: 50%;
       transform: translateX(-50%);
-      background: rgba(239,68,68,.15); border: 1px solid rgba(239,68,68,.35);
-      color: #f87171; border-radius: 10px; padding: 10px 18px;
-      font-size: .78rem; font-weight: 600; font-family: 'Manrope', sans-serif;
-      z-index: 20; display: none; align-items: center; gap: 8px;
+      background: rgba(239,68,68,.12); border: 1px solid rgba(239,68,68,.3);
+      color: #f87171; border-radius: 10px; padding: 8px 16px;
+      font-size: .75rem; font-weight: 600; font-family: 'Manrope', sans-serif;
+      z-index: 20; display: none; align-items: center; gap: 7px;
     }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spin { animation: spin 1s linear infinite; display: inline-block; }
   </style>
 </head>
 <body>
@@ -196,10 +285,17 @@
 <!-- Config warning -->
 <div class="config-banner" id="configBanner">
   <i class="fa-solid fa-triangle-exclamation"></i>
-  Firebase not configured — add your config in suggestions/index.html
+  Firebase not configured — add your config below
 </div>
 
-<!-- Physics arena -->
+<!-- Admin controls -->
+<div class="admin-badge">
+  <button class="admin-pill login" id="adminBtn">
+    <i class="fa-solid fa-shield-halved"></i> Admin
+  </button>
+</div>
+
+<!-- Arena -->
 <div class="arena" id="arena">
   <div class="empty" id="emptyState">
     <i class="fa-regular fa-comment-dots"></i>
@@ -207,18 +303,21 @@
   </div>
 </div>
 
-<!-- Submit -->
+<!-- Submit bar -->
 <div class="submit-wrap">
   <div class="submit-box">
-    <textarea
-      id="suggestionText"
-      rows="2"
+    <textarea id="suggestionText" rows="2"
       placeholder="Got an idea or suggestion? Drop it here..."
-      maxlength="200"
-    ></textarea>
+      maxlength="200"></textarea>
     <div class="submit-footer">
-      <input class="submit-name" id="authorName" type="text" placeholder="Your name (optional)" maxlength="30">
-      <span class="char-count" id="charCount">0 / 200</span>
+      <input class="submit-name" id="authorName" type="text"
+        placeholder="Your name (optional)" maxlength="30">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="checking-badge" id="checkingBadge">
+          <i class="fa-solid fa-circle-notch spin"></i> Checking...
+        </span>
+        <span class="char-count" id="charCount">0 / 200</span>
+      </div>
     </div>
   </div>
   <button class="submit-btn" id="submitBtn" title="Send suggestion">
@@ -228,292 +327,614 @@
 
 <div class="toast" id="toast"></div>
 
-<!-- ═══════════════════════════════════════════════
-  Firebase SDK
-  ═══════════════════════════════════════════════ -->
+<!-- ══════════ ADMIN LOGIN MODAL ══════════ -->
+<div class="modal-overlay" id="adminModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('adminModal')">×</button>
+    <h3><i class="fa-solid fa-shield-halved" style="color:var(--gold);margin-right:8px"></i>Admin Login</h3>
+    <label>Username</label>
+    <input type="text" id="adminUser" autocomplete="off">
+    <label>Password</label>
+    <input type="password" id="adminPass" autocomplete="off">
+    <div class="modal-error" id="adminError"></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal('adminModal')">Cancel</button>
+      <button class="btn-confirm" id="adminLoginBtn">Login</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ EDIT SUGGESTION MODAL ══════════ -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('editModal')">×</button>
+    <h3><i class="fa-solid fa-pen" style="color:var(--gold);margin-right:8px"></i>Edit Suggestion</h3>
+    <label>Text</label>
+    <textarea id="editText" rows="3" maxlength="200"></textarea>
+    <label>Author</label>
+    <input type="text" id="editAuthor" maxlength="30">
+    <div class="modal-error" id="editError"></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal('editModal')">Cancel</button>
+      <button class="btn-confirm" id="editSaveBtn">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     FIREBASE + APP SCRIPT
+══════════════════════════════════════════ -->
 <script type="module">
-  import { initializeApp }                       from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-  import { getDatabase, ref, push, onChildAdded } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import { initializeApp }       from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import {
+  getDatabase, ref, push, onChildAdded,
+  onChildChanged, onChildRemoved, update, remove, get
+} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
-  /* ─────────────────────────────────────────────────────────
-     STEP 1: Paste your Firebase config here.
-     Get it from: Firebase Console → Project Settings → Your apps → SDK setup
-  ───────────────────────────────────────────────────────── */
-  const FIREBASE_CONFIG = {
-    apiKey: "AIzaSyBiyJSbW0k5RrSxgjoFm6rrKlDlUH8LuQY",
-    authDomain: "suggestions-4555a.firebaseapp.com",
-    projectId: "suggestions-4555a",
-    storageBucket: "suggestions-4555a.firebasestorage.app",
-    messagingSenderId: "309774516985",
-    appId: "1:309774516985:web:a010c94d8646bfd1101828"
-  };
+/* ═══════════════════════════════════════════════════════════
+   CONFIG — fill these in
+   ═══════════════════════════════════════════════════════════ */
 
-  /* ─────────────────────────────────────────────────────────
-     STEP 2: In Firebase Console → Realtime Database → Rules, set:
-     {
-       "rules": {
-         "suggestions": {
-           ".read": true,
-           ".write": true
-         }
-       }
-     }
-  ───────────────────────────────────────────────────────── */
+const FIREBASE_CONFIG = {
+  apiKey:            'YOUR_API_KEY',
+  authDomain:        'YOUR_PROJECT.firebaseapp.com',
+  databaseURL:       'https://YOUR_PROJECT-default-rtdb.firebaseio.com',
+  projectId:         'YOUR_PROJECT',
+  storageBucket:     'YOUR_PROJECT.appspot.com',
+  messagingSenderId: 'YOUR_SENDER_ID',
+  appId:             'YOUR_APP_ID',
+};
 
-  const COLOURS = ['c-gold', 'c-purple', 'c-green', 'c-blue', 'c-pink'];
+/*
+  Admin credentials — run this in your browser console to generate hashes:
 
-  /* ── Init ─────────────────────────────────────────────── */
-  const configured = FIREBASE_CONFIG.apiKey !== 'YOUR_API_KEY';
-
-  if (!configured) {
-    document.getElementById('configBanner').style.display = 'flex';
-  }
-
-  const app = configured ? initializeApp(FIREBASE_CONFIG) : null;
-  const db  = configured ? getDatabase(app) : null;
-
-  /* ── Physics state ────────────────────────────────────── */
-  const arena    = document.getElementById('arena');
-  const empty    = document.getElementById('emptyState');
-  const bubbles  = []; // { el, x, y, vx, vy, w, h }
-
-  const DAMPING  = 0.985;
-  const MIN_SPD  = 0.4;
-  const MAX_SPD  = 2.2;
-
-  function randBetween(a, b) { return a + Math.random() * (b - a); }
-
-  function clampSpeed(b) {
-    const spd = Math.hypot(b.vx, b.vy);
-    if (spd < MIN_SPD && spd > 0) {
-      const s = MIN_SPD / spd;
-      b.vx *= s; b.vy *= s;
+    async function sha256(str) {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
     }
-    if (spd > MAX_SPD) {
-      const s = MAX_SPD / spd;
-      b.vx *= s; b.vy *= s;
-    }
+    sha256('yourUsername').then(console.log);
+    sha256('yourPassword').then(console.log);
+
+  Then paste the resulting hashes below:
+*/
+const ADMIN_USER_HASH = 'YOUR_USERNAME_SHA256_HASH';
+const ADMIN_PASS_HASH = 'YOUR_PASSWORD_SHA256_HASH';
+
+/*
+  AI moderation — optional but recommended.
+  Uses the Anthropic API to check for spam/inappropriate/duplicate content.
+  WARNING: this key will be visible in your page source.
+  Only use a key with strict rate limits, or leave blank to use rule-based only.
+*/
+const ANTHROPIC_KEY = '';   // e.g. 'sk-ant-...' or leave blank
+
+/* ═══════════════════════════════════════════════════════════ */
+
+const COLOURS = ['c-gold','c-purple','c-green','c-blue','c-pink'];
+
+/* ── Session voter ID ── */
+let SESSION_ID = localStorage.getItem('tuw_voter_id');
+if (!SESSION_ID) {
+  SESSION_ID = crypto.randomUUID();
+  localStorage.setItem('tuw_voter_id', SESSION_ID);
+}
+
+/* ── Firebase init ── */
+const configured = FIREBASE_CONFIG.apiKey !== 'YOUR_API_KEY';
+if (!configured) document.getElementById('configBanner').style.display = 'flex';
+
+const app = configured ? initializeApp(FIREBASE_CONFIG) : null;
+const db  = configured ? getDatabase(app) : null;
+
+/* ═══════════════════════════════════════════════════════════
+   SHA-256 helper
+═══════════════════════════════════════════════════════════ */
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ADMIN STATE
+═══════════════════════════════════════════════════════════ */
+let isAdmin = false;
+
+function setAdmin(val) {
+  isAdmin = val;
+  const btn = document.getElementById('adminBtn');
+  if (val) {
+    btn.className = 'admin-pill active';
+    btn.innerHTML = '<i class="fa-solid fa-shield-halved"></i> Admin ✓';
+    btn.onclick = logoutAdmin;
+    // Show admin controls on all existing bubbles
+    document.querySelectorAll('.bubble-admin').forEach(el => el.classList.add('visible'));
+  } else {
+    btn.className = 'admin-pill login';
+    btn.innerHTML = '<i class="fa-solid fa-shield-halved"></i> Admin';
+    btn.onclick = () => openModal('adminModal');
+    document.querySelectorAll('.bubble-admin').forEach(el => el.classList.remove('visible'));
   }
+}
 
-  /* ── Create bubble DOM ────────────────────────────────── */
-  function spawnBubble(data) {
-    empty.style.display = 'none';
+function logoutAdmin() {
+  setAdmin(false);
+  showToast('Logged out of admin');
+}
 
-    const aw = arena.clientWidth;
-    const ah = arena.clientHeight;
+document.getElementById('adminBtn').onclick = () => openModal('adminModal');
 
-    const el = document.createElement('div');
-    el.className = 'bubble entering ' + COLOURS[Math.floor(Math.random() * COLOURS.length)];
+document.getElementById('adminLoginBtn').addEventListener('click', async () => {
+  const u = document.getElementById('adminUser').value.trim();
+  const p = document.getElementById('adminPass').value;
+  const errEl = document.getElementById('adminError');
+  errEl.textContent = '';
 
-    el.innerHTML = `
-      <div class="bubble-text">${escHtml(data.text)}</div>
-      <div class="bubble-meta">${data.author ? escHtml(data.author) : 'Anonymous'}</div>
-    `;
-    el.style.zIndex = bubbles.length + 1;
-    arena.appendChild(el);
+  if (!u || !p) { errEl.textContent = 'Enter both fields.'; return; }
 
-    // Measure after append
-    const w = el.offsetWidth;
-    const h = el.offsetHeight;
+  const [uh, ph] = await Promise.all([sha256(u), sha256(p)]);
 
-    const x = randBetween(w / 2 + 10, aw - w / 2 - 10);
-    const y = randBetween(h / 2 + 10, ah - h / 2 - 10);
+  if (uh === ADMIN_USER_HASH && ph === ADMIN_PASS_HASH) {
+    closeModal('adminModal');
+    document.getElementById('adminUser').value = '';
+    document.getElementById('adminPass').value = '';
+    setAdmin(true);
+    showToast('Admin mode on 🛡️');
+  } else {
+    errEl.textContent = 'Invalid credentials.';
+  }
+});
+
+document.getElementById('adminPass').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('adminLoginBtn').click();
+});
+
+/* ═══════════════════════════════════════════════════════════
+   PHYSICS
+═══════════════════════════════════════════════════════════ */
+const arena  = document.getElementById('arena');
+const emptyEl = document.getElementById('emptyState');
+const bubbles = [];   // { el, x, y, vx, vy, w, h, dragging, key }
+
+const DAMPING = 0.986;
+const MIN_SPD = 0.35;
+const MAX_SPD = 2.0;
+
+function clampSpeed(b) {
+  const spd = Math.hypot(b.vx, b.vy);
+  if (spd > 0 && spd < MIN_SPD) { const s = MIN_SPD/spd; b.vx*=s; b.vy*=s; }
+  if (spd > MAX_SPD)             { const s = MAX_SPD/spd; b.vx*=s; b.vy*=s; }
+}
+
+function tick() {
+  const AW = arena.clientWidth;
+  const AH = arena.clientHeight;
+
+  for (const b of bubbles) {
+    if (b.dragging) continue;
+
+    b.x += b.vx;
+    b.y += b.vy;
+
+    /* ── Wall bounce (position is CENTER, so use half-dims) ──
+       Measure each frame in case content changed size         */
+    const hw = b.el.offsetWidth  / 2;
+    const hh = b.el.offsetHeight / 2;
+
+    if (b.x - hw < 0)    { b.x = hw;      b.vx =  Math.abs(b.vx) || MIN_SPD; }
+    if (b.x + hw > AW)   { b.x = AW - hw; b.vx = -(Math.abs(b.vx) || MIN_SPD); }
+    if (b.y - hh < 0)    { b.y = hh;      b.vy =  Math.abs(b.vy) || MIN_SPD; }
+    if (b.y + hh > AH)   { b.y = AH - hh; b.vy = -(Math.abs(b.vy) || MIN_SPD); }
+
+    b.vx *= DAMPING;
+    b.vy *= DAMPING;
+    clampSpeed(b);
+
+    b.el.style.left = b.x + 'px';
+    b.el.style.top  = b.y + 'px';
+  }
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+/* ═══════════════════════════════════════════════════════════
+   SPAWN BUBBLE
+═══════════════════════════════════════════════════════════ */
+function spawnBubble(data, key) {
+  emptyEl.style.display = 'none';
+
+  const AW = arena.clientWidth;
+  const AH = arena.clientHeight;
+
+  const el = document.createElement('div');
+  el.className = 'bubble entering ' + COLOURS[Math.floor(Math.random() * COLOURS.length)];
+  el.dataset.key = key;
+
+  el.innerHTML = `
+    <div class="bubble-text">${esc(data.text)}</div>
+    <div class="bubble-meta">${data.author ? esc(data.author) : 'Anonymous'}</div>
+    <div class="bubble-votes">
+      <button class="vote-btn" data-vote="like" data-key="${key}">
+        <i class="fa-solid fa-thumbs-up"></i> <span class="like-count">0</span>
+      </button>
+      <button class="vote-btn" data-vote="dislike" data-key="${key}">
+        <i class="fa-solid fa-thumbs-down"></i> <span class="dislike-count">0</span>
+      </button>
+    </div>
+    <div class="bubble-admin ${isAdmin ? 'visible' : ''}">
+      <button class="adm-btn adm-btn-edit" data-key="${key}">Edit</button>
+      <button class="adm-btn adm-btn-del"  data-key="${key}">Delete</button>
+    </div>`;
+
+  el.style.zIndex = bubbles.length + 1;
+  arena.appendChild(el);
+
+  // Measure AFTER appending (in a RAF so browser has laid it out)
+  requestAnimationFrame(() => {
+    const w = el.offsetWidth  || 150;
+    const h = el.offsetHeight || 80;
+
+    const margin = 20;
+    const x = Math.random() * (AW - w - margin * 2) + w/2 + margin;
+    const y = Math.random() * (AH - h - margin * 2) + h/2 + margin;
     const angle = Math.random() * Math.PI * 2;
-    const spd   = randBetween(MIN_SPD, MAX_SPD * 0.7);
+    const spd   = 0.5 + Math.random() * 1.2;
 
     const b = {
       el, x, y,
       vx: Math.cos(angle) * spd,
       vy: Math.sin(angle) * spd,
-      w, h,
-      dragging: false,
+      w, h, dragging: false, key,
     };
 
     el.style.left = x + 'px';
     el.style.top  = y + 'px';
 
-    // Remove entering class after animation
     setTimeout(() => el.classList.remove('entering'), 500);
-
-    // Drag
     attachDrag(b);
     bubbles.push(b);
-  }
 
-  /* ── Physics loop ─────────────────────────────────────── */
-  function tick() {
-    const aw = arena.clientWidth;
-    const ah = arena.clientHeight;
-
-    for (const b of bubbles) {
-      if (b.dragging) continue;
-
-      b.x += b.vx;
-      b.y += b.vy;
-
-      // Wall bounce
-      const hw = b.w / 2, hh = b.h / 2;
-      if (b.x - hw < 0)    { b.x = hw;      b.vx =  Math.abs(b.vx); }
-      if (b.x + hw > aw)   { b.x = aw - hw; b.vx = -Math.abs(b.vx); }
-      if (b.y - hh < 0)    { b.y = hh;      b.vy =  Math.abs(b.vy); }
-      if (b.y + hh > ah)   { b.y = ah - hh; b.vy = -Math.abs(b.vy); }
-
-      b.vx *= DAMPING;
-      b.vy *= DAMPING;
-      clampSpeed(b);
-
-      b.el.style.left = b.x + 'px';
-      b.el.style.top  = b.y  + 'px';
-    }
-
-    requestAnimationFrame(tick);
-  }
-
-  requestAnimationFrame(tick);
-
-  /* ── Drag ─────────────────────────────────────────────── */
-  function attachDrag(b) {
-    let ox = 0, oy = 0;
-    let lastX = 0, lastY = 0, lastT = 0;
-    let velX = 0, velY = 0;
-
-    function onMove(e) {
-      const cx = e.touches ? e.touches[0].clientX : e.clientX;
-      const cy = e.touches ? e.touches[0].clientY : e.clientY;
-      const ar = arena.getBoundingClientRect();
-
-      const now = performance.now();
-      const dt  = now - lastT || 1;
-      velX = (cx - lastX) / dt * 16;
-      velY = (cy - lastY) / dt * 16;
-      lastX = cx; lastY = cy; lastT = now;
-
-      b.x = cx - ar.left - ox;
-      b.y = cy - ar.top  - oy;
-      b.el.style.left = b.x + 'px';
-      b.el.style.top  = b.y + 'px';
-    }
-
-    function onUp() {
-      b.dragging = false;
-      b.el.classList.remove('grabbed');
-      b.vx = velX;
-      b.vy = velY;
-      clampSpeed(b);
-      document.removeEventListener('mousemove', onMove);
-      document.removeEventListener('mouseup',   onUp);
-      document.removeEventListener('touchmove', onMove);
-      document.removeEventListener('touchend',  onUp);
-    }
-
-    function onDown(e) {
-      e.preventDefault();
-      const cx = e.touches ? e.touches[0].clientX : e.clientX;
-      const cy = e.touches ? e.touches[0].clientY : e.clientY;
-      const ar = arena.getBoundingClientRect();
-
-      ox = cx - ar.left - b.x;
-      oy = cy - ar.top  - b.y;
-      lastX = cx; lastY = cy; lastT = performance.now();
-      velX = velY = 0;
-
-      b.dragging = true;
-      b.el.classList.add('grabbed');
-      b.el.style.zIndex = 50;
-
-      document.addEventListener('mousemove', onMove);
-      document.addEventListener('mouseup',   onUp);
-      document.addEventListener('touchmove', onMove, { passive: false });
-      document.addEventListener('touchend',  onUp);
-    }
-
-    b.el.addEventListener('mousedown',  onDown);
-    b.el.addEventListener('touchstart', onDown, { passive: false });
-  }
-
-  /* ── Submit ───────────────────────────────────────────── */
-  const textarea  = document.getElementById('suggestionText');
-  const nameInput = document.getElementById('authorName');
-  const submitBtn = document.getElementById('submitBtn');
-  const charCount = document.getElementById('charCount');
-
-  textarea.addEventListener('input', () => {
-    charCount.textContent = textarea.value.length + ' / 200';
-    submitBtn.disabled = textarea.value.trim().length === 0;
+    // Load initial vote counts
+    if (db) loadVotes(key, el);
   });
 
+  // Admin buttons
+  el.querySelector('.adm-btn-del')?.addEventListener('click', e => {
+    e.stopPropagation();
+    if (confirm('Delete this suggestion?')) deleteSuggestion(key);
+  });
+  el.querySelector('.adm-btn-edit')?.addEventListener('click', e => {
+    e.stopPropagation();
+    openEdit(key, data);
+  });
+
+  // Vote buttons
+  el.querySelectorAll('.vote-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      castVote(btn.dataset.key, btn.dataset.vote, el);
+    });
+  });
+}
+
+function removeBubble(key) {
+  const idx = bubbles.findIndex(b => b.key === key);
+  if (idx === -1) return;
+  bubbles[idx].el.remove();
+  bubbles.splice(idx, 1);
+  if (bubbles.length === 0) emptyEl.style.display = '';
+}
+
+function updateBubble(key, data) {
+  const b = bubbles.find(b => b.key === key);
+  if (!b) return;
+  b.el.querySelector('.bubble-text').textContent = data.text;
+  b.el.querySelector('.bubble-meta').textContent = data.author || 'Anonymous';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   VOTES
+═══════════════════════════════════════════════════════════ */
+async function loadVotes(key, el) {
+  const snap = await get(ref(db, `votes/${key}`));
+  const votes = snap.val() || {};
+  let likes = 0, dislikes = 0, myVote = null;
+  for (const [sid, v] of Object.entries(votes)) {
+    if (v === 'like')    likes++;
+    if (v === 'dislike') dislikes++;
+    if (sid === SESSION_ID) myVote = v;
+  }
+  el.querySelector('.like-count').textContent    = likes;
+  el.querySelector('.dislike-count').textContent = dislikes;
+  const likeBtn    = el.querySelector('[data-vote="like"]');
+  const dislikeBtn = el.querySelector('[data-vote="dislike"]');
+  likeBtn.classList.toggle('voted-like',       myVote === 'like');
+  dislikeBtn.classList.toggle('voted-dislike', myVote === 'dislike');
+}
+
+async function castVote(key, type, el) {
+  if (!db) return;
+  const voteRef = ref(db, `votes/${key}/${SESSION_ID}`);
+  const snap = await get(voteRef);
+  const current = snap.val();
+
+  // Toggle off if same vote
+  if (current === type) {
+    await remove(voteRef);
+  } else {
+    await update(ref(db, `votes/${key}`), { [SESSION_ID]: type });
+  }
+  loadVotes(key, el);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ADMIN ACTIONS
+═══════════════════════════════════════════════════════════ */
+async function deleteSuggestion(key) {
+  if (!db) return;
+  await Promise.all([
+    remove(ref(db, `suggestions/${key}`)),
+    remove(ref(db, `votes/${key}`)),
+  ]);
+  showToast('Suggestion deleted');
+}
+
+let editingKey = null;
+function openEdit(key, data) {
+  editingKey = key;
+  document.getElementById('editText').value   = data.text;
+  document.getElementById('editAuthor').value = data.author || '';
+  document.getElementById('editError').textContent = '';
+  openModal('editModal');
+}
+
+document.getElementById('editSaveBtn').addEventListener('click', async () => {
+  const text   = document.getElementById('editText').value.trim();
+  const author = document.getElementById('editAuthor').value.trim();
+  const errEl  = document.getElementById('editError');
+  if (!text) { errEl.textContent = 'Text cannot be empty.'; return; }
+  await update(ref(db, `suggestions/${editingKey}`), { text, author: author || null });
+  closeModal('editModal');
+  showToast('Suggestion updated');
+});
+
+/* ═══════════════════════════════════════════════════════════
+   AI MODERATION
+═══════════════════════════════════════════════════════════ */
+// Rule-based quick check (runs before AI)
+function ruleCheck(text) {
+  if (text.length < 3)   return { ok: false, reason: 'Too short — add a bit more detail!' };
+  if (text.length > 200) return { ok: false, reason: 'Too long — keep it under 200 characters.' };
+  const spamPatterns = [/(.)\1{6,}/, /https?:\/\//i, /discord\.gg/i, /\$\d+/];
+  if (spamPatterns.some(p => p.test(text))) return { ok: false, reason: 'Looks like spam — no links or repeated characters.' };
+  return { ok: true };
+}
+
+// Get existing suggestion texts for duplicate check
+async function getExistingTexts() {
+  if (!db) return [];
+  const snap = await get(ref(db, 'suggestions'));
+  if (!snap.exists()) return [];
+  return Object.values(snap.val()).map(v => v.text.toLowerCase());
+}
+
+// AI check via Anthropic API
+async function aiCheck(text, existing) {
+  if (!ANTHROPIC_KEY) return { ok: true };
+  try {
+    const existingSample = existing.slice(0, 20).join('\n');
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type':         'application/json',
+        'x-api-key':            ANTHROPIC_KEY,
+        'anthropic-version':    '2023-06-01',
+        'anthropic-dangerous-allow-browser': 'true',
+      },
+      body: JSON.stringify({
+        model:      'claude-haiku-4-5-20251001',
+        max_tokens: 80,
+        messages: [{
+          role: 'user',
+          content: `You are a content moderator for a YouTube channel suggestions box for kids and teens.
+Reply with ONLY valid JSON: {"ok": true} or {"ok": false, "reason": "short friendly explanation"}
+
+Reject if: inappropriate language, spam, harmful content, or nearly identical to an existing suggestion.
+Be lenient — only reject clear violations.
+
+New suggestion: "${text}"
+
+Existing suggestions (for duplicate check):
+${existingSample || '(none yet)'}`,
+        }],
+      }),
+    });
+    const data = await res.json();
+    const reply = data.content?.[0]?.text?.trim() || '{"ok":true}';
+    return JSON.parse(reply);
+  } catch (e) {
+    console.warn('AI check failed, allowing:', e);
+    return { ok: true };
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SUBMIT
+═══════════════════════════════════════════════════════════ */
+const textarea  = document.getElementById('suggestionText');
+const nameInput = document.getElementById('authorName');
+const submitBtn = document.getElementById('submitBtn');
+const charCount = document.getElementById('charCount');
+const checkBadge = document.getElementById('checkingBadge');
+
+textarea.addEventListener('input', () => {
+  charCount.textContent = textarea.value.length + ' / 200';
+  submitBtn.disabled = textarea.value.trim().length < 3;
+});
+submitBtn.disabled = true;
+
+submitBtn.addEventListener('click', async () => {
+  const text = textarea.value.trim();
+  if (!text) return;
+
+  // Rule check first (instant)
+  const rule = ruleCheck(text);
+  if (!rule.ok) { showToast('❌ ' + rule.reason); return; }
+
   submitBtn.disabled = true;
+  checkBadge.classList.add('visible');
 
-  submitBtn.addEventListener('click', async () => {
-    const text = textarea.value.trim();
-    if (!text) return;
+  try {
+    // AI check (with duplicate awareness)
+    const existing = configured ? await getExistingTexts() : [];
+    const ai = await aiCheck(text, existing);
 
-    if (!configured) {
-      showToast('Firebase not configured yet!');
+    checkBadge.classList.remove('visible');
+
+    if (!ai.ok) {
+      showToast('❌ ' + (ai.reason || 'Suggestion rejected by moderation.'));
+      submitBtn.disabled = false;
       return;
     }
 
-    submitBtn.disabled = true;
-
-    try {
+    if (configured) {
       await push(ref(db, 'suggestions'), {
         text,
         author: nameInput.value.trim() || null,
-        ts:     Date.now(),
+        ts: Date.now(),
       });
-      textarea.value  = '';
-      nameInput.value = '';
-      charCount.textContent = '0 / 200';
-      showToast('Suggestion sent! 🎉');
-    } catch (e) {
-      console.error(e);
-      showToast('Failed to send — check your Firebase rules.');
-      submitBtn.disabled = false;
+    } else {
+      // Demo mode
+      spawnBubble({ text, author: nameInput.value.trim() || null }, 'demo-' + Date.now());
     }
-  });
 
-  // Submit on Ctrl/Cmd+Enter
-  textarea.addEventListener('keydown', e => {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') submitBtn.click();
-  });
+    textarea.value  = '';
+    nameInput.value = '';
+    charCount.textContent = '0 / 200';
+    showToast('Suggestion sent! 🎉');
+  } catch (e) {
+    console.error(e);
+    checkBadge.classList.remove('visible');
+    showToast('Failed to send — try again.');
+    submitBtn.disabled = false;
+  }
+});
 
-  /* ── Listen for new suggestions ───────────────────────── */
-  if (configured) {
-    onChildAdded(ref(db, 'suggestions'), snap => {
-      const data = snap.val();
-      if (data?.text) spawnBubble(data);
-    });
-  } else {
-    // Demo bubbles so the page isn't empty
-    const demos = [
-      { text: 'Add more LEGO animations!',    author: 'Fan123'    },
-      { text: 'More Brawl Stars content 🎮',  author: 'GamerGuy'  },
-      { text: 'Can you do a speedrun video?', author: null        },
-      { text: 'Love the site!',               author: 'Visitor'   },
-    ];
-    setTimeout(() => demos.forEach((d, i) =>
-      setTimeout(() => spawnBubble(d), i * 300)
-    ), 400);
+textarea.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') submitBtn.click();
+});
+
+/* ═══════════════════════════════════════════════════════════
+   FIREBASE LISTENERS
+═══════════════════════════════════════════════════════════ */
+if (configured) {
+  onChildAdded(ref(db, 'suggestions'), snap => {
+    spawnBubble(snap.val(), snap.key);
+  });
+  onChildChanged(ref(db, 'suggestions'), snap => {
+    updateBubble(snap.key, snap.val());
+  });
+  onChildRemoved(ref(db, 'suggestions'), snap => {
+    removeBubble(snap.key);
+  });
+} else {
+  // Demo bubbles
+  const demos = [
+    { text: 'More LEGO animations please!',     author: 'Fan123'   },
+    { text: 'Brawl Stars tournament stream? 🎮', author: 'GamerGuy' },
+    { text: 'Can you do a speedrun video?',      author: null       },
+    { text: 'Love the site! 🔥',                 author: 'Visitor'  },
+    { text: 'More Geometry Dash content!',        author: 'GDfan'   },
+  ];
+  setTimeout(() => demos.forEach((d, i) =>
+    setTimeout(() => spawnBubble(d, 'demo-' + i), i * 250)
+  ), 300);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DRAG
+═══════════════════════════════════════════════════════════ */
+function attachDrag(b) {
+  let ox = 0, oy = 0, lx = 0, ly = 0, lt = 0, velX = 0, velY = 0;
+
+  function onMove(e) {
+    const cx = e.touches ? e.touches[0].clientX : e.clientX;
+    const cy = e.touches ? e.touches[0].clientY : e.clientY;
+    const ar = arena.getBoundingClientRect();
+    const now = performance.now();
+    const dt  = now - lt || 1;
+    velX = (cx - lx) / dt * 16;
+    velY = (cy - ly) / dt * 16;
+    lx = cx; ly = cy; lt = now;
+    b.x = cx - ar.left - ox;
+    b.y = cy - ar.top  - oy;
+    b.el.style.left = b.x + 'px';
+    b.el.style.top  = b.y + 'px';
   }
 
-  /* ── Helpers ──────────────────────────────────────────── */
-  function escHtml(str) {
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  function onUp() {
+    b.dragging = false;
+    b.el.classList.remove('grabbed');
+    b.vx = velX; b.vy = velY;
+    clampSpeed(b);
+    document.removeEventListener('mousemove', onMove);
+    document.removeEventListener('mouseup',   onUp);
+    document.removeEventListener('touchmove', onMove);
+    document.removeEventListener('touchend',  onUp);
   }
 
-  let toastTimer;
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  function onDown(e) {
+    if (e.target.tagName === 'BUTTON') return; // don't drag when clicking buttons
+    e.preventDefault();
+    const cx = e.touches ? e.touches[0].clientX : e.clientX;
+    const cy = e.touches ? e.touches[0].clientY : e.clientY;
+    const ar = arena.getBoundingClientRect();
+    ox = cx - ar.left - b.x;
+    oy = cy - ar.top  - b.y;
+    lx = cx; ly = cy; lt = performance.now();
+    velX = velY = 0;
+    b.dragging = true;
+    b.el.classList.add('grabbed');
+    b.el.style.zIndex = 50;
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup',   onUp);
+    document.addEventListener('touchmove', onMove, { passive: false });
+    document.addEventListener('touchend',  onUp);
   }
 
-  // Re-measure bubbles on resize
-  window.addEventListener('resize', () => {
-    bubbles.forEach(b => { b.w = b.el.offsetWidth; b.h = b.el.offsetHeight; });
-  });
+  b.el.addEventListener('mousedown',  onDown);
+  b.el.addEventListener('touchstart', onDown, { passive: false });
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MODAL HELPERS
+═══════════════════════════════════════════════════════════ */
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+window.openModal  = openModal;
+window.closeModal = closeModal;
+
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+});
+
+/* ═══════════════════════════════════════════════════════════
+   UTILS
+═══════════════════════════════════════════════════════════ */
+function esc(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+}
 </script>
 </body>
 </html>
