@@ -710,6 +710,65 @@ async function getExistingTexts() {
   return Object.values(snap.val()).map(v => v.text.toLowerCase());
 }
 
+// AI moderation via Groq
+async function moderateSuggestion(text, existingTexts) {
+  const GROQ_API_KEY = '';
+
+  const systemPrompt = `You are a strict content moderator for a suggestions board on a YouTube/gaming creator website called TheUnlockedWeb. The creator makes content about gaming (Geometry Dash, Brawl Stars), LEGO animations, speedruns, and general YouTube content.
+
+REJECT a suggestion if ANY of the following are true:
+1. NSFW — sexual content, graphic violence, profanity, slurs, or adult themes.
+2. SPAM — gibberish, meaningless noise, excessive punctuation/emoji with no real message, or pure self-promotion.
+3. UNRELATED — has nothing to do with the creator's content, the website, gaming, LEGO, YouTube, or related topics.
+4. DUPLICATE — essentially the same idea as one already in the existing list (even if worded differently).
+
+ACCEPT if it is a genuine, relevant, on-topic suggestion not already covered.
+
+Respond ONLY with raw valid JSON — no markdown, no explanation, no code fences.
+If acceptable:  {"ok":true}
+If rejected:    {"ok":false,"reason":"Short user-facing reason (max 80 chars)"}`;
+
+  const existing = existingTexts.length > 0
+    ? existingTexts.map((t, i) => `${i + 1}. "${t}"`).join('\n')
+    : '(none yet)';
+
+  const userPrompt = `New suggestion: "${text}"\n\nExisting suggestions:\n${existing}`;
+
+  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${GROQ_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: 'llama-3.1-8b-instant',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user',   content: userPrompt   },
+      ],
+      max_tokens: 80,
+      temperature: 0,
+    }),
+  });
+
+  if (!res.ok) {
+    const err = await res.text().catch(() => res.status);
+    throw new Error('Groq API error: ' + err);
+  }
+
+  const data    = await res.json();
+  const raw     = data.choices?.[0]?.message?.content?.trim() ?? '';
+  const cleaned = raw.replace(/```json|```/g, '').trim();
+
+  try {
+    return JSON.parse(cleaned);
+  } catch {
+    // If parsing fails, fail open so a Groq hiccup doesn't block everyone
+    console.warn('Groq returned non-JSON:', raw);
+    return { ok: true };
+  }
+}
+
 /* ═══════════════════════════════════════════════════════════
    SUBMIT
 ═══════════════════════════════════════════════════════════ */
