@@ -710,35 +710,253 @@ async function getExistingTexts() {
   return Object.values(snap.val()).map(v => v.text.toLowerCase());
 }
 
-// AI check via Anthropic API
-async function aiCheck(text, existing) {
+function moderateSuggestion(text, existing = []) {
 
-  // if ur reading this, the reason there isn't an ai check is cause it was way too much of a pain to implement with CORS and all that jazz on the client side, and tbh the rule-based check is doing a pretty good job at catching the worst offenders. if u wanna add it, the endpoint is https://api.anthropic.com/v1/moderations and u can use the "content-moderation-latest" model with a system prompt like:
-  /*
-    You are a content moderation system for a website that collects user suggestions. Your job is to determine if a suggestion is appropriate for public display based on its content. 
+    // ─────────────────────────────────────────────
+    // 🔐 PURE JS SHA-256 (BROWSER SAFE)
+    // ─────────────────────────────────────────────
+    function sha256(ascii) {
+        function rightRotate(value, amount) {
+            return (value >>> amount) | (value << (32 - amount));
+        }
 
-    The suggestion should be rejected if it contains:
-    - Hate speech, harassment, or threats towards any individual or group
-    - Explicit adult content or graphic violence
-    - Spam, scams, or deceptive content (e.g., phishing links, fraudulent schemes)
-    - Promotion of self-harm or dangerous behavior
-    - Personal information or doxxing
-    Additionally, if the suggestion is very similar to an existing one (e.g., duplicate or near-duplicate), it should be flagged for review.
+        let mathPow = Math.pow;
+        let maxWord = mathPow(2, 32);
+        let lengthProperty = "length";
+        let i, j;
+        let result = "";
 
-    Respond with a JSON object containing:
-    {
-      "ok": boolean, // true if the suggestion is acceptable, false if it should be rejected
-      "reason": string // if "ok" is false, provide a brief reason for rejection
+        let words = [];
+        let asciiBitLength = ascii[lengthProperty] * 8;
+
+        let hash = sha256.h = sha256.h || [];
+        let k = sha256.k = sha256.k || [];
+        let primeCounter = k[lengthProperty];
+
+        let isComposite = {};
+        for (let candidate = 2; primeCounter < 64; candidate++) {
+            if (!isComposite[candidate]) {
+                for (i = 0; i < 313; i += candidate) {
+                    isComposite[i] = candidate;
+                }
+                hash[primeCounter] = (mathPow(candidate, 0.5) * maxWord) | 0;
+                k[primeCounter++] = (mathPow(candidate, 1/3) * maxWord) | 0;
+            }
+        }
+
+        ascii += "\x80";
+        while (ascii[lengthProperty] % 64 - 56) ascii += "\x00";
+        for (i = 0; i < ascii[lengthProperty]; i++) {
+            j = ascii.charCodeAt(i);
+            words[i >> 2] |= j << ((3 - i) % 4) * 8;
+        }
+        words[words[lengthProperty]] = ((asciiBitLength / maxWord) | 0);
+        words[words[lengthProperty]] = (asciiBitLength);
+
+        for (j = 0; j < words[lengthProperty];) {
+            let w = words.slice(j, j += 16);
+            let oldHash = hash.slice(0);
+
+            for (i = 0; i < 64; i++) {
+                let w15 = w[i - 15], w2 = w[i - 2];
+
+                let a = hash[0], e = hash[4];
+                let temp1 = hash[7]
+                    + (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25))
+                    + ((e & hash[5]) ^ (~e & hash[6]))
+                    + k[i]
+                    + (w[i] = (i < 16) ? w[i] : (
+                        w[i - 16]
+                        + (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3))
+                        + w[i - 7]
+                        + (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))
+                    ) | 0
+                    );
+
+                let temp2 = (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22))
+                    + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
+
+                hash = [(temp1 + temp2) | 0].concat(hash);
+                hash[4] = (hash[4] + temp1) | 0;
+                hash.pop();
+            }
+
+            for (i = 0; i < 8; i++) {
+                hash[i] = (hash[i] + oldHash[i]) | 0;
+            }
+        }
+
+        for (i = 0; i < 8; i++) {
+            for (j = 3; j + 1; j--) {
+                let b = (hash[i] >> (j * 8)) & 255;
+                result += ((b < 16) ? "0" : "") + b.toString(16);
+            }
+        }
+        return result;
     }
 
-    Here is the suggestion to evaluate:
-    "${text}"
-    Existing suggestions for duplicate check:
-    ${existing.map((t, i) => `${i+1}. ${t}`).join('\n')}
-  */
-  return({ ok: true })
-}
+    // ─────────────────────────────────────────────
+    // 🔒 HASH LIST
+    // ─────────────────────────────────────────────
+    const bannedHashes = new Set([
+        "af851ecef1d5f212caba17339b12ac39cc2fef7d78c74876f67237644fcee8bd"
+    ]);
 
+    // ─────────────────────────────────────────────
+    // 🔧 NORMALIZE
+    // ─────────────────────────────────────────────
+    const leetMap = {
+        "0": "o", "1": "i", "3": "e", "4": "a",
+        "5": "s", "7": "t", "@": "a", "$": "s"
+    };
+
+    function normalize(str) {
+        return str
+            .toLowerCase()
+            .split("")
+            .map(c => leetMap[c] || c)
+            .join("")
+            .replace(/[^a-z0-9\s]/g, "")
+            .replace(/\s+/g, " ")
+            .trim();
+    }
+
+    function containsHashedWord(text) {
+        const words = text.split(" ");
+        for (let w of words) {
+            if (bannedHashes.has(sha256(w))) return true;
+        }
+        return false;
+    }
+
+    // ─────────────────────────────────────────────
+    // 🧠 LEVENSHTEIN
+    // ─────────────────────────────────────────────
+    function levenshtein(a, b) {
+        const dp = Array.from({ length: a.length + 1 }, () =>
+            Array(b.length + 1).fill(0)
+        );
+
+        for (let i = 0; i <= a.length; i++) dp[i][0] = i;
+        for (let j = 0; j <= b.length; j++) dp[0][j] = j;
+
+        for (let i = 1; i <= a.length; i++) {
+            for (let j = 1; j <= b.length; j++) {
+                const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+                dp[i][j] = Math.min(
+                    dp[i - 1][j] + 1,
+                    dp[i][j - 1] + 1,
+                    dp[i - 1][j - 1] + cost
+                );
+            }
+        }
+
+        return dp[a.length][b.length];
+    }
+
+    const fallbackWords = ["kill", "porn", "suicide"];
+
+    function containsFuzzyWord(text) {
+        const words = text.split(" ");
+        for (let w of words) {
+            for (let t of fallbackWords) {
+                if (w === t || levenshtein(w, t) <= 1) return true;
+            }
+        }
+        return false;
+    }
+
+    // ─────────────────────────────────────────────
+    // 🔎 REGEX
+    // ─────────────────────────────────────────────
+    const email = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
+    const phone = /\b\d{3,4}[-.\s]?\d{3}[-.\s]?\d{3,4}\b/;
+    const url = /(https?:\/\/|www\.)/i;
+
+    // ─────────────────────────────────────────────
+    // 📊 SPAM
+    // ─────────────────────────────────────────────
+    function spamScore(t) {
+        let s = 0;
+        if (t.length > 500) s += 2;
+        if (/(.)\1{5,}/.test(t)) s += 2;
+        if ((t.match(/!/g) || []).length > 5) s += 1;
+        if ((t.match(/[A-Z]/g) || []).length > t.length * 0.7) s += 2;
+        return s;
+    }
+
+    // ─────────────────────────────────────────────
+    // 🔁 DUPLICATES
+    // ─────────────────────────────────────────────
+    function tokenize(str) { return str.split(" "); }
+
+    function jaccard(a, b) {
+        const A = new Set(a);
+        const B = new Set(b);
+        const inter = new Set([...A].filter(x => B.has(x)));
+        const union = new Set([...A, ...B]);
+        return inter.size / union.size;
+    }
+
+    function cosine(a, b) {
+        const freq = arr => {
+            const m = {};
+            arr.forEach(x => m[x] = (m[x] || 0) + 1);
+            return m;
+        };
+
+        const A = freq(a), B = freq(b);
+        const words = new Set([...Object.keys(A), ...Object.keys(B)]);
+
+        let dot = 0, mA = 0, mB = 0;
+
+        for (let w of words) {
+            let x = A[w] || 0;
+            let y = B[w] || 0;
+            dot += x * y;
+            mA += x * x;
+            mB += y * y;
+        }
+
+        return dot / (Math.sqrt(mA) * Math.sqrt(mB) || 1);
+    }
+
+    // ─────────────────────────────────────────────
+    // 🚀 MAIN
+    // ─────────────────────────────────────────────
+    if (!text || text.trim() === "") {
+        return { ok: false, reason: "Empty suggestion" };
+    }
+
+    const clean = normalize(text);
+
+    if (containsHashedWord(clean)) {
+        return { ok: false, reason: "Banned word detected" };
+    }
+
+    if (containsFuzzyWord(clean)) {
+        return { ok: false, reason: "Inappropriate content" };
+    }
+
+    if (email.test(text)) return { ok: false, reason: "Email detected" };
+    if (phone.test(text)) return { ok: false, reason: "Phone detected" };
+    if (url.test(text)) return { ok: false, reason: "Link detected" };
+
+    if (spamScore(text) >= 3) {
+        return { ok: false, reason: "Spam-like content" };
+    }
+
+    const tA = tokenize(clean);
+
+    for (let e of existing) {
+        const tB = tokenize(normalize(e));
+        if (jaccard(tA, tB) > 0.75 || cosine(tA, tB) > 0.85) {
+            return { ok: false, reason: "Duplicate suggestion" };
+        }
+    }
+
+    return { ok: true, reason: "" };
+}
 
 /* ═══════════════════════════════════════════════════════════
    SUBMIT
@@ -769,7 +987,7 @@ submitBtn.addEventListener('click', async () => {
   try {
     // AI check (with duplicate awareness)
     const existing = configured ? await getExistingTexts() : [];
-    const ai = await aiCheck(text, existing);
+    const ai = await moderateSuggestion(text, existing);
 
     checkBadge.classList.remove('visible');
 
