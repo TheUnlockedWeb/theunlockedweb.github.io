@@ -25,7 +25,7 @@
     "useProxy": true,
     "tags": [
       { "label": "Idle Game", "color": "gold" },
-      { "label": "Made by EthanUnlocked", "color": "green" }
+      { "label": "Ported by EthanUnlocked", "color": "purple" }
     ]
   },
   {
