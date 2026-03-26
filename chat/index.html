@@ -547,10 +547,24 @@ import {
   onValue,
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
-/* ══════════════════════════════════════════════════
-   ⚙️  CONFIG — paste your Firebase config here
-   (same project as suggestions if you want, or new)
-══════════════════════════════════════════════════ */
+
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyCAzdgR31XsfrcCKGNR2mmyXNFrEAMLITU",
+  authDomain: "chat-613ed.firebaseapp.com",
+  projectId: "chat-613ed",
+  storageBucket: "chat-613ed.firebasestorage.app",
+  messagingSenderId: "229709932798",
+  appId: "1:229709932798:web:65d0347405402820f11daf"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
 const FIREBASE_CONFIG = {
   apiKey:            "YOUR_API_KEY",
   authDomain:        "YOUR_PROJECT.firebaseapp.com",
