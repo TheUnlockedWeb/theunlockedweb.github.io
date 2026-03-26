@@ -83,5 +83,19 @@
       { "label": "Thriller", "color": "gold" },
       { "label": "Ported by LaDoodleInTheHat", "color": "purple" }
     ]
+  },
+    {
+    "id": "drive-mad",
+    "title": "Drive Mad",
+    "desc": "Drive Madly",
+    "url": "../webgames/drive_mad/",
+    "thumbnail": "drive-mad-thumbnail.png",
+    "icon": "fa-solid fa-car",
+    "iconBg": "rgba(40,200,95,.13)",
+    "iconColor": "#ffff00",
+    "tags": [
+      { "label": "Thriller", "color": "gold" },
+      { "label": "Ported by EthanUnlocked", "color": "purple" }
+    ]
   }
 ]
