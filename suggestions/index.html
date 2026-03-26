@@ -711,7 +711,7 @@ async function getExistingTexts() {
 }
 
 function moderateSuggestion(text, existing = []) {
-
+  // Quick rule check
     // ─────────────────────────────────────────────
     // 🔐 PURE JS SHA-256 (BROWSER SAFE)
     // ─────────────────────────────────────────────
@@ -794,7 +794,8 @@ function moderateSuggestion(text, existing = []) {
         }
         return result;
     }
-
+    console.log('Moderating suggestion:', text);
+    console.log('Moderation existing texts:', existing);
     // ─────────────────────────────────────────────
     // 🔒 HASH LIST
     // ─────────────────────────────────────────────
