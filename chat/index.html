@@ -305,6 +305,32 @@
     .auth-btn:active { transform: scale(.98); }
     .auth-btn:disabled { opacity: .4; cursor: default; transform: none; box-shadow: none; }
 
+    /* ── Verify screen ────────────────────── */
+    .verify-icon {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--gold-gl); border: 1px solid rgba(245,158,11,.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; color: var(--gold); margin: 0 auto 18px;
+    }
+    .verify-email-display {
+      background: rgba(255,255,255,.05); border: 1px solid var(--border);
+      border-radius: 8px; padding: 9px 13px; font-size: .84rem;
+      color: var(--text); font-family: 'Manrope', sans-serif;
+      margin: 12px 0 18px; text-align: center; word-break: break-all;
+    }
+    .verify-hint {
+      font-size: .76rem; color: var(--muted); line-height: 1.6;
+      text-align: center; margin-bottom: 20px;
+    }
+    .verify-link {
+      background: none; border: none; color: var(--gold);
+      font-family: 'Manrope', sans-serif; font-size: .8rem; font-weight: 600;
+      cursor: pointer; text-decoration: underline; text-underline-offset: 2px;
+      transition: opacity .15s;
+    }
+    .verify-link:hover { opacity: .75; }
+    .verify-link:disabled { opacity: .35; cursor: default; }
+
     /* ══════════════════════════════════════════
        TOAST
     ══════════════════════════════════════════ */
@@ -402,6 +428,25 @@
       <div class="auth-error" id="signupError"></div>
       <button class="auth-btn" id="signupBtn">Create Account</button>
     </div>
+
+    <!-- Verify email screen -->
+    <div id="formVerify" style="display:none">
+      <div class="verify-icon"><i class="fa-solid fa-envelope-open-text"></i></div>
+      <div class="auth-title" style="text-align:center;font-size:1.2rem;margin-bottom:8px">Check your inbox</div>
+      <div class="verify-hint">We sent a verification link to:</div>
+      <div class="verify-email-display" id="verifyEmailDisplay">—</div>
+      <div class="verify-hint">
+        Click the link in the email, then come back here and press the button below.<br><br>
+        Don't see it? Check your spam folder.
+      </div>
+      <button class="auth-btn" id="verifyDoneBtn">I've verified my email ✓</button>
+      <div style="text-align:center;margin-top:14px">
+        <button class="verify-link" id="resendBtn">Resend verification email</button>
+        &nbsp;·&nbsp;
+        <button class="verify-link" id="wrongEmailBtn">Use a different account</button>
+      </div>
+      <div class="auth-error" id="verifyError"></div>
+    </div>
   </div>
 </div>
 
@@ -493,6 +538,8 @@ import {
   updateProfile,
   onAuthStateChanged,
   signOut,
+  sendEmailVerification,
+  reload,
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 import {
   getDatabase, ref, push, onChildAdded, onChildRemoved,
@@ -562,12 +609,42 @@ function initials(name = '') {
 onAuthStateChanged(auth, user => {
   currentUser = user;
   if (user) {
-    showChat(user);
+    if (!user.emailVerified) {
+      showVerifyScreen(user.email);
+    } else {
+      showChat(user);
+    }
   } else {
     document.getElementById('authOverlay').classList.remove('hidden');
     document.getElementById('chatShell').style.display = 'none';
+    showAuthForms();
   }
 });
+
+function showAuthForms() {
+  document.getElementById('authOverlay').classList.remove('hidden');
+  document.getElementById('chatShell').style.display = 'none';
+  document.getElementById('formLogin').style.display  = '';
+  document.getElementById('formSignup').style.display = 'none';
+  document.getElementById('formVerify').style.display = 'none';
+  document.getElementById('tabLogin').style.display   = '';
+  document.getElementById('tabSignup').style.display  = '';
+  document.querySelector('.auth-tabs').style.display  = '';
+}
+
+function showVerifyScreen(email) {
+  document.getElementById('authOverlay').classList.remove('hidden');
+  document.getElementById('chatShell').style.display  = 'none';
+  document.getElementById('formLogin').style.display  = 'none';
+  document.getElementById('formSignup').style.display = 'none';
+  document.getElementById('formVerify').style.display = '';
+  document.getElementById('verifyEmailDisplay').textContent = email || '';
+  document.getElementById('verifyError').textContent  = '';
+  // Hide tabs on verify screen
+  document.querySelector('.auth-tabs').style.display  = 'none';
+  document.getElementById('tabLogin').style.display   = 'none';
+  document.getElementById('tabSignup').style.display  = 'none';
+}
 
 function showChat(user) {
   document.getElementById('authOverlay').classList.add('hidden');
@@ -761,6 +838,38 @@ Respond ONLY with raw JSON — no markdown. {"ok":true} or {"ok":false,"reason":
   catch { return { ok: true }; }
 }
 
+async function moderateName(name) {
+  // Quick local checks first
+  if (name.length < 2)  return { ok: false, reason: 'Name must be at least 2 characters.' };
+  if (name.length > 24) return { ok: false, reason: 'Name must be 24 characters or fewer.' };
+  if (/^\s+$/.test(name)) return { ok: false, reason: 'Name cannot be blank.' };
+
+  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${GROQ_API_KEY}` },
+    body: JSON.stringify({
+      model: 'llama-3.1-8b-instant',
+      max_tokens: 60,
+      temperature: 0,
+      messages: [
+        {
+          role: 'system',
+          content: `You are checking display names for a gaming community (TheUnlockedWeb).
+REJECT if the name: contains slurs, hate speech, sexual content, impersonates real people or brands (e.g. "Admin", "EthanUnlocked", "YouTube"), is pure gibberish/spam (e.g. "asdfgh"), or contains excessive special characters.
+ACCEPT normal gaming usernames, nicknames, number combos, mild memes — be lenient.
+Respond ONLY with raw JSON: {"ok":true} or {"ok":false,"reason":"short reason under 60 chars"}`
+        },
+        { role: 'user', content: `Display name: "${name}"` }
+      ]
+    })
+  });
+  if (!res.ok) return { ok: true }; // fail open
+  const data = await res.json();
+  const raw  = data.choices?.[0]?.message?.content?.trim() ?? '';
+  try { return JSON.parse(raw.replace(/```json|```/g, '').trim()); }
+  catch { return { ok: true }; }
+}
+
 /* ══════════════════════════════════════════════════
    SEND MESSAGE
 ══════════════════════════════════════════════════ */
@@ -860,7 +969,13 @@ document.getElementById('loginBtn').addEventListener('click', async () => {
   if (!email || !pass) { errEl.textContent = 'Please fill in all fields.'; return; }
   document.getElementById('loginBtn').disabled = true;
   try {
-    await signInWithEmailAndPassword(auth, email, pass);
+    const cred = await signInWithEmailAndPassword(auth, email, pass);
+    if (!cred.user.emailVerified) {
+      // Send a fresh verification email in case theirs expired
+      await sendEmailVerification(cred.user);
+      showVerifyScreen(email);
+    }
+    // If verified, onAuthStateChanged → showChat handles it
   } catch (e) {
     errEl.textContent = friendlyAuthError(e.code);
     document.getElementById('loginBtn').disabled = false;
@@ -878,18 +993,36 @@ document.getElementById('signupBtn').addEventListener('click', async () => {
   const errEl = document.getElementById('signupError');
   errEl.textContent = '';
   if (!name || !email || !pass) { errEl.textContent = 'Please fill in all fields.'; return; }
-  if (name.length < 2) { errEl.textContent = 'Name must be at least 2 characters.'; return; }
   if (pass.length < 6) { errEl.textContent = 'Password must be at least 6 characters.'; return; }
-  document.getElementById('signupBtn').disabled = true;
+
+  const btn = document.getElementById('signupBtn');
+  btn.disabled = true;
+  btn.textContent = 'Checking name...';
+
+  // Moderate display name first
+  try {
+    const nameCheck = await moderateName(name);
+    if (!nameCheck.ok) {
+      errEl.textContent = nameCheck.reason || 'That display name is not allowed.';
+      btn.disabled = false;
+      btn.textContent = 'Create Account';
+      return;
+    }
+  } catch {
+    // fail open — don't block signup if Groq is down
+  }
+
+  btn.textContent = 'Creating account...';
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, pass);
     await updateProfile(cred.user, { displayName: name });
-    // Refresh currentUser so displayName is available immediately
-    currentUser = auth.currentUser;
-    showToast('Welcome to the chat, ' + name + '! 🎉');
+    await sendEmailVerification(cred.user);
+    // onAuthStateChanged will fire but user isn't verified yet — showVerifyScreen handles it
+    showVerifyScreen(email);
   } catch (e) {
     errEl.textContent = friendlyAuthError(e.code);
-    document.getElementById('signupBtn').disabled = false;
+    btn.disabled = false;
+    btn.textContent = 'Create Account';
   }
 });
 
@@ -901,6 +1034,54 @@ document.getElementById('signoutBtn').addEventListener('click', async () => {
   }
   await signOut(auth);
   showToast('Signed out. See ya! 👋');
+});
+
+/* ══════════════════════════════════════════════════
+   VERIFY SCREEN BUTTONS
+══════════════════════════════════════════════════ */
+document.getElementById('verifyDoneBtn').addEventListener('click', async () => {
+  const errEl = document.getElementById('verifyError');
+  const btn   = document.getElementById('verifyDoneBtn');
+  errEl.textContent = '';
+  btn.disabled = true;
+  btn.textContent  = 'Checking...';
+  try {
+    await reload(auth.currentUser);
+    if (auth.currentUser.emailVerified) {
+      currentUser = auth.currentUser;
+      showChat(auth.currentUser);
+      showToast('Welcome to the chat, ' + (auth.currentUser.displayName || 'there') + '! 🎉');
+    } else {
+      errEl.textContent = "Email not verified yet — click the link in your inbox first.";
+      btn.disabled = false;
+      btn.textContent  = "I've verified my email ✓";
+    }
+  } catch {
+    errEl.textContent = 'Something went wrong. Try again.';
+    btn.disabled = false;
+    btn.textContent  = "I've verified my email ✓";
+  }
+});
+
+let resendCooldown = false;
+document.getElementById('resendBtn').addEventListener('click', async () => {
+  if (resendCooldown || !auth.currentUser) return;
+  const btn = document.getElementById('resendBtn');
+  resendCooldown = true;
+  btn.disabled   = true;
+  try {
+    await sendEmailVerification(auth.currentUser);
+    showToast('Verification email resent! Check your inbox 📬');
+  } catch {
+    showToast('Could not resend — try again in a moment.');
+  }
+  // 30 s cooldown so they can't hammer the send button
+  setTimeout(() => { resendCooldown = false; btn.disabled = false; }, 30000);
+});
+
+document.getElementById('wrongEmailBtn').addEventListener('click', async () => {
+  await signOut(auth);
+  showAuthForms();
 });
 
 /* ══════════════════════════════════════════════════
