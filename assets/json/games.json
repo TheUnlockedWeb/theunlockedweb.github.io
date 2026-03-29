@@ -113,17 +113,17 @@
     ]
   },
     {
-    "id": "pokedoku",
-    "title": "Pokédoku",
-    "desc": "Pokédoku is actually what you expect. Pokémon Sudoku! But it won't always be easy!",
-    "url": "../webgames/pokedoku/",
-    "thumbnail": "pokedoku.png",
-    "icon": "fa-solid fa-jigsaw",
+    "id": "not-yet",
+    "title": "Not yet",
+    "desc": "This game is not coded yet! Please check back later or suggest more in the suggestions tab!",
+    "url": ""
+    "thumbnail": "",
+    "icon": "fa-solid fa-danger",
     "iconBg": "rgba(255,0,0,.13)",
     "iconColor": "#ff0000",
     "tags": [
-      { "label": "Pokémon game", "color": "gold" },
-      { "label": "Ported by EthanUnlocked", "color": "purple" }
+      { "label": "???", "color": "gold" },
+      { "label": "Created by EthanUnlocked", "color": "purple" }
     ]
   }
 ]
