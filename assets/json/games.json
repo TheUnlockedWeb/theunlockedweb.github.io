@@ -111,5 +111,19 @@
       { "label": "Chatbot", "color": "gold" },
       { "label": "Made by LaDoodleInTheHat", "color": "green" }
     ]
+  },
+    {
+    "id": "pokedoku",
+    "title": "Pokédoku",
+    "desc": "Pokédoku is actually what you expect. Pokémon Sudoku! But it won't always be easy!",
+    "url": "../webgames/pokedoku/",
+    "thumbnail": "pokedoku.png",
+    "icon": "fa-solid fa-jigsaw",
+    "iconBg": "rgba(255,0,0,.13)",
+    "iconColor": "#ff0000",
+    "tags": [
+      { "label": "Pokémon game", "color": "gold" },
+      { "label": "Ported by EthanUnlocked", "color": "purple" }
+    ]
   }
 ]
