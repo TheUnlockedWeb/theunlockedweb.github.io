@@ -116,8 +116,6 @@
     "id": "not-yet",
     "title": "Not yet",
     "desc": "This game is not coded yet! Please check back later or suggest more in the suggestions tab!",
-    "url": ""
-    "thumbnail": "",
     "icon": "fa-solid fa-danger",
     "iconBg": "rgba(255,0,0,.13)",
     "iconColor": "#ff0000",
