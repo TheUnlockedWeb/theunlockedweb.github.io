@@ -116,7 +116,7 @@
     "id": "pokedoku",
     "title": "Pokédoku",
     "desc": "Pokédoku is actually what you expect. Pokémon Sudoku! But it won't always be easy!",
-    "url": "../webgames/pokedoku/",
+    "url": "../webgames/pokedoku/index.html",
     "thumbnail": "pokedoku.png",
     "icon": "fa-solid fa-jigsaw",
     "iconBg": "rgba(255,0,0,.13)",
