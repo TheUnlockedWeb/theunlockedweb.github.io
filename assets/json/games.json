@@ -113,17 +113,17 @@
     ]
   },
     {
-    "id": "type-or-die",
-    "title": "Type or Die",
-    "desc": "A game where you have to have the more letters in your answer to stay higher away from the hazard below!",
-    "url": "../webgames/type_or_die/",
-    "thumbnail": "type-or-die.png",
+    "id": "no-game",
+    "title": "We need ideas!",
+    "desc": "We need more suggestions! Suggest more games in the suggestions page!",
+    "url": "https://theunlockedweb.github.io/games/",
+    "thumbnail": "danger.png",
     "icon": "fa-solid fa-skull",
     "iconBg": "rgba(255,0,0,.13)",
     "iconColor": "#ff0000",
     "tags": [
-      { "label": "Competition", "color": "gold" },
-      { "label": "Created by EthanUnlocked", "color": "purple" }
+      { "label": "...", "color": "gold" },
+      { "label": "Created by _______", "color": "purple" }
     ]
   }
 ]
