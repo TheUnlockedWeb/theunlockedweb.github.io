@@ -112,20 +112,6 @@
       { "label": "Made by LaDoodleInTheHat", "color": "green" }
     ]
   },
-    {
-    "id": "grid-lock",
-    "title": "Grid Lock",
-    "desc": "I don't know what to type for the desc. lol",
-    "url": "../webgames/grid-lock/",
-    "thumbnail": "grid-lock.png",
-    "icon": "fa-solid fa-padlock",
-    "iconBg": "rgba(255,0,0,.13)",
-    "iconColor": "#ff0000",
-    "tags": [
-      { "label": "Strategy", "color": "gold" },
-      { "label": "Created by EthanUnlocked", "color": "purple" }
-    ]
-  },
       {
     "id": "no-game",
     "title": "We need ideas!",
