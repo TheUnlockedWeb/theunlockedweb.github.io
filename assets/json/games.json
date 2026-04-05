@@ -113,6 +113,20 @@
     ]
   },
       {
+    "id": "reaction-test",
+    "title": "Reaction Test",
+    "desc": "How fast is your reaction? Test it here!",
+    "url": "../webgames/reaction_test/",
+    "thumbnail": "reaction-test.png",
+    "icon": "fa-solid fa-brain",
+    "iconBg": "rgba(255,0,0,.13)",
+    "iconColor": "#ff0000",
+    "tags": [
+      { "label": "Strategy", "color": "gold" },
+      { "label": "Created by EthanUnlocked", "color": "purple" }
+    ]
+  },
+        {
     "id": "no-game",
     "title": "We need ideas!",
     "desc": "We need more suggestions! Suggest more games in the suggestions page!",
