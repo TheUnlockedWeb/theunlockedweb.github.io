@@ -1,15 +1,6 @@
 [
   {
     "id": 1,
-    "tag": "YouTube",
-    "color": "gold",
-    "title": "New video — Fingerdash Full Version",
-    "body": "The latest video is live on YouTube. Fingerdash, the 23rd main level in Geometry Dash, has a full version that Ethan tries",
-    "date": "2025-06-10",
-    "icon": "fa-brands fa-youtube"
-  },
-  {
-    "id": 2,
     "tag": "Games",
     "color": "green",
     "title": "Brawl Stars-dle is live",
@@ -18,7 +9,7 @@
     "icon": "fa-solid fa-gamepad"
   },
   {
-    "id": 3,
+    "id": 2,
     "tag": "Community",
     "color": "purple",
     "title": "Discord server is open",
@@ -27,7 +18,7 @@
     "icon": "fa-brands fa-discord"
   },
   {
-    "id": 4,
+    "id": 3,
     "tag": "Site",
     "color": "gold",
     "title": "Website redesigned",
@@ -36,7 +27,7 @@
     "icon": "fa-solid fa-code"
   },
   {
-    "id": 5,
+    "id": 4,
     "tag": "YouTube",
     "color": "gold",
     "title": "Cookie Clicker game added",
@@ -45,7 +36,7 @@
     "icon": "fa-solid fa-cookie-bite"
   },
   {
-    "id": 6,
+    "id": 5,
     "tag": "Games",
     "color": "green",
     "title": "Geometry Dash Club page launched",
@@ -54,7 +45,7 @@
     "icon": "fa-solid fa-diamond"
   },
   {
-    "id": 7,
+    "id": 6,
     "tag": "YouTube",
     "color": "gold",
     "title": "LEGO Animation series started",
@@ -63,7 +54,7 @@
     "icon": "fa-solid fa-cubes"
   },
   {
-    "id": 8,
+    "id": 7,
     "tag": "Site",
     "color": "purple",
     "title": "Image and Video galleries added",
@@ -72,7 +63,7 @@
     "icon": "fa-solid fa-images"
   },
   {
-    "id": 9,
+    "id": 8,
     "tag": "Community",
     "color": "purple",
     "title": "Tutorials & Speedruns page is up",
@@ -81,7 +72,7 @@
     "icon": "fa-solid fa-graduation-cap"
   },
   {
-    "id": 10,
+    "id": 9,
     "tag": "Site",
     "color": "green",
     "title": "Site goes open source on GitHub",
@@ -90,7 +81,7 @@
     "icon": "fa-brands fa-github"
   },
   {
-    "id": 11,
+    "id": 10,
     "tag": "YouTube",
     "color": "gold",
     "title": "Channel hits a new milestone",
@@ -99,7 +90,7 @@
     "icon": "fa-solid fa-trophy"
   },
   {
-    "id": 12,
+    "id": 11,
     "tag": "Site",
     "color": "green",
     "title": "TheUnlockedWeb launches",
