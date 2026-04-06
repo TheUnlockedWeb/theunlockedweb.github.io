@@ -1,9 +1,9 @@
-## NOT READY YET!
+## Almost there!
 
-This is not ready yet, as the rest of the code hasn't been imported yet! Check back in about, maybe, a week or so (Not exactly sure but I'll announce in News when it's ready!). In the meantime, please check out the rest of the website :). After it is ready, it will be in the bottom right corner of the website (always) and in the Games Page too!
+This chatbot is almost ready! Standby for a few days and it will be there!
 
 ---
 
-Thanks for understanding!
+Thanks for waiting! And, please like it, because, it took me forever because it had, like, 500 or smth files to code (one of them was even 8K lines!)
 
 \- EthanUnlocked
