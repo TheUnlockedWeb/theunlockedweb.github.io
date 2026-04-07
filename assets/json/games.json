@@ -127,10 +127,22 @@
     ]
   },
         {
+    "id": "coming-soon",
+    "title": "Coming soon!",
+    "desc": "This game isn't ready yet! Check back later!",
+    "thumbnail": "coming-soon.png",
+    "icon": "fa-solid fa-curious",
+    "iconBg": "rgba(255,0,0,.13)",
+    "iconColor": "#ff0000",
+    "tags": [
+      { "label": "...", "color": "gold" },
+      { "label": "Created by _______", "color": "purple" }
+    ]
+  },
+          {
     "id": "no-game",
     "title": "We need ideas!",
     "desc": "We need more suggestions! Suggest more games in the suggestions page!",
-    "url": "https://theunlockedweb.github.io/games/",
     "thumbnail": "danger.png",
     "icon": "fa-solid fa-skull",
     "iconBg": "rgba(255,0,0,.13)",
