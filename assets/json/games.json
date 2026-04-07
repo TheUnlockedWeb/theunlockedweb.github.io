@@ -130,7 +130,7 @@
     "id": "coming-soon",
     "title": "Coming soon!",
     "desc": "This game isn't ready yet! Check back later!",
-    "thumbnail": "coming-soon.png",
+    "thumbnail": "coming-soon.gif",
     "icon": "fa-solid fa-curious",
     "iconBg": "rgba(255,0,0,.13)",
     "iconColor": "#ff0000",
