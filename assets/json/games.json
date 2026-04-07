@@ -130,6 +130,7 @@
     "id": "icon-kit",
     "title": "Online Icon Kit",
     "desc": "Design and download your own Geometry Dash icon set!",
+    "url": "../webgames/iconkit/",
     "thumbnail": "iconkit.png",
     "icon": "fa-solid fa-cube",
     "iconBg": "rgba(255,0,0,.13)",
