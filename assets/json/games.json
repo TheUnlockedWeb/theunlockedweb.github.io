@@ -144,6 +144,7 @@
     "id": "brawl-stars-catalog",
     "title": "Brawl Stars Catalog",
     "desc": "Check out all the Brawl Stars Skins!",
+    "url": "../webgames/brawl-stars-catalog/",
     "thumbnail": "catalog.png",
     "icon": "fa-solid fa-book",
     "iconBg": "rgba(255,0,0,.13)",
