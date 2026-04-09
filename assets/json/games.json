@@ -141,6 +141,19 @@
     ]
   },
           {
+    "id": "brawl-stars-catalog",
+    "title": "Brawl Stars Catalog",
+    "desc": "Check out all the Brawl Stars Skins!",
+    "thumbnail": "catalog.png",
+    "icon": "fa-solid fa-book",
+    "iconBg": "rgba(255,0,0,.13)",
+    "iconColor": "#ff0000",
+    "tags": [
+      { "label": "Index", "color": "gold" },
+      { "label": "Created by EthanUnlocked", "color": "purple" }
+    ]
+  },
+            {
     "id": "no-game",
     "title": "We need ideas!",
     "desc": "We need more suggestions! Suggest more games in the suggestions page!",
