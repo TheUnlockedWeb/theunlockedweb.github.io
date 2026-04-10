@@ -155,16 +155,17 @@
     ]
   },
             {
-    "id": "coming-soon",
-    "title": "Coming soon...",
-    "desc": "This game is not ready yet - check back soon!",
-    "thumbnail": "coming-soon.gif",
-    "icon": "fa-solid fa-brain",
+    "id": "poke-breeze",
+    "title": "PokéGoBreeze",
+    "desc": "The ultimate Pokémon GO wiki with conters, pokedex, and more!",
+    "url": "../webgames/pokegobreeze/",
+    "thumbnail": "pokebreeze.png",
+    "icon": "fa-solid fa-soccer",
     "iconBg": "rgba(255,0,0,.13)",
     "iconColor": "#ff0000",
     "tags": [
-      { "label": "...", "color": "gold" },
-      { "label": "Created by ???", "color": "purple" }
+      { "label": "Index + more", "color": "gold" },
+      { "label": "Created by EthanUnlocked", "color": "purple" }
     ]
   },
               {
