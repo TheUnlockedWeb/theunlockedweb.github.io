@@ -156,16 +156,16 @@
   },
             {
     "id": "poke-breeze",
-    "title": "PokéGoBreeze",
-    "desc": "The ultimate Pokémon GO wiki with conters, pokedex, and more!",
-    "url": "../webgames/pokegobreeze/",
+    "title": "PokéGoBreeze (Alt version) (Ethan's one under maintenence)",
+    "desc": "The ultimate Pokémon GO wiki with conters, pokedex, and more! (REMINDER: This is just an alt version. For some reason, my one isn't working. In the meantime, while I fix it, we have this one. Thank you for understanding!",
+    "url": "https://poke-go-breeze.vercel.app/",
     "thumbnail": "pokebreeze.png",
     "icon": "fa-solid fa-soccer",
     "iconBg": "rgba(255,0,0,.13)",
     "iconColor": "#ff0000",
     "tags": [
       { "label": "Index + more", "color": "gold" },
-      { "label": "Created by EthanUnlocked", "color": "purple" }
+      { "label": "Ported by EthanUnlocked (For now)", "color": "purple" }
     ]
   },
               {
