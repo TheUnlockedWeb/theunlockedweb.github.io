@@ -169,6 +169,20 @@
     ]
   },
               {
+    "id": "pokemap",
+    "title": "Pokémon GO Map",
+    "desc": "A map of Pokémon GO",
+    "url": "../webgames/pokemon-go-map/",
+    "thumbnail": "pokemap.png",
+    "icon": "fa-solid fa-skull",
+    "iconBg": "rgba(255,0,0,.13)",
+    "iconColor": "#ff0000",
+    "tags": [
+      { "label": "...", "color": "gold" },
+      { "label": "Created by _______", "color": "purple" }
+    ]
+  },
+                {
     "id": "no-game",
     "title": "We need ideas!",
     "desc": "We need more suggestions! Suggest more games in the suggestions page!",
