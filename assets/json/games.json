@@ -174,12 +174,12 @@
     "desc": "A map of Pokémon GO",
     "url": "../webgames/pokemon-go-map/",
     "thumbnail": "pokemap.png",
-    "icon": "fa-solid fa-skull",
+    "icon": "fa-solid fa-ball",
     "iconBg": "rgba(255,0,0,.13)",
     "iconColor": "#ff0000",
     "tags": [
-      { "label": "...", "color": "gold" },
-      { "label": "Created by _______", "color": "purple" }
+      { "label": "Map", "color": "gold" },
+      { "label": "Created by EthanUnlocked", "color": "purple" }
     ]
   },
                 {
