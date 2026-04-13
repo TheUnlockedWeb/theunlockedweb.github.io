@@ -183,6 +183,19 @@
     ]
   },
                 {
+    "id": "tictactoe",
+    "title": "Python Turtle Drawing TicTacToe",
+    "desc": "Ethan has used his Thonny skills to create a turtle drawing a TicTacToe game! (Turtle is the name of the pen for some reason)",
+    "thumbnail": "tictactoe.png",
+    "icon": "fa-solid fa-hastag",
+    "iconBg": "rgba(255,0,0,.13)",
+    "iconColor": "#ff0000",
+    "tags": [
+      { "label": "Inspiring", "color": "gold" },
+      { "label": "Created by EthanUnlocked", "color": "purple" }
+    ]
+  },
+                  {
     "id": "no-game",
     "title": "We need ideas!",
     "desc": "We need more suggestions! Suggest more games in the suggestions page!",
