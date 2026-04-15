@@ -184,8 +184,8 @@
   },
                 {
     "id": "tictactoe",
-    "title": "Python Turtle Drawing TicTacToe",
-    "desc": "Ethan has used his Thonny skills to create a turtle drawing a TicTacToe game! (Turtle is the name of the pen for some reason)",
+    "title": "TicTacToe",
+    "desc": "Ethan has used his Thonny skills to create a turtle drawing a TicTacToe game! (Turtle is the name of the pen for some reason) and it's playable!",
     "url": "../webgames/drawing_tictactoe/",
     "thumbnail": "tictactoe.png",
     "icon": "fa-solid fa-hastag",
