@@ -172,7 +172,7 @@
     "id": "trading-list",
     "title": "Pokémon GO Trading List Maker",
     "desc": "Choose what pokemon you will give and want in a trade",
-    "url": "../webgames/pokemon_go_trading_list/",
+    "url": "https://9db.jp/pokego/data/2235",
     "thumbnail": "pokemon-trading.png",
     "icon": "fa-solid fa-ball",
     "iconBg": "rgba(255,0,0,.13)",
