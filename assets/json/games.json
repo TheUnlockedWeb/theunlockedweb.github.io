@@ -169,16 +169,16 @@
     ]
   },
               {
-    "id": "pokemap",
-    "title": "Pokémon GO Map",
-    "desc": "A map of Pokémon GO",
-    "url": "../webgames/pokemon-go-map/",
-    "thumbnail": "pokemap.png",
+    "id": "trading-list",
+    "title": "Pokémon GO Trading List Maker",
+    "desc": "Choose what pokemon you will give and want in a trade",
+    "url": "../webgames/pokemon_go_trading_list/",
+    "thumbnail": "pokemon-trading.png",
     "icon": "fa-solid fa-ball",
     "iconBg": "rgba(255,0,0,.13)",
     "iconColor": "#ff0000",
     "tags": [
-      { "label": "Map", "color": "gold" },
+      { "label": "Creativity", "color": "gold" },
       { "label": "Created by EthanUnlocked", "color": "purple" }
     ]
   },
