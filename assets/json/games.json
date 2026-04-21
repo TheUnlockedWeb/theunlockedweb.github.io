@@ -156,8 +156,8 @@
   },
             {
     "id": "poke-breeze",
-    "title": "PokéGoBreeze (Alt version) (Ethan's one under maintenence)",
-    "desc": "The ultimate Pokémon GO wiki with conters, pokedex, and more! (REMINDER: This is just an alt version. For some reason, my one isn't working. In the meantime, while I fix it, we have this one. Thank you for understanding!",
+    "title": "PokéGoBreeze",
+    "desc": "The ultimate Pokémon GO wiki with conters, pokedex, and more!",
     "url": "https://poke-go-breeze.vercel.app/",
     "thumbnail": "pokebreeze.png",
     "icon": "fa-solid fa-soccer",
