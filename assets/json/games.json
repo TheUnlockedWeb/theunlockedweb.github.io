@@ -200,6 +200,20 @@
     "id": "no-game",
     "title": "We need ideas!",
     "desc": "We need more suggestions! Suggest more games in the suggestions page!",
+    "url": "https://fankit.supercell.com/d/YvtsWV4pUQVm/game-assets?",
+    "thumbnail": "fankit.png",
+    "icon": "fa-solid fa-skull",
+    "iconBg": "rgba(255,0,0,.13)",
+    "iconColor": "#ff0000",
+    "tags": [
+      { "label": "Index", "color": "gold" },
+      { "label": "Ported by EthanUnlocked", "color": "purple" }
+    ]
+  }
+                    {
+    "id": "no-game",
+    "title": "We need ideas!",
+    "desc": "We need more suggestions! Suggest more games in the suggestions page!",
     "thumbnail": "danger.png",
     "icon": "fa-solid fa-skull",
     "iconBg": "rgba(255,0,0,.13)",
