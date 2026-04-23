@@ -197,9 +197,9 @@
     ]
   },
                   {
-    "id": "no-game",
-    "title": "We need ideas!",
-    "desc": "We need more suggestions! Suggest more games in the suggestions page!",
+    "id": "fan-kit",
+    "title": "Supercell FanKit",
+    "desc": "The official Brawl Stars FanKit with all audio, skins, stats and more (well maybe not stats, maybe just cosmetics lol)",
     "url": "https://fankit.supercell.com/d/YvtsWV4pUQVm/game-assets?",
     "thumbnail": "fankit.png",
     "icon": "fa-solid fa-skull",
@@ -209,8 +209,8 @@
       { "label": "Index", "color": "gold" },
       { "label": "Ported by EthanUnlocked", "color": "purple" }
     ]
-  }
-                    {
+  },
+          {
     "id": "no-game",
     "title": "We need ideas!",
     "desc": "We need more suggestions! Suggest more games in the suggestions page!",
