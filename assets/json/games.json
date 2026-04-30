@@ -228,6 +228,7 @@
     "id": "number-guessing",
     "title": "Number Guessing Game",
     "desc": "IGNORE THE MAIN TEXT IN IT!!!!",
+    "url": "../webgames/number_guessing_game/",
     "thumbnail": "number.png",
     "icon": "fa-solid fa-number",
     "iconBg": "rgba(255,0,0,.13)",
