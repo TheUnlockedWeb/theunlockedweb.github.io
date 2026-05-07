@@ -84,6 +84,19 @@
       { "label": "Ported by LaDoodleInTheHat", "color": "purple" }
     ]
   },
+                {
+    "id": "escape-road-3",
+    "title": "Escape Road 3",
+    "desc": "Finally here! :)",
+    "thumbnail": "escape-road-3.png",
+    "icon": "fa-solid fa-skull",
+    "iconBg": "rgba(255,0,0,.13)",
+    "iconColor": "#ff0000",
+    "tags": [
+      { "label": "Thriller", "color": "gold" },
+      { "label": "Created by EthanUnlocked", "color": "purple" }
+    ]
+  },
     {
     "id": "drive-mad",
     "title": "Drive Mad",
@@ -238,7 +251,7 @@
       { "label": "Created by _______", "color": "purple" }
     ]
   },
-              {
+                {
     "id": "no-game",
     "title": "We need ideas!",
     "desc": "We need more suggestions! Suggest more games in the suggestions page!",
