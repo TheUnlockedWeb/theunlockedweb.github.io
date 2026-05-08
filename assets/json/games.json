@@ -239,17 +239,17 @@
     ]
   },
             {
-    "id": "number-guessing",
-    "title": "Number Guessing Game",
-    "desc": "IGNORE THE MAIN TEXT IN IT!!!!",
-    "url": "../webgames/number_guessing_game/",
-    "thumbnail": "number.png",
-    "icon": "fa-solid fa-number",
+    "id": "poke-doku",
+    "title": "Pokédoku",
+    "desc": "A pokemon sudoku",
+    "url": "../webgames/pokedoku/",
+    "thumbnail": "pokedoku.png",
+    "icon": "fa-solid fa-ball",
     "iconBg": "rgba(255,0,0,.13)",
     "iconColor": "#ff0000",
     "tags": [
-      { "label": "...", "color": "gold" },
-      { "label": "Created by _______", "color": "purple" }
+      { "label": "Fun", "color": "gold" },
+      { "label": "Created by EthanUnlocked", "color": "purple" }
     ]
   },
                 {
