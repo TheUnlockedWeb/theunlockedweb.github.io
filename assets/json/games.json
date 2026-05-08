@@ -239,20 +239,32 @@
     ]
   },
             {
-    "id": "poke-doku",
-    "title": "Pokédoku",
-    "desc": "A pokemon sudoku",
-    "url": "../webgames/pokedoku/",
+    "id": "deleting",
+    "title": "DELETING SOON!",
+    "desc": "When the next 2 games come, this game will be deleted!",
     "thumbnail": "pokedoku.png",
-    "icon": "fa-solid fa-ball",
+    "icon": "fa-solid fa-danger",
     "iconBg": "rgba(255,0,0,.13)",
     "iconColor": "#ff0000",
     "tags": [
-      { "label": "Fun", "color": "gold" },
-      { "label": "Created by EthanUnlocked", "color": "purple" }
+      { "label": "...", "color": "gold" },
+      { "label": "___________", "color": "purple" }
     ]
   },
                 {
+    "id": "coming-soon",
+    "title": "Coming soon...",
+    "desc": "Come back later to see this game!",
+    "thumbnail": "coming-soon.gif",
+    "icon": "fa-solid fa-question_mark",
+    "iconBg": "rgba(255,0,0,.13)",
+    "iconColor": "#ff0000",
+    "tags": [
+      { "label": "...", "color": "gold" },
+      { "label": "Created by _______", "color": "purple" }
+    ]
+  },
+                  {
     "id": "coming-soon",
     "title": "Coming soon...",
     "desc": "Come back later to see this game!",
