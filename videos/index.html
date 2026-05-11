@@ -462,7 +462,7 @@
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeVideo(); });
 
   /* ── Fetch videos.json ────────────────────────────────────── */
-  fetch('../assets/json/videos.json')
+  fetch('../json/videos.json')
     .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
     .then(videos => {
       if (!videos.length) {
