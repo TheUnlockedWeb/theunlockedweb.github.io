@@ -98,7 +98,7 @@ jobs:
             print('No videos parsed — channel may have no public videos or YouTube changed its page structure')
 
           os.makedirs('json', exist_ok=True)
-          with open('../json/videos.json', 'w') as f:
+          with open('json/videos.json', 'w') as f:
             json.dump(videos, f, indent=2)
 
           print(f'Wrote {len(videos)} videos to ../json/videos.json')
