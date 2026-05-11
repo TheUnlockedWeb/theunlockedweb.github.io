@@ -98,17 +98,17 @@ jobs:
             print('No videos parsed — channel may have no public videos or YouTube changed its page structure')
 
           os.makedirs('json', exist_ok=True)
-          with open('json/videos.json', 'w') as f:
+          with open('../json/videos.json', 'w') as f:
             json.dump(videos, f, indent=2)
 
-          print(f'Wrote {len(videos)} videos to json/videos.json')
+          print(f'Wrote {len(videos)} videos to ../json/videos.json')
           EOF
 
       - name: Commit if changed
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add json/videos.json
+          git add ../json/videos.json
           if git diff --cached --quiet; then
             echo "No changes"
           else
