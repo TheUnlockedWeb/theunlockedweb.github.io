@@ -101,7 +101,7 @@ jobs:
           with open('json/videos.json', 'w') as f:
             json.dump(videos, f, indent=2)
 
-          print(f'Wrote {len(videos)} videos to ../json/videos.json')
+          print(f'Wrote {len(videos)} videos to json/videos.json')
           EOF
 
       - name: Commit if changed
