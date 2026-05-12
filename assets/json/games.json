@@ -241,7 +241,7 @@
             {
     "id": "deleting",
     "title": "DELETING SOON!",
-    "desc": "When the next 2 games come, this game will be deleted!",
+    "desc": "When the next Maintenence comes, this game will be deleted!",
     "thumbnail": "pokedoku.png",
     "icon": "fa-solid fa-danger",
     "iconBg": "rgba(255,0,0,.13)",
