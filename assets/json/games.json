@@ -278,6 +278,32 @@
     ]
   },
                   {
+    "id": "coming-soon",
+    "title": "Coming soon...",
+    "desc": "Come back later to see this game!",
+    "thumbnail": "coming-soon.gif",
+    "icon": "fa-solid fa-question_mark",
+    "iconBg": "rgba(255,0,0,.13)",
+    "iconColor": "#ff0000",
+    "tags": [
+      { "label": "...", "color": "gold" },
+      { "label": "Created by _______", "color": "purple" }
+    ]
+  },
+                  {
+    "id": "coming-soon",
+    "title": "Coming soon...",
+    "desc": "Come back later to see this game!",
+    "thumbnail": "coming-soon.gif",
+    "icon": "fa-solid fa-question_mark",
+    "iconBg": "rgba(255,0,0,.13)",
+    "iconColor": "#ff0000",
+    "tags": [
+      { "label": "...", "color": "gold" },
+      { "label": "Created by _______", "color": "purple" }
+    ]
+  },
+                  {
     "id": "no-game",
     "title": "We need ideas!",
     "desc": "We need more suggestions! Suggest more games in the suggestions page!",
