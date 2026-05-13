@@ -264,34 +264,34 @@
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-    /* ── Link & Media Styling ── */
+/* ── Link & Media Styling ── */
     .text-link {
-      color: var(--gold);
-      text-decoration: none;
-      border-bottom: 1px solid rgba(212, 175, 55, 0.3);
-      transition: border-color 0.2s;
+      color: var(--gold); text-decoration: none;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.3); transition: 0.2s;
     }
-    .text-link:hover {
-      border-bottom-color: var(--gold);
-      text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
-    }
+    .text-link:hover { border-bottom-color: var(--gold); text-shadow: 0 0 8px rgba(212, 175, 55, 0.4); }
+    
     .update-media-content {
-      margin: 12px 0;
-      border-radius: 10px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      background: #000;
-      cursor: pointer;
+      margin: 12px 0; border-radius: 10px; overflow: hidden;
+      border: 1px solid var(--border); background: #000; cursor: pointer;
     }
-    .update-media-content img {
-      width: 100%;
-      height: auto;
-      display: block;
-      transition: transform 0.3s;
+    .update-media-content img { width: 100%; height: auto; display: block; transition: 0.3s; }
+    .update-media-content:hover img { transform: scale(1.02); }
+
+    /* ── Command Suggestions ── */
+    .command-suggestions {
+      position: absolute; background: #1a1a2e; border: 1px solid var(--gold);
+      border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      z-index: 1000; display: none; width: 220px; overflow: hidden;
+      font-family: 'Manrope', sans-serif;
     }
-    .update-media-content:hover img {
-      transform: scale(1.02);
+    .suggestion-item {
+      padding: 10px 12px; cursor: pointer; font-size: 0.8rem; color: #fff;
+      display: flex; flex-direction: column; border-bottom: 1px solid rgba(255,255,255,0.05);
     }
+    .suggestion-item:hover { background: rgba(212, 175, 55, 0.15); }
+    .suggestion-item b { color: var(--gold); }
+    .suggestion-item span { font-size: 0.65rem; color: var(--muted); }
 
     @media (max-width: 600px) {
       .admin-badge { right: 10px; }
