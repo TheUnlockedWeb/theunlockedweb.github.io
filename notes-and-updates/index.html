@@ -743,6 +743,88 @@ function renderUpdates() {
     
     container.innerHTML = html;
   }
+  // --- Command Menu & Support Logic ---
+  const commands = [
+    { name: '/graph', desc: 'Open Tool Builder', text: '/graph' },
+    { name: '/media', desc: 'Add image: /media(URL)', text: '/media()' },
+    { name: '/url', desc: 'Custom link: /url(Text, URL)', text: '/url(, )' }
+  ];
+
+  const cmdMenu = document.getElementById('cmdMenu');
+  let activeInput = null;
+
+  function attachCmdListener(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', (e) => {
+      const cursor = el.selectionStart;
+      if (el.value[cursor - 1] === '/') {
+        activeInput = el;
+        const rect = el.getBoundingClientRect();
+        cmdMenu.style.display = 'block';
+        // Positions the menu slightly above the current typing line
+        cmdMenu.style.top = `${window.scrollY + rect.top - 145}px`;
+        cmdMenu.style.left = `${rect.left}px`;
+        cmdMenu.innerHTML = commands.map(cmd => `
+          <div class="suggestion-item" onclick="insertCmd('${cmd.text}')">
+            <b>${cmd.name}</b><span>${cmd.desc}</span>
+          </div>`).join('');
+      } else { 
+        cmdMenu.style.display = 'none'; 
+      }
+    });
+  }
+
+  function insertCmd(text) {
+    const start = activeInput.selectionStart;
+    const end = activeInput.selectionEnd;
+    activeInput.value = activeInput.value.substring(0, start - 1) + text + activeInput.value.substring(end);
+    cmdMenu.style.display = 'none';
+    activeInput.focus();
+    
+    // Auto-calculates where to put the cursor (inside brackets)
+    const offset = text.includes('(, )') ? 4 : (text.includes('()') ? 7 : text.length);
+    activeInput.setSelectionRange(start + offset - 1, start + offset - 1);
+  }
+
+  // Activate the listeners for the Admin Modal boxes
+  ['editDescription', 'editExtra'].forEach(attachCmdListener);
+
+  // Smooth Toggle for the Learn More dropdowns
+  function toggleExtra(btn) {
+    const content = btn.nextElementSibling;
+    btn.classList.toggle('active');
+    content.classList.toggle('open');
+  }
+
+  // Logic for the Graph/Tool builder inside the dropdown
+  function updateToolUI(select) {
+    const container = select.nextElementSibling;
+    const tool = select.value;
+    let html = '';
+    if (tool === 'code') {
+      html = `<input type="text" placeholder="Language (e.g. JavaScript)" class="tool-input">
+              <textarea placeholder="Paste code snippet here..." class="tool-area" rows="4"></textarea>`;
+    } else if (tool === 'chart') {
+      html = `<select class="tool-input"><option>Line Graph</option><option>Bar Graph</option></select>
+              <input type="text" placeholder="Data points (e.g. 10, 25, 15, 30)" class="tool-input">`;
+    } else if (tool === 'table') {
+      html = `<div style="display:flex; gap:8px;">
+                <input type="number" placeholder="Rows" class="tool-input">
+                <input type="number" placeholder="Cols" class="tool-input">
+              </div>`;
+    } else if (tool === 'list') {
+      html = `<textarea placeholder="• Item 1&#10;• Item 2..." class="tool-area" rows="4"></textarea>`;
+    }
+    container.innerHTML = html;
+  }
+
+  // Close command menu if user clicks away
+  document.addEventListener('click', (e) => {
+    if (cmdMenu && !cmdMenu.contains(e.target) && !['editDescription', 'editExtra'].includes(e.target.id)) {
+      cmdMenu.style.display = 'none';
+    }
+  });
 </script>
 
 </body>
