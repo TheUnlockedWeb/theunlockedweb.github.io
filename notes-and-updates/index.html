@@ -410,7 +410,7 @@
 </div>
 
 <div class="toast" id="toast"></div>
-
+<div id="cmdMenu" class="command-suggestions"></div>
 <script>
   // ═══════════════════════════════════════════════════════════
   // DEFAULT UPDATES
@@ -500,81 +500,82 @@
   // ═══════════════════════════════════════════════════════════
   // RENDER UPDATES
   // ═══════════════════════════════════════════════════════════
-  function renderUpdates() {
-const container = document.getElementById('updatesContainer');
-  container.innerHTML = UPDATES.map((u) => {
-    // 1. Basic Variables
-    const etaHtml = u.eta ? `<div class="meta-item"><i class="fa-solid fa-clock" style="color:var(--gold)"></i> ${u.eta}</div>` : '';
-    const hasGraph = u.extra && u.extra.includes('/graph');
-    const cleanExtra = u.extra ? u.extra.replace('/graph', '').trim() : '';
+function renderUpdates() {
+    const container = document.getElementById('updatesContainer');
+    container.innerHTML = UPDATES.map((u) => {
+      // 1. Process /graph detection
+      const hasGraph = u.extra && u.extra.includes('/graph');
+      const cleanExtra = u.extra ? u.extra.replace('/graph', '').trim() : '';
 
-    // 2. Command Regex
-    const urlRegex = /\/url\(([^,]+),\s*([^)]+)\)/g; 
-    const mediaRegex = /\/media\(([^)]+)\)/g;      
-    const rawUrlRegex = /(?<!["=>])(https?:\/\/[^\s<]+)/g; 
+      // 2. Define Regex for Links & Media
+      const urlRegex = /\/url\(([^,]+),\s*([^)]+)\)/g; 
+      const mediaRegex = /\/media\(([^)]+)\)/g;      
+      const rawUrlRegex = /(?<!["=>])(https?:\/\/[^\s<]+)/g; 
 
-    // 3. Process Text for Links/Media
-    let descHTML = u.description
-      .replace(urlRegex, '<a href="$2" target="_blank" class="text-link">$1</a>')
-      .replace(mediaRegex, '<div class="update-media-content"><img src="$1" onclick="window.open(this.src)"></div>')
-      .replace(rawUrlRegex, '<a href="$1" target="_blank" class="text-link">$1</a>');
+      // 3. Helper to inject HTML tags into plain text
+      const processText = (str) => {
+        if (!str) return '';
+        return str
+          .replace(urlRegex, '<a href="$2" target="_blank" class="text-link">$1</a>')
+          .replace(mediaRegex, '<div class="update-media-content"><img src="$1" onclick="window.open(this.src)"></div>')
+          .replace(rawUrlRegex, '<a href="$1" target="_blank" class="text-link">$1</a>');
+      };
 
-    let extraTextHTML = cleanExtra
-      .replace(urlRegex, '<a href="$2" target="_blank" class="text-link">$1</a>')
-      .replace(mediaRegex, '<div class="update-media-content"><img src="$1" onclick="window.open(this.src)"></div>')
-      .replace(rawUrlRegex, '<a href="$1" target="_blank" class="text-link">$1</a>');
+      const descHTML = processText(u.description);
+      const extraTextHTML = processText(cleanExtra);
+      const etaHtml = u.eta ? `<div class="meta-item"><i class="fa-solid fa-clock" style="color:var(--gold)"></i> ${u.eta}</div>` : '';
 
-    // 4. Build the Efficient Dropdown
-    const extraHtml = u.extra ? `
-      <div class="update-extra-wrapper">
-        <button class="learn-more-btn ${hasGraph ? 'active' : ''}" onclick="toggleExtra(this)">
-          <span>Learn More</span>
-          <i class="fa-solid fa-chevron-down"></i>
-        </button>
-        <div class="extra-content ${hasGraph ? 'open' : ''}">
-          <div class="extra-text-body">${extraTextHTML}</div>
-          ${hasGraph ? `
-            <div class="graph-builder">
-              <p class="builder-label">Graph / Tool Builder</p>
-              <select class="tool-select" onchange="updateToolUI(this)">
-                <option value="">-- Select a Tool --</option>
-                <option value="code">Insert Code Snippet</option>
-                <option value="chart">Draw Graph</option>
-                <option value="table">Create Table</option>
-                <option value="list">Make List</option>
-              </select>
-              <div class="tool-ui-container"></div>
-            </div>` : ''}
-          <span class="close-extra" onclick="toggleExtra(this.parentElement.previousElementSibling)">
-            CLOSE <i class="fa-solid fa-xmark"></i>
-          </span>
-        </div>
-      </div>` : '';
-
-    return `
-      <div class="update-item">
-        <div class="update-header">
-          <div class="update-dot dot-${u.color}"></div>
-          <div class="update-title">${u.title}</div>
-          <span class="update-status-badge badge-${u.status}">
-            ${u.status === 'completed' ? '✓ Done' : u.status === 'in-progress' ? '⟳ In Progress' : '→ Upcoming'}
-          </span>
-          ${isAdmin ? `<div class="update-actions">
-            <button class="adm-btn adm-btn-edit" onclick="editUpdate(${u.id})"><i class="fa-solid fa-pen"></i></button>
-            <button class="adm-btn adm-btn-del" onclick="deleteUpdate(${u.id})"><i class="fa-solid fa-trash"></i></button>
-          </div>` : ''}
-        </div>
-        <p class="update-description">${descHTML}</p>
-        ${extraHtml}
-        <div class="update-meta">
-          <div class="meta-item">
-            <i class="fa-regular fa-calendar"></i> ${u.date}
+      // 4. Build the Dropdown HTML
+      const extraHtml = u.extra ? `
+        <div class="update-extra-wrapper">
+          <button class="learn-more-btn ${hasGraph ? 'active' : ''}" onclick="toggleExtra(this)">
+            <span>Learn More</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          <div class="extra-content ${hasGraph ? 'open' : ''}">
+            <div class="extra-text-body">${extraTextHTML}</div>
+            ${hasGraph ? `
+              <div class="graph-builder">
+                <p class="builder-label">Graph / Tool Builder</p>
+                <select class="tool-select" onchange="updateToolUI(this)">
+                  <option value="">-- Select a Tool --</option>
+                  <option value="code">Insert Code Snippet</option>
+                  <option value="chart">Draw Graph</option>
+                  <option value="table">Create Table</option>
+                  <option value="list">Make List</option>
+                </select>
+                <div class="tool-ui-container"></div>
+              </div>` : ''}
+            <span class="close-extra" onclick="toggleExtra(this.parentElement.previousElementSibling)">
+              CLOSE <i class="fa-solid fa-xmark"></i>
+            </span>
           </div>
-          ${etaHtml}
+        </div>` : '';
+
+      return `
+        <div class="update-item">
+          <div class="update-header">
+            <div class="update-dot dot-${u.color}"></div>
+            <div class="update-title">${u.title}</div>
+            <span class="update-status-badge badge-${u.status}">
+              ${u.status === 'completed' ? '✓ Done' : u.status === 'in-progress' ? '⟳ In Progress' : '→ Upcoming'}
+            </span>
+            ${isAdmin ? `<div class="update-actions">
+              <button class="adm-btn adm-btn-edit" onclick="editUpdate(${u.id})"><i class="fa-solid fa-pen"></i></button>
+              <button class="adm-btn adm-btn-del" onclick="deleteUpdate(${u.id})"><i class="fa-solid fa-trash"></i></button>
+            </div>` : ''}
+          </div>
+          <p class="update-description">${descHTML}</p>
+          ${extraHtml}
+          <div class="update-meta">
+            <div class="meta-item">
+              <i class="fa-regular fa-calendar"></i> ${u.date}
+            </div>
+            ${etaHtml}
+          </div>
         </div>
-      </div>
-    `;
-  }).join('');
+      `;
+    }).join('');
   }
 
   // ═══════════════════════════════════════════════════════════
