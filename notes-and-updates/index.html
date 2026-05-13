@@ -522,28 +522,38 @@ function renderUpdates() {
       const rawUrlRegex = /(?<!["=>])(https?:\/\/[^\s<]+)/g; 
 
       // 3. Helper to inject HTML tags into plain text
-      const processText = (str) => {
-        if (!str) return '';
-        return str
-          .replace(urlRegex, '<a href="$2" target="_blank" class="text-link">$1</a>')
-          .replace(mediaRegex, '<div class="update-media-content"><img src="$1" onclick="window.open(this.src)"></div>')
-          .replace(rawUrlRegex, '<a href="$1" target="_blank" class="text-link">$1</a>');
-      };
-
+const processText = (str) => {
+      if (!str) return '';
+      return str
+        .replace(urlRegex, '<a href="$2" target="_blank" class="text-link">$1</a>')
+        .replace(mediaRegex, '<div class="update-media-content"><img src="$1" onclick="window.open(this.src)"></div>')
+        .replace(rawUrlRegex, '<a href="$1" target="_blank" class="text-link">$1</a>')
+        // This part finds [TABLE:Rows x Cols] and builds the HTML
+        .replace(/\[TABLE:(\d+)x(\d+)\]/g, (match, r, c) => {
+           let table = '<table class="generated-table">';
+           for(let i=0; i<r; i++) {
+             table += '<tr>';
+             for(let j=0; j<c; j++) table += '<td>Data</td>';
+             table += '</tr>';
+           }
+           return table + '</table>';
+        });
+    };
       const descHTML = processText(u.description);
       const extraTextHTML = processText(cleanExtra);
       const etaHtml = u.eta ? `<div class="meta-item"><i class="fa-solid fa-clock" style="color:var(--gold)"></i> ${u.eta}</div>` : '';
 
       // 4. Build the Dropdown HTML
-      const extraHtml = u.extra ? `
-        <div class="update-extra-wrapper">
-          <button class="learn-more-btn ${hasGraph ? 'active' : ''}" onclick="toggleExtra(this)">
-            <span>Learn More</span>
-            <i class="fa-solid fa-chevron-down"></i>
-          </button>
-          <div class="extra-content ${hasGraph ? 'open' : ''}">
-            <div class="extra-text-body">${extraTextHTML}</div>
-            ${(hasGraph && isAdmin) ? `
+const extraHtml = u.extra ? `
+      <div class="update-extra-wrapper">
+        <button class="learn-more-btn ${hasGraph ? 'active' : ''}" onclick="toggleExtra(this)">
+          <span>Learn More</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="extra-content ${hasGraph ? 'open' : ''}">
+          <div class="extra-text-body">${extraTextHTML}</div>
+          
+          ${(hasGraph && isAdmin) ? `
             <div class="graph-builder">
               <p class="builder-label">Admin Tool Builder</p>
               <select class="tool-select" onchange="updateToolUI(this)">
@@ -554,13 +564,16 @@ function renderUpdates() {
                 <option value="list">Make List</option>
               </select>
               <div class="tool-ui-container"></div>
-              <button class="adm-btn adm-btn-edit" style="margin-top:10px; width:100%" onclick="finalizeGraphCommand(this)">Insert into Edit Panel</button>
+              <button class="adm-btn adm-btn-edit" style="margin-top:10px; width:100%" onclick="finalizeGraphCommand(this)">
+                Insert into Edit Panel
+              </button>
             </div>` : ''}
-            <span class="close-extra" onclick="toggleExtra(this.parentElement.previousElementSibling)">
-              CLOSE <i class="fa-solid fa-xmark"></i>
-            </span>
-          </div>
-        </div>` : '';
+
+          <span class="close-extra" onclick="toggleExtra(this.parentElement.previousElementSibling)">
+            CLOSE <i class="fa-solid fa-xmark"></i>
+          </span>
+        </div>
+      </div>` : '';
 
       return `
         <div class="update-item">
