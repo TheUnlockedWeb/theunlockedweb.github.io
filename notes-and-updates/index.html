@@ -472,53 +472,50 @@
     const container = document.getElementById('updatesContainer');
     if (!container) return;
 
-    container.innerHTML = UPDATES.map((u) => {
-      const hasGraph = u.extra && u.extra.includes('/graph');
-      const cleanExtra = u.extra ? u.extra.replace('/graph', '').trim() : '';
+    // Move the helper function here so it's available for the map
+    const processText = (str) => {
+      if (!str) return '';
+      const urlRegex = /\/url\(([^,]+),\s*([^)]+)\)/g; 
+      const mediaRegex = /\/media\(([^)]+)\)/g;      
+      const rawUrlRegex = /(?<!["=>])(https?:\/\/[^\s<]+)/g; 
 
-const processText = (str) => {
-        if (!str) return '';
-        const urlRegex = /\/url\(([^,]+),\s*([^)]+)\)/g; 
-        const mediaRegex = /\/media\(([^)]+)\)/g;      
-        const rawUrlRegex = /(?<!["=>])(https?:\/\/[^\s<]+)/g; 
-
-        return str
-          .replace(urlRegex, '<a href="$2" target="_blank" class="text-link">$1</a>')
-          .replace(mediaRegex, '<div class="update-media-content"><img src="$1" onclick="window.open(this.src)"></div>')
-          .replace(rawUrlRegex, '<a href="$1" target="_blank" class="text-link">$1</a>')
-          // Table Logic
-          .replace(/\[TABLE:(\d+)x(\d+)\]/g, (match, r, c) => {
-             let table = '<table class="generated-table">';
-             for(let i=0; i<r; i++) {
-               table += '<tr>';
-               for(let j=0; j<c; j++) table += '<td>Data</td>';
-               table += '</tr>';
-             }
-             return table + '</table>';
-          })
-          // Code Highlighting Logic
-          .replace(/\[CODE:([^\]]+)\]\n([\s\S]*?)\n\[\/CODE\]/g, (match, lang, code) => {
+      return str
+        .replace(urlRegex, '<a href="$2" target="_blank" class="text-link">$1</a>')
+        .replace(mediaRegex, '<div class="update-media-content"><img src="$1" onclick="window.open(this.src)"></div>')
+        .replace(rawUrlRegex, '<a href="$1" target="_blank" class="text-link">$1</a>')
+        .replace(/\[TABLE:(\d+)x(\d+)\]/g, (match, r, c) => {
+           let table = '<table class="generated-table">';
+           for(let i=0; i<r; i++) {
+             table += '<tr>';
+             for(let j=0; j<c; j++) table += '<td>Data</td>';
+             table += '</tr>';
+           }
+           return table + '</table>';
+        })
+        .replace(/\[CODE:([^\]]+)\]\n([\s\S]*?)\n\[\/CODE\]/g, (match, lang, code) => {
             let highlighted = code
-              .replace(/</g, '&lt;').replace(/>/g, '&gt;') // Escape HTML
-              .replace(/("(.*?)"|'(.*?)')/g, '<span style="color:#ce9178">$1</span>') // Strings
-              .replace(/\b(function|const|let|var|if|else|return|class|def|import)\b/g, '<span style="color:#569cd6">$1</span>') // Keywords
-              .replace(/\/\/.*/g, '<span style="color:#6a9955">$&</span>'); // Comments
+              .replace(/</g, '&lt;').replace(/>/g, '&gt;')
+              .replace(/("(.*?)"|'(.*?)')/g, '<span style="color:#ce9178">$1</span>')
+              .replace(/\b(function|const|let|var|if|else|return|class|def|import)\b/g, '<span style="color:#569cd6">$1</span>')
+              .replace(/\/\/.*/g, '<span style="color:#6a9955">$&</span>');
             return `<div class="code-block-wrapper"><div class="code-header">${lang}</div><pre class="code-body"><code>${highlighted}</code></pre></div>`;
-          });
-      };
+        });
+    };
 
-      const descHTML = processText(u.description);
-      const extraTextHTML = processText(cleanExtra);
-      const etaHtml = u.eta ? `<div class="meta-item"><i class="fa-solid fa-clock" style="color:var(--gold)"></i> ${u.eta}</div>` : '';
+    container.innerHTML = UPDATES.map((u) => {
+      // Logic for the extra box
+      const hasGraphTrigger = u.extra && u.extra.includes('/graph');
+      const extraTextHTML = processText(u.extra);
 
       const extraHtml = u.extra ? `
         <div class="update-extra-wrapper">
-          <button class="learn-more-btn ${hasGraph ? 'active' : ''}" onclick="toggleExtra(this)">
+          <button class="learn-more-btn" onclick="toggleExtra(this)">
             <span>Learn More</span> <i class="fa-solid fa-chevron-down"></i>
           </button>
-        <button class="learn-more-btn" onclick="toggleExtra(this)">
-        <div class="extra-content">
-            ${(hasGraph && isAdmin) ? `
+          <div class="extra-content">
+            <div class="extra-text-body">${extraTextHTML}</div>
+            
+            ${(hasGraphTrigger && isAdmin) ? `
               <div class="graph-builder">
                 <p class="builder-label">Admin Tool Builder</p>
                 <select class="tool-select" onchange="updateToolUI(this)">
@@ -529,10 +526,14 @@ const processText = (str) => {
                 <div class="tool-ui-container"></div>
                 <button class="adm-btn adm-btn-edit" style="width:100%;margin-top:10px" onclick="finalizeGraphCommand(this)">Insert Command</button>
               </div>` : ''}
-            <span class="close-extra" onclick="toggleExtra(this.parentElement.previousElementSibling)">CLOSE</span>
+
+            <span class="close-extra" onclick="toggleExtra(this.parentElement.previousElementSibling)">
+              CLOSE <i class="fa-solid fa-xmark"></i>
+            </span>
           </div>
         </div>` : '';
 
+      // The main update card HTML
       return `
         <div class="update-item">
           <div class="update-header">
@@ -544,10 +545,11 @@ const processText = (str) => {
               <button class="adm-btn adm-btn-del" onclick="deleteUpdate(${u.id})"><i class="fa-solid fa-trash"></i></button>
             </div>` : ''}
           </div>
-          <p class="update-description">${descHTML}</p>
+          <p class="update-description">${processText(u.description)}</p>
           ${extraHtml}
-          <div class="update-meta"><i class="fa-regular fa-calendar"></i> ${u.date} ${etaHtml}</div>
-        </div>`;
+          <div class="update-meta"><i class="fa-regular fa-calendar"></i> ${u.date}</div>
+        </div>
+      `;
     }).join('');
   }
 
