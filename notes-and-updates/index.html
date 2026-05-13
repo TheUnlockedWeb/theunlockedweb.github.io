@@ -586,21 +586,46 @@
     }
   };
 
-  // 5. Support Tools
+// 5. Support Tools
   function toggleExtra(btn) {
-    btn.nextElementSibling.classList.toggle('open');
+    const content = btn.nextElementSibling;
+    btn.classList.toggle('active');
+    content.classList.toggle('open');
   }
 
   function updateToolUI(select) {
     const container = select.nextElementSibling;
     const tool = select.value;
-    container.innerHTML = tool === 'table' ? '<input type="number" placeholder="Rows"> <input type="number" placeholder="Cols">' : '<textarea placeholder="Code..."></textarea>';
+    let html = '';
+    if (tool === 'code') {
+      html = `<input type="text" placeholder="Language" class="tool-input">
+              <textarea placeholder="Paste code..." class="tool-area" rows="4"></textarea>`;
+    } else if (tool === 'table') {
+      html = `<div style="display:flex; gap:8px;"><input type="number" placeholder="Rows" class="tool-input"><input type="number" placeholder="Cols" class="tool-input"></div>`;
+    }
+    container.innerHTML = html;
   }
 
   function finalizeGraphCommand(btn) {
-    const container = btn.previousElementSibling;
-    const val = container.querySelector('textarea') ? `\n[CODE]\n${container.querySelector('textarea').value}\n[/CODE]` : `\n[TABLE:${container.querySelectorAll('input')[0].value}x${container.querySelectorAll('input')[1].value}]`;
-    document.getElementById('editExtra').value += val;
+    const container = btn.previousElementSibling; 
+    const toolSelect = container.previousElementSibling; 
+    const tool = toolSelect.value;
+    let finalSnippet = '';
+
+    if (tool === 'code') {
+      const lang = container.querySelector('input').value || 'text';
+      const code = container.querySelector('textarea').value;
+      finalSnippet = `\n[CODE:${lang}]\n${code}\n[/CODE]`;
+    } else if (tool === 'table') {
+      const r = container.querySelectorAll('input')[0].value || 2;
+      const c = container.querySelectorAll('input')[1].value || 2;
+      finalSnippet = `\n[TABLE:${r}x${c}]`;
+    }
+
+    if (finalSnippet) {
+      document.getElementById('editExtra').value += finalSnippet;
+      showToast('Inserted! Click the Gold Save button.');
+    }
   }
 
   // 6. Slash Menu
@@ -609,14 +634,41 @@
     const el = document.getElementById(id);
     if (!el) return;
     el.oninput = () => {
-      if (el.value[el.selectionStart - 1] === '/') {
+      const cursor = el.selectionStart;
+      if (el.value[cursor - 1] === '/') {
         const menu = document.getElementById('cmdMenu');
         menu.style.display = 'block';
-        menu.innerHTML = commands.map(c => `<div onclick="this.parentElement.style.display='none'; document.getElementById('${id}').value+='${c.t}'">${c.name}</div>`).join('');
+        menu.style.top = `${el.getBoundingClientRect().top + window.scrollY - 100}px`;
+        menu.style.left = `${el.getBoundingClientRect().left}px`;
+        menu.innerHTML = commands.map(c => `<div class="suggestion-item" onclick="document.getElementById('${id}').value+='${c.t}'; this.parentElement.style.display='none'; document.getElementById('${id}').focus();"><b>${c.name}</b></div>`).join('');
       }
     };
   }
   ['editDescription', 'editExtra'].forEach(attachCmdListener);
+
+  // 7. The Bridge (Connects HTML clicks to the functions above)
+  window.toggleAdminPanel = function() {
+    if (isAdmin) {
+      setAdmin(false);
+      showToast('Logged out');
+    } else {
+      openModal('adminLoginModal');
+    }
+  };
+
+  window.handleLogin = function() {
+    // This calls the handleLogin function you showed in your last screenshot
+    const u = document.getElementById('adminUser').value.trim();
+    const p = document.getElementById('adminPass').value;
+    if (u === ADMIN_USER && p === ADMIN_PASS) {
+      closeModal('adminLoginModal');
+      setAdmin(true);
+      showToast('Admin mode enabled 🛡️');
+    } else {
+      const err = document.getElementById('adminError');
+      if(err) err.textContent = 'Invalid credentials.';
+    }
+  };
 
   // Initial Load
   loadUpdates();
