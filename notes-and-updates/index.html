@@ -516,8 +516,8 @@ const processText = (str) => {
           <button class="learn-more-btn ${hasGraph ? 'active' : ''}" onclick="toggleExtra(this)">
             <span>Learn More</span> <i class="fa-solid fa-chevron-down"></i>
           </button>
-          <div class="extra-content ${hasGraph ? 'open' : ''}">
-            <div class="extra-text-body">${extraTextHTML}</div>
+        <button class="learn-more-btn" onclick="toggleExtra(this)">
+        <div class="extra-content">
             ${(hasGraph && isAdmin) ? `
               <div class="graph-builder">
                 <p class="builder-label">Admin Tool Builder</p>
