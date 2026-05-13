@@ -518,8 +518,9 @@
             <div class="update-dot dot-${u.color}"></div>
             <div class="update-title">${u.title}</div>
             <span class="update-status-badge badge-${u.status}">${u.status}</span>
-            ${isAdmin ? `<div class="update-actions">
+             ${isAdmin ? `<div class="update-actions">
               <button class="adm-btn adm-btn-edit" onclick="editUpdate(${u.id})"><i class="fa-solid fa-pen"></i></button>
+              <button class="adm-btn adm-btn-del" onclick="deleteUpdate(${u.id})"><i class="fa-solid fa-trash"></i></button>
             </div>` : ''}
           </div>
           <p class="update-description">${descHTML}</p>
