@@ -292,7 +292,16 @@
     .suggestion-item:hover { background: rgba(212, 175, 55, 0.15); }
     .suggestion-item b { color: var(--gold); }
     .suggestion-item span { font-size: 0.65rem; color: var(--muted); }
-
+/* ── Generated Table Styling ── */
+    .generated-table {
+      width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 0.85rem;
+      border: 1px solid var(--border);
+    }
+    .generated-table td {
+      border: 1px solid var(--border); padding: 10px; color: var(--sub);
+      text-align: left;
+    }
+    .generated-table tr:nth-child(even) { background: rgba(255,255,255,0.02); }
     @media (max-width: 600px) {
       .admin-badge { right: 10px; }
       .modal { width: 92%; }
