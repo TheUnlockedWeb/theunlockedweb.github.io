@@ -264,6 +264,35 @@
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+    /* ── Link & Media Styling ── */
+    .text-link {
+      color: var(--gold);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+      transition: border-color 0.2s;
+    }
+    .text-link:hover {
+      border-bottom-color: var(--gold);
+      text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+    }
+    .update-media-content {
+      margin: 12px 0;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: #000;
+      cursor: pointer;
+    }
+    .update-media-content img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.3s;
+    }
+    .update-media-content:hover img {
+      transform: scale(1.02);
+    }
+
     @media (max-width: 600px) {
       .admin-badge { right: 10px; }
       .modal { width: 92%; }
@@ -472,20 +501,57 @@
   // RENDER UPDATES
   // ═══════════════════════════════════════════════════════════
   function renderUpdates() {
-    const container = document.getElementById('updatesContainer');
-    container.innerHTML = UPDATES.map(
-      (u) => {
-      const etaHtml = u.eta ? `<div class="meta-item"><i class="fa-solid fa-clock" style="color:var(--gold)"></i> ${u.eta}</div>` : '';
-      
-      const extraHtml = u.extra ? `
-        <div class="update-extra-wrapper">
-          <button class="learn-more-btn" onclick="this.nextElementSibling.classList.toggle('open'); this.classList.toggle('active')">
-            Learn More <i class="fa-solid fa-chevron-down"></i>
-          </button>
-          <div class="extra-content">${u.extra}</div>
-        </div>` : '';
+const container = document.getElementById('updatesContainer');
+  container.innerHTML = UPDATES.map((u) => {
+    // 1. Basic Variables
+    const etaHtml = u.eta ? `<div class="meta-item"><i class="fa-solid fa-clock" style="color:var(--gold)"></i> ${u.eta}</div>` : '';
+    const hasGraph = u.extra && u.extra.includes('/graph');
+    const cleanExtra = u.extra ? u.extra.replace('/graph', '').trim() : '';
 
-      return `
+    // 2. Command Regex
+    const urlRegex = /\/url\(([^,]+),\s*([^)]+)\)/g; 
+    const mediaRegex = /\/media\(([^)]+)\)/g;      
+    const rawUrlRegex = /(?<!["=>])(https?:\/\/[^\s<]+)/g; 
+
+    // 3. Process Text for Links/Media
+    let descHTML = u.description
+      .replace(urlRegex, '<a href="$2" target="_blank" class="text-link">$1</a>')
+      .replace(mediaRegex, '<div class="update-media-content"><img src="$1" onclick="window.open(this.src)"></div>')
+      .replace(rawUrlRegex, '<a href="$1" target="_blank" class="text-link">$1</a>');
+
+    let extraTextHTML = cleanExtra
+      .replace(urlRegex, '<a href="$2" target="_blank" class="text-link">$1</a>')
+      .replace(mediaRegex, '<div class="update-media-content"><img src="$1" onclick="window.open(this.src)"></div>')
+      .replace(rawUrlRegex, '<a href="$1" target="_blank" class="text-link">$1</a>');
+
+    // 4. Build the Efficient Dropdown
+    const extraHtml = u.extra ? `
+      <div class="update-extra-wrapper">
+        <button class="learn-more-btn ${hasGraph ? 'active' : ''}" onclick="toggleExtra(this)">
+          <span>Learn More</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="extra-content ${hasGraph ? 'open' : ''}">
+          <div class="extra-text-body">${extraTextHTML}</div>
+          ${hasGraph ? `
+            <div class="graph-builder">
+              <p class="builder-label">Graph / Tool Builder</p>
+              <select class="tool-select" onchange="updateToolUI(this)">
+                <option value="">-- Select a Tool --</option>
+                <option value="code">Insert Code Snippet</option>
+                <option value="chart">Draw Graph</option>
+                <option value="table">Create Table</option>
+                <option value="list">Make List</option>
+              </select>
+              <div class="tool-ui-container"></div>
+            </div>` : ''}
+          <span class="close-extra" onclick="toggleExtra(this.parentElement.previousElementSibling)">
+            CLOSE <i class="fa-solid fa-xmark"></i>
+          </span>
+        </div>
+      </div>` : '';
+
+    return `
       <div class="update-item">
         <div class="update-header">
           <div class="update-dot dot-${u.color}"></div>
@@ -498,7 +564,7 @@
             <button class="adm-btn adm-btn-del" onclick="deleteUpdate(${u.id})"><i class="fa-solid fa-trash"></i></button>
           </div>` : ''}
         </div>
-        <p class="update-description">${u.description}</p>
+        <p class="update-description">${descHTML}</p>
         ${extraHtml}
         <div class="update-meta">
           <div class="meta-item">
@@ -508,7 +574,7 @@
         </div>
       </div>
     `;
-      }).join('');
+  }).join('');
   }
 
   // ═══════════════════════════════════════════════════════════
