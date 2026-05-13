@@ -436,7 +436,9 @@
   function renderUpdates() {
     const container = document.getElementById('updatesContainer');
     container.innerHTML = UPDATES.map(
-      (u) => `
+      (u) => {
+      const etaHtml = u.eta ? `<div class="meta-item"><i class="fa-solid fa-clock" style="color:var(--gold)"></i> ${u.eta}</div>` : '';
+      return `
       <div class="update-item">
         <div class="update-header">
           <div class="update-dot dot-${u.color}"></div>
@@ -454,10 +456,11 @@
           <div class="meta-item">
             <i class="fa-regular fa-calendar"></i> ${u.date}
           </div>
+          ${etaHtml}
         </div>
       </div>
-    `
-    ).join('');
+    `;
+      }).join('');
   }
 
   // ═══════════════════════════════════════════════════════════
@@ -556,7 +559,8 @@
     const status = document.getElementById('editStatus').value;
     const color = document.getElementById('editColor').value;
     const date = document.getElementById('editDate').value.trim();
-
+    const eta = document.getElementById('editEta').value.trim();
+    
     if (!title || !description || !date) {
       showToast('Please fill all fields');
       return;
@@ -565,7 +569,7 @@
     if (editingId === null) {
       // Add new
       const newId = Math.max(...UPDATES.map((u) => u.id), 0) + 1;
-      UPDATES.push({ id: newId, title, description, status, color, date });
+      UPDATES.push({ id: newId, title, description, status, color, date, eta });
       showToast('Update added! 📝');
     } else {
       // Edit existing
@@ -576,6 +580,7 @@
         update.status = status;
         update.color = color;
         update.date = date;
+        update.eta = eta;
         showToast('Update saved! 📝');
       }
     }
