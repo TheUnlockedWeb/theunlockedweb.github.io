@@ -333,6 +333,8 @@
     </select>
     <label>Date</label>
     <input type="text" id="editDate" placeholder="e.g., May 10, 2026">
+    <label>Estimate (ETA)</label>
+    <input type="text" id="editEta" placeholder="e.g., 2 hours, Next Monday">
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeModal('editModal')">Cancel</button>
       <button class="btn-confirm" id="editSaveBtn">Save</button>
@@ -521,6 +523,7 @@
     document.getElementById('editStatus').value = 'upcoming';
     document.getElementById('editColor').value = 'gold';
     document.getElementById('editDate').value = '';
+    document.getElementById('editEta').value = '';
     openModal('editModal');
   }
 
@@ -534,6 +537,7 @@
     document.getElementById('editStatus').value = update.status;
     document.getElementById('editColor').value = update.color;
     document.getElementById('editDate').value = update.date;
+    document.getElementById('editEta').value = update.eta || '';
     openModal('editModal');
   }
 
