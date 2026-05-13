@@ -534,18 +534,19 @@ function renderUpdates() {
           </button>
           <div class="extra-content ${hasGraph ? 'open' : ''}">
             <div class="extra-text-body">${extraTextHTML}</div>
-            ${hasGraph ? `
-              <div class="graph-builder">
-                <p class="builder-label">Graph / Tool Builder</p>
-                <select class="tool-select" onchange="updateToolUI(this)">
-                  <option value="">-- Select a Tool --</option>
-                  <option value="code">Insert Code Snippet</option>
-                  <option value="chart">Draw Graph</option>
-                  <option value="table">Create Table</option>
-                  <option value="list">Make List</option>
-                </select>
-                <div class="tool-ui-container"></div>
-              </div>` : ''}
+            ${(hasGraph && isAdmin) ? `
+            <div class="graph-builder">
+              <p class="builder-label">Admin Tool Builder</p>
+              <select class="tool-select" onchange="updateToolUI(this)">
+                <option value="">-- Select a Tool --</option>
+                <option value="code">Insert Code Snippet</option>
+                <option value="chart">Draw Graph</option>
+                <option value="table">Create Table</option>
+                <option value="list">Make List</option>
+              </select>
+              <div class="tool-ui-container"></div>
+              <button class="adm-btn adm-btn-edit" style="margin-top:10px; width:100%" onclick="finalizeGraphCommand(this)">Insert into Edit Panel</button>
+            </div>` : ''}
             <span class="close-extra" onclick="toggleExtra(this.parentElement.previousElementSibling)">
               CLOSE <i class="fa-solid fa-xmark"></i>
             </span>
@@ -762,7 +763,6 @@ function renderUpdates() {
         activeInput = el;
         const rect = el.getBoundingClientRect();
         cmdMenu.style.display = 'block';
-        // Positions the menu slightly above the current typing line
         cmdMenu.style.top = `${window.scrollY + rect.top - 145}px`;
         cmdMenu.style.left = `${rect.left}px`;
         cmdMenu.innerHTML = commands.map(cmd => `
@@ -777,55 +777,72 @@ function renderUpdates() {
 
   function insertCmd(text) {
     const start = activeInput.selectionStart;
-    const end = activeInput.selectionEnd;
-    activeInput.value = activeInput.value.substring(0, start - 1) + text + activeInput.value.substring(end);
+    activeInput.value = activeInput.value.substring(0, start - 1) + text + activeInput.value.substring(activeInput.selectionEnd);
     cmdMenu.style.display = 'none';
     activeInput.focus();
-    
-    // Auto-calculates where to put the cursor (inside brackets)
     const offset = text.includes('(, )') ? 4 : (text.includes('()') ? 7 : text.length);
     activeInput.setSelectionRange(start + offset - 1, start + offset - 1);
   }
 
-  // Activate the listeners for the Admin Modal boxes
   ['editDescription', 'editExtra'].forEach(attachCmdListener);
 
-  // Smooth Toggle for the Learn More dropdowns
   function toggleExtra(btn) {
     const content = btn.nextElementSibling;
     btn.classList.toggle('active');
     content.classList.toggle('open');
   }
 
-  // Logic for the Graph/Tool builder inside the dropdown
   function updateToolUI(select) {
     const container = select.nextElementSibling;
     const tool = select.value;
     let html = '';
     if (tool === 'code') {
-      html = `<input type="text" placeholder="Language (e.g. JavaScript)" class="tool-input">
-              <textarea placeholder="Paste code snippet here..." class="tool-area" rows="4"></textarea>`;
+      html = `<input type="text" placeholder="Language (e.g. JS)" class="tool-input">
+              <textarea placeholder="Paste code..." class="tool-area" rows="4"></textarea>`;
     } else if (tool === 'chart') {
       html = `<select class="tool-input"><option>Line Graph</option><option>Bar Graph</option></select>
-              <input type="text" placeholder="Data points (e.g. 10, 25, 15, 30)" class="tool-input">`;
+              <input type="text" placeholder="Data (10, 20, 30)" class="tool-input">`;
     } else if (tool === 'table') {
-      html = `<div style="display:flex; gap:8px;">
-                <input type="number" placeholder="Rows" class="tool-input">
-                <input type="number" placeholder="Cols" class="tool-input">
-              </div>`;
+      html = `<div style="display:flex; gap:8px;"><input type="number" placeholder="Rows" class="tool-input"><input type="number" placeholder="Cols" class="tool-input"></div>`;
     } else if (tool === 'list') {
-      html = `<textarea placeholder="• Item 1&#10;• Item 2..." class="tool-area" rows="4"></textarea>`;
+      html = `<textarea placeholder="• Item 1..." class="tool-area" rows="4"></textarea>`;
     }
     container.innerHTML = html;
   }
 
-  // Close command menu if user clicks away
+  // NEW: Finalize function that writes the command into your edit box
+  function finalizeGraphCommand(btn) {
+    const container = btn.previousElementSibling; 
+    const toolSelect = container.previousElementSibling; 
+    const tool = toolSelect.value;
+    let finalSnippet = '';
+
+    if (tool === 'code') {
+      const lang = container.querySelector('input').value;
+      const code = container.querySelector('textarea').value;
+      finalSnippet = `\n[CODE:${lang}]\n${code}\n[/CODE]`;
+    } else if (tool === 'table') {
+      const r = container.querySelectorAll('input')[0].value || 2;
+      const c = container.querySelectorAll('input')[1].value || 2;
+      finalSnippet = `\n[TABLE:${r}x${c}]`;
+    } else if (tool === 'chart') {
+      const type = container.querySelector('select').value;
+      const data = container.querySelector('input').value;
+      finalSnippet = `\n[CHART:${type}](${data})`;
+    } else if (tool === 'list') {
+      const list = container.querySelector('textarea').value;
+      finalSnippet = `\n[LIST]\n${list}\n[/LIST]`;
+    }
+
+    if (finalSnippet) {
+      const extraArea = document.getElementById('editExtra');
+      extraArea.value += finalSnippet;
+      showToast('Inserted! Now click the GOLD SAVE button in the main panel.');
+    }
+  }
+
   document.addEventListener('click', (e) => {
     if (cmdMenu && !cmdMenu.contains(e.target) && !['editDescription', 'editExtra'].includes(e.target.id)) {
       cmdMenu.style.display = 'none';
     }
   });
-</script>
-
-</body>
-</html>
