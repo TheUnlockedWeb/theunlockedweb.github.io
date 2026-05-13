@@ -292,16 +292,26 @@
     .suggestion-item:hover { background: rgba(212, 175, 55, 0.15); }
     .suggestion-item b { color: var(--gold); }
     .suggestion-item span { font-size: 0.65rem; color: var(--muted); }
-/* ── Generated Table Styling ── */
-    .generated-table {
-      width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 0.85rem;
-      border: 1px solid var(--border);
-    }
-    .generated-table td {
-      border: 1px solid var(--border); padding: 10px; color: var(--sub);
-      text-align: left;
-    }
-    .generated-table tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+/* --- Tables & Code Styling --- */
+  .generated-table {
+    width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 0.85rem;
+    border: 1px solid var(--border);
+  }
+  .generated-table td {
+    border: 1px solid var(--border); padding: 10px; color: var(--sub);
+  }
+  .code-block-wrapper {
+    background: #1e1e1e; border-radius: 8px; margin: 15px 0;
+    border: 1px solid #333; overflow: hidden; font-family: monospace;
+  }
+  .code-header {
+    background: #252526; padding: 5px 12px; font-size: 11px;
+    color: #888; border-bottom: 1px solid #333; text-transform: uppercase;
+  }
+  .code-body {
+    padding: 15px; margin: 0; overflow-x: auto; font-size: 13px;
+    line-height: 1.5; color: #d4d4d4; text-align: left;
+  }
     @media (max-width: 600px) {
       .admin-badge { right: 10px; }
       .modal { width: 92%; }
