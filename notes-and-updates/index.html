@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Updates — TheUnlockedWeb</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/style.css">
+  <link rel="icon" href="../assets/resources/favicon.ico">
+  <style>
+    /* ── Page header ─────────────────────── */
+    .page-header {
+      padding: 52px 0 44px;
+      display: flex; flex-direction: column;
+      align-items: flex-start; gap: 12px;
+    }
+    .page-title {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: clamp(2rem, 7vw, 3.8rem);
+      line-height: 1; letter-spacing: -0.03em;
+      background: linear-gradient(140deg, #fff 0%, #f5f3ff 20%, var(--gold) 48%, var(--gold-soft) 68%, #fff 88%);
+      background-size: 200% auto;
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmer 7s .4s linear infinite, fadeUp .7s cubic-bezier(.22,1,.36,1) both;
+    }
+    .page-sub {
+      font-size: .88rem; color: var(--sub); font-weight: 500;
+      animation: fadeUp .6s .15s cubic-bezier(.22,1,.36,1) both;
+    }
+
+    /* ── Updates container ────────────────── */
+    .updates-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      animation: fadeUp .6s .2s cubic-bezier(.22,1,.36,1) both;
+    }
+
+    .update-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 24px;
+      transition: border-color .22s, background .22s, transform .22s cubic-bezier(.22,1,.36,1), box-shadow .22s;
+    }
+    .update-item:hover {
+      border-color: var(--border-h);
+      background: var(--card-h);
+      transform: translateX(5px);
+      box-shadow: 0 12px 32px rgba(0,0,0,.35);
+    }
+
+    .update-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .update-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .dot-gold { background: var(--gold); box-shadow: 0 0 10px var(--gold); }
+    .dot-purple { background: var(--purple); box-shadow: 0 0 10px var(--purple); }
+    .dot-green { background: var(--green); box-shadow: 0 0 10px var(--green); }
+
+    .update-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--text);
+      flex: 1;
+    }
+
+    .update-status-badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+    .badge-completed { background: rgba(52,211,153,.13); color: var(--green); border: 1px solid rgba(52,211,153,.3); }
+    .badge-upcoming { background: rgba(245,158,11,.13); color: var(--gold); border: 1px solid rgba(245,158,11,.3); }
+    .badge-in-progress { background: rgba(88,101,242,.13); color: var(--purple); border: 1px solid rgba(88,101,242,.3); }
+
+    .update-actions { display: flex; gap: 8px; }
+
+    .update-description {
+      font-size: 0.95rem;
+      color: var(--sub);
+      line-height: 1.65;
+      margin-bottom: 12px;
+    }
+
+    .update-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .meta-item { display: flex; align-items: center; gap: 5px; }
+
+    .adm-btn {
+      font-size: .68rem; font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
+      padding: 3px 8px; border-radius: 6px; border: 1px solid; cursor: pointer;
+      font-family: 'Manrope', sans-serif; transition: background .14s, transform .14s;
+    }
+    .adm-btn:hover { transform: scale(1.04); }
+    .adm-btn-edit { background: rgba(245,158,11,.1); border-color: rgba(245,158,11,.3); color: var(--gold); }
+    .adm-btn-edit:hover { background: rgba(245,158,11,.2); }
+    .adm-btn-del { background: rgba(248,113,113,.12); border-color: rgba(248,113,113,.3); color: #f87171; }
+    .adm-btn-del:hover { background: rgba(248,113,113,.22); }
+
+    .admin-add-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      font-family: 'Manrope', sans-serif;
+      font-size: .87rem; font-weight: 600;
+      padding: 13px 26px; border-radius: 12px;
+      text-decoration: none; border: 1px solid;
+      transition: transform .22s cubic-bezier(.22,1,.36,1), box-shadow .22s, background .18s;
+      white-space: nowrap; cursor: pointer;
+      background: var(--gold); color: #000; border-color: var(--gold);
+      margin-bottom: 28px;
+    }
+    .admin-add-btn i { font-size: .95rem; transition: transform .22s cubic-bezier(.22,1,.36,1); }
+    .admin-add-btn:hover { transform: translateY(-3px); }
+    .admin-add-btn:hover i { transform: scale(1.2) rotate(-4deg); }
+    .admin-add-btn:active { transform: scale(.97); }
+
+    /* ── Admin badge ────────────────────── */
+    .admin-badge {
+      position: fixed; top: calc(var(--nav-h, 58px) + 10px); right: 14px;
+      z-index: 20; display: flex; align-items: center; gap: 7px;
+    }
+    .admin-pill {
+      font-size: .7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+      padding: 5px 12px; border-radius: 99px; font-family: 'Manrope', sans-serif;
+      border: 1px solid; cursor: pointer;
+      transition: background .15s, transform .15s;
+    }
+    .admin-pill.login { color: var(--muted); border-color: var(--border); background: none; }
+    .admin-pill.login:hover { color: var(--sub); border-color: var(--border-h); background: rgba(255,255,255,.04); }
+    .admin-pill.active { color: var(--gold); border-color: rgba(245,158,11,.35); background: var(--gold-gl); }
+    .admin-pill.active:hover { background: rgba(245,158,11,.2); }
+
+    /* ── Modal ────────────────────────── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 100;
+      background: rgba(0,0,0,.82); backdrop-filter: blur(8px);
+      display: none; align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px; width: 94%; max-width: 500px;
+      position: relative; max-height: 90vh; overflow-y: auto;
+    }
+
+    .modal h3 {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 1.1rem; color: var(--text); margin-bottom: 18px;
+    }
+
+    .modal-close {
+      position: absolute; top: 14px; right: 16px;
+      background: none; border: none; color: var(--muted);
+      font-size: 1.4rem; cursor: pointer; line-height: 1;
+      transition: color .15s, transform .15s;
+    }
+    .modal-close:hover { color: #f87171; transform: rotate(90deg); }
+
+    .modal label {
+      display: block; font-size: .72rem; font-weight: 600;
+      color: var(--gold); text-transform: uppercase; letter-spacing: 1px;
+      margin-bottom: 6px; margin-top: 14px;
+    }
+    .modal label:first-of-type { margin-top: 0; }
+
+    .modal input, .modal textarea, .modal select {
+      width: 100%;
+      background: #0d0d1b;
+      border: 1px solid var(--border); border-radius: 8px;
+      color: var(--text); padding: 9px 12px;
+      font-family: 'Manrope', sans-serif; font-size: .88rem;
+      transition: border-color .15s; resize: vertical;
+    }
+    .modal input:focus, .modal textarea:focus, .modal select:focus {
+      outline: none; border-color: var(--gold);
+    }
+
+    .modal-btns {
+      display: flex; gap: 10px; margin-top: 18px;
+    }
+    .modal-btns button {
+      flex: 1; padding: 10px; border-radius: 8px; border: none;
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: .88rem;
+      cursor: pointer; transition: opacity .15s, transform .15s;
+    }
+    .modal-btns button:hover { opacity: .85; transform: translateY(-1px); }
+    .btn-confirm { background: var(--gold); color: #000; }
+    .btn-cancel { background: rgba(255,255,255,.07); color: var(--sub); }
+
+    .toast {
+      position: fixed; bottom: 90px; left: 50%;
+      transform: translateX(-50%) translateY(10px);
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 10px; padding: 10px 18px;
+      font-size: .82rem; font-weight: 500; color: var(--text);
+      font-family: 'Manrope', sans-serif;
+      z-index: 30; opacity: 0; pointer-events: none;
+      transition: opacity .25s, transform .25s;
+      white-space: nowrap; max-width: 90vw;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 600px) {
+      .admin-badge { right: 10px; }
+      .modal { width: 92%; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+<div class="aurora" aria-hidden="true">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<!-- Nav -->
+<nav class="nav">
+  <a href="../" class="nav-brand">TUW</a>
+  <div class="nav-divider"></div>
+  <div class="nav-links">
+    <a href="../">Home</a>
+    <a href="../videos/">Videos</a>
+    <a href="../games/">Games</a>
+    <a href="../suggestions/">Suggestions</a>
+    <a href="../chat/">Chat</a>
+    <a href="./" class="active">Updates</a>
+  </div>
+  <div class="nav-socials">
+    <a href="https://www.youtube.com/channel/UCi8DgxMDGJ-Qsjqfdi-uoIw" class="nav-pill nav-pill-yt" target="_blank">
+      <i class="fa-brands fa-youtube"></i> YouTube
+    </a>
+    <a href="https://discord.gg/vBMNDBTFn" class="nav-pill nav-pill-dc" target="_blank">
+      <i class="fa-brands fa-discord"></i> Discord
+    </a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <header class="page-header">
+    <div class="chip"><span class="chip-dot"></span>Site Updates</div>
+    <h1 class="page-title">Updates & Notes</h1>
+    <p class="page-sub">Latest news, completed features, and upcoming improvements to TheUnlockedWeb.</p>
+  </header>
+
+  <div id="adminButtonContainer"></div>
+  <div class="updates-container" id="updatesContainer"></div>
+</div>
+
+<footer>
+  <span class="f-brand">TheUnlockedWeb</span>
+  <span class="f-copy">© 2026 EthanUnlocked's gaming hits</span>
+  <div class="f-links">
+    <a href="https://github.com/TheUnlockedWeb/theunlockedweb.github.io" target="_blank">
+      <i class="fa-brands fa-github"></i> Source
+    </a>
+  </div>
+</footer>
+
+<!-- Admin Badge -->
+<div class="admin-badge">
+  <button class="admin-pill login" id="adminBtn">
+    <i class="fa-solid fa-shield-halved"></i> Admin
+  </button>
+</div>
+
+<!-- Admin Login Modal -->
+<div class="modal-overlay" id="adminLoginModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('adminLoginModal')">×</button>
+    <h3><i class="fa-solid fa-shield-halved" style="color:var(--gold);margin-right:8px"></i>Admin Login</h3>
+    <label>Username</label>
+    <input type="text" id="adminUser" autocomplete="off">
+    <label>Password</label>
+    <input type="password" id="adminPass" autocomplete="off">
+    <div class="modal-error" id="adminError" style="font-size:.78rem;color:#f87171;margin-top:10px;min-height:18px;font-family:'Manrope',sans-serif;"></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal('adminLoginModal')">Cancel</button>
+      <button class="btn-confirm" id="adminLoginBtn">Login</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit/Add Update Modal -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('editModal')">×</button>
+    <h3><i class="fa-solid fa-pen" style="color:var(--gold);margin-right:8px"></i><span id="modalTitle">Add Update</span></h3>
+    <label>Title</label>
+    <input type="text" id="editTitle" maxlength="80">
+    <label>Description</label>
+    <textarea id="editDescription" rows="4" maxlength="300"></textarea>
+    <label>Status</label>
+    <select id="editStatus">
+      <option value="completed">✓ Completed</option>
+      <option value="in-progress">⟳ In Progress</option>
+      <option value="upcoming">→ Upcoming</option>
+    </select>
+    <label>Color</label>
+    <select id="editColor">
+      <option value="gold">Gold</option>
+      <option value="purple">Purple</option>
+      <option value="green">Green</option>
+    </select>
+    <label>Date</label>
+    <input type="text" id="editDate" placeholder="e.g., May 10, 2026">
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal('editModal')">Cancel</button>
+      <button class="btn-confirm" id="editSaveBtn">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  let UPDATES = [
+    {
+      id: 1,
+      title: 'YouTube Videos Integration',
+      description: 'Auto-fetching video and shorts data from your YouTube channel every 6 hours. Videos now display with proper filtering.',
+      status: 'completed',
+      color: 'green',
+      date: 'May 10, 2026',
+    },
+    {
+      id: 2,
+      title: 'Shorts Detection System',
+      description: 'Working on better detection of YouTube Shorts vs regular short videos. Will properly distinguish real shorts from regular uploads under 60 seconds.',
+      status: 'in-progress',
+      color: 'purple',
+      date: 'May 13, 2026',
+    },
+    {
+      id: 3,
+      title: 'New Games Section',
+      description: 'Adding 2 new games to the Games page. Removing 1 older game. Site currently under maintenance for these updates.',
+      status: 'in-progress',
+      color: 'purple',
+      date: 'May 10, 2026',
+    },
+  ];
+
+  const ADMIN_USER = 'admin';
+  const ADMIN_PASS = 'goodpassword';
+  let isAdmin = false;
+  let editingId = null;
+
+  function openModal(modalId) {
+    document.getElementById(modalId).classList.add('open');
+  }
+
+  function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('open');
+  }
+
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+  }
+
+  function renderUpdates() {
+    const container = document.getElementById('updatesContainer');
+    container.innerHTML = UPDATES.map(
+      (u) => `
+      <div class="update-item">
+        <div class="update-header">
+          <div class="update-dot dot-${u.color}"></div>
+          <div class="update-title">${u.title}</div>
+          <span class="update-status-badge badge-${u.status}">
+            ${u.status === 'completed' ? '✓ Done' : u.status === 'in-progress' ? '⟳ In Progress' : '→ Upcoming'}
+          </span>
+          ${isAdmin ? `<div class="update-actions">
+            <button class="adm-btn adm-btn-edit" onclick="editUpdate(${u.id})"><i class="fa-solid fa-pen"></i></button>
+            <button class="adm-btn adm-btn-del" onclick="deleteUpdate(${u.id})"><i class="fa-solid fa-trash"></i></button>
+          </div>` : ''}
+        </div>
+        <p class="update-description">${u.description}</p>
+        <div class="update-meta">
+          <div class="meta-item">
+            <i class="fa-regular fa-calendar"></i> ${u.date}
+          </div>
+        </div>
+      </div>
+    `
+    ).join('');
+  }
+
+  function setAdmin(val) {
+    isAdmin = val;
+    const btn = document.getElementById('adminBtn');
+    const container = document.getElementById('adminButtonContainer');
+
+    if (val) {
+      btn.className = 'admin-pill active';
+      btn.innerHTML = '<i class="fa-solid fa-shield-halved"></i> Admin ✓';
+      btn.onclick = logoutAdmin;
+      container.innerHTML = `<button class="admin-add-btn" onclick="addUpdate()"><i class="fa-solid fa-plus"></i> Add Update</button>`;
+    } else {
+      btn.className = 'admin-pill login';
+      btn.innerHTML = '<i class="fa-solid fa-shield-halved"></i> Admin';
+      btn.onclick = () => openModal('adminLoginModal');
+      container.innerHTML = '';
+    }
+    renderUpdates();
+  }
+
+  function logoutAdmin() {
+    setAdmin(false);
+    showToast('Logged out of admin');
+  }
+
+  document.getElementById('adminBtn').onclick = () => openModal('adminLoginModal');
+
+  document.getElementById('adminLoginBtn').addEventListener('click', () => {
+    const u = document.getElementById('adminUser').value.trim();
+    const p = document.getElementById('adminPass').value;
+    const errEl = document.getElementById('adminError');
+    errEl.textContent = '';
+
+    if (!u || !p) {
+      errEl.textContent = 'Enter both fields.';
+      return;
+    }
+
+    if (u === ADMIN_USER && p === ADMIN_PASS) {
+      closeModal('adminLoginModal');
+      document.getElementById('adminUser').value = '';
+      document.getElementById('adminPass').value = '';
+      setAdmin(true);
+      showToast('Admin mode enabled 🛡️');
+    } else {
+      errEl.textContent = 'Invalid credentials.';
+    }
+  });
+
+  document.getElementById('adminPass').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') document.getElementById('adminLoginBtn').click();
+  });
+
+  function addUpdate() {
+    editingId = null;
+    document.getElementById('modalTitle').textContent = 'Add Update';
+    document.getElementById('editTitle').value = '';
+    document.getElementById('editDescription').value = '';
+    document.getElementById('editStatus').value = 'upcoming';
+    document.getElementById('editColor').value = 'gold';
+    document.getElementById('editDate').value = '';
+    openModal('editModal');
+  }
+
+  function editUpdate(id) {
+    const update = UPDATES.find((u) => u.id === id);
+    if (!update) return;
+    editingId = id;
+    document.getElementById('modalTitle').textContent = 'Edit Update';
+    document.getElementById('editTitle').value = update.title;
+    document.getElementById('editDescription').value = update.description;
+    document.getElementById('editStatus').value = update.status;
+    document.getElementById('editColor').value = update.color;
+    document.getElementById('editDate').value = update.date;
+    openModal('editModal');
+  }
+
+  function deleteUpdate(id) {
+    if (confirm('Delete this update?')) {
+      UPDATES = UPDATES.filter((u) => u.id !== id);
+      renderUpdates();
+      showToast('Update deleted 🗑️');
+    }
+  }
+
+  document.getElementById('editSaveBtn').addEventListener('click', () => {
+    const title = document.getElementById('editTitle').value.trim();
+    const description = document.getElementById('editDescription').value.trim();
+    const status = document.getElementById('editStatus').value;
+    const color = document.getElementById('editColor').value;
+    const date = document.getElementById('editDate').value.trim();
+
+    if (!title || !description || !date) {
+      showToast('Please fill all fields');
+      return;
+    }
+
+    if (editingId === null) {
+      const newId = Math.max(...UPDATES.map((u) => u.id), 0) + 1;
+      UPDATES.push({ id: newId, title, description, status, color, date });
+      showToast('Update added! 📝');
+    } else {
+      const update = UPDATES.find((u) => u.id === editingId);
+      if (update) {
+        update.title = title;
+        update.description = description;
+        update.status = status;
+        update.color = color;
+        update.date = date;
+        showToast('Update saved! 📝');
+      }
+    }
+
+    closeModal('editModal');
+    renderUpdates();
+  });
+
+  renderUpdates();
+</script>
+
+</body>
+</html>
