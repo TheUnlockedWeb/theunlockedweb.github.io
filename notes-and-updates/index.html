@@ -343,7 +343,10 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  let UPDATES = [
+  // ═══════════════════════════════════════════════════════════
+  // DEFAULT UPDATES
+  // ═══════════════════════════════════════════════════════════
+  const DEFAULT_UPDATES = [
     {
       id: 1,
       title: 'YouTube Videos Integration',
@@ -372,9 +375,44 @@
 
   const ADMIN_USER = 'admin';
   const ADMIN_PASS = 'goodpassword';
+  const STORAGE_KEY = 'tuw_updates_data';
+  
+  let UPDATES = [];
   let isAdmin = false;
   let editingId = null;
 
+  // ═══════════════════════════════════════════════════════════
+  // LOAD/SAVE FUNCTIONS
+  // ═══════════════════════════════════════════════════════════
+  function loadUpdates() {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        UPDATES = JSON.parse(stored);
+        console.log('✅ Loaded updates from localStorage:', UPDATES);
+      } else {
+        UPDATES = JSON.parse(JSON.stringify(DEFAULT_UPDATES));
+        console.log('📝 Using default updates');
+      }
+    } catch (e) {
+      console.error('❌ Error loading updates:', e);
+      UPDATES = JSON.parse(JSON.stringify(DEFAULT_UPDATES));
+    }
+  }
+
+  function saveUpdates() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(UPDATES));
+      console.log('💾 Saved updates to localStorage:', UPDATES);
+    } catch (e) {
+      console.error('❌ Error saving updates:', e);
+      showToast('Failed to save changes');
+    }
+  }
+
+  // ═══════════════════════════════���═══════════════════════════
+  // MODAL FUNCTIONS
+  // ═══════════════════════════════════════════════════════════
   function openModal(modalId) {
     document.getElementById(modalId).classList.add('open');
   }
@@ -390,6 +428,9 @@
     setTimeout(() => toast.classList.remove('show'), 3000);
   }
 
+  // ═══════════════════════════════════════════════════════════
+  // RENDER UPDATES
+  // ═══════════════════════════════════════════════════════════
   function renderUpdates() {
     const container = document.getElementById('updatesContainer');
     container.innerHTML = UPDATES.map(
@@ -417,6 +458,9 @@
     ).join('');
   }
 
+  // ═══════════════════════════════════════════════════════════
+  // ADMIN FUNCTIONS
+  // ═══════════════════════════════════════════════════════════
   function setAdmin(val) {
     isAdmin = val;
     const btn = document.getElementById('adminBtn');
@@ -496,6 +540,7 @@
   function deleteUpdate(id) {
     if (confirm('Delete this update?')) {
       UPDATES = UPDATES.filter((u) => u.id !== id);
+      saveUpdates();
       renderUpdates();
       showToast('Update deleted 🗑️');
     }
@@ -514,10 +559,12 @@
     }
 
     if (editingId === null) {
+      // Add new
       const newId = Math.max(...UPDATES.map((u) => u.id), 0) + 1;
       UPDATES.push({ id: newId, title, description, status, color, date });
       showToast('Update added! 📝');
     } else {
+      // Edit existing
       const update = UPDATES.find((u) => u.id === editingId);
       if (update) {
         update.title = title;
@@ -529,10 +576,15 @@
       }
     }
 
+    saveUpdates();
     closeModal('editModal');
     renderUpdates();
   });
 
+  // ═══════════════════════════════════════════════════════════
+  // INIT
+  // ═══════════════════════════════════════════════════════════
+  loadUpdates();
   renderUpdates();
 </script>
 
