@@ -557,7 +557,31 @@
       if(err) err.textContent = 'Invalid credentials.';
     }
   }
+  
+function editUpdate(id) {
+    const update = UPDATES.find((u) => u.id === id);
+    if (!update) return;
+    editingId = id;
+    
+    // Fill the modal with the update's current data
+    document.getElementById('modalTitle').textContent = 'Edit Update';
+    document.getElementById('editTitle').value = update.title;
+    document.getElementById('editDescription').value = update.description;
+    document.getElementById('editExtra').value = update.extra || '';
+    
+    // Open the modal
+    openModal('editModal');
+  }
 
+  function deleteUpdate(id) {
+    if (confirm('Are you sure you want to delete this update? 🗑️')) {
+      UPDATES = UPDATES.filter((u) => u.id !== id);
+      saveUpdates();
+      renderUpdates();
+      showToast('Update deleted');
+    }
+  }
+  
   // 5. Tool Support
   function toggleExtra(btn) {
     btn.nextElementSibling.classList.toggle('open');
