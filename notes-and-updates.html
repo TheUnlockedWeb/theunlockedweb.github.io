@@ -10,13 +10,13 @@
   <link rel="stylesheet" href="../assets/style.css">
   <link rel="icon" href="../assets/resources/favicon.ico">
   <style>
-    /* ��─ Page header ────────────────────────── */
     .page-header {
       padding: 52px 0 44px;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
       gap: 12px;
+      animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
     }
 
     .page-title {
@@ -37,10 +37,8 @@
       font-size: 0.88rem;
       color: var(--sub);
       font-weight: 500;
-      animation: fadeUp 0.6s 0.15s cubic-bezier(0.22, 1, 0.36, 1) both;
     }
 
-    /* ── Update items ────────────────────────── */
     .updates-container {
       display: flex;
       flex-direction: column;
@@ -68,6 +66,7 @@
       align-items: center;
       gap: 14px;
       margin-bottom: 12px;
+      flex-wrap: wrap;
     }
 
     .update-dot {
@@ -129,6 +128,11 @@
       border: 1px solid rgba(88, 101, 242, 0.3);
     }
 
+    .update-actions {
+      display: flex;
+      gap: 8px;
+    }
+
     .update-description {
       font-size: 0.95rem;
       color: var(--sub);
@@ -150,28 +154,114 @@
       gap: 5px;
     }
 
-    /* ── Admin edit button ────────────────────── */
-    .edit-btn {
+    .adm-btn {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid;
+      cursor: pointer;
+      font-family: 'Manrope', sans-serif;
+      transition: background 0.14s, transform 0.14s;
+    }
+
+    .adm-btn:hover {
+      transform: scale(1.04);
+    }
+
+    .adm-btn-edit {
+      background: rgba(245, 158, 11, 0.1);
+      border-color: rgba(245, 158, 11, 0.3);
+      color: var(--gold);
+    }
+
+    .adm-btn-edit:hover {
+      background: rgba(245, 158, 11, 0.2);
+    }
+
+    .adm-btn-del {
+      background: rgba(248, 113, 113, 0.12);
+      border-color: rgba(248, 113, 113, 0.3);
+      color: #f87171;
+    }
+
+    .adm-btn-del:hover {
+      background: rgba(248, 113, 113, 0.22);
+    }
+
+    .admin-add-btn {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      font-size: 0.75rem;
+      gap: 8px;
+      font-size: 0.87rem;
       font-weight: 600;
-      padding: 6px 12px;
-      border-radius: 8px;
-      border: 1px solid rgba(245, 158, 11, 0.3);
-      background: rgba(245, 158, 11, 0.1);
-      color: var(--gold);
+      padding: 13px 26px;
+      border-radius: 12px;
+      background: var(--gold);
+      color: #000;
+      border: 1px solid var(--gold);
+      cursor: pointer;
+      text-decoration: none;
+      margin-bottom: 28px;
+      transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.22s, background 0.18s;
+    }
+
+    .admin-add-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 36px rgba(245, 158, 11, 0.4);
+    }
+
+    .admin-add-btn i {
+      font-size: 0.95rem;
+    }
+
+    .admin-badge {
+      position: fixed;
+      top: calc(var(--nav-h, 58px) + 10px);
+      right: 14px;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .admin-pill {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 99px;
+      font-family: 'Manrope', sans-serif;
+      border: 1px solid;
       cursor: pointer;
       transition: background 0.15s, transform 0.15s;
     }
 
-    .edit-btn:hover {
-      background: rgba(245, 158, 11, 0.2);
-      transform: translateY(-1px);
+    .admin-pill.login {
+      color: var(--muted);
+      border-color: var(--border);
+      background: none;
     }
 
-    /* ── Modal ────────────────────────── */
+    .admin-pill.login:hover {
+      color: var(--sub);
+      border-color: var(--border-h);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .admin-pill.active {
+      color: var(--gold);
+      border-color: rgba(245, 158, 11, 0.35);
+      background: var(--gold-gl);
+    }
+
+    .admin-pill.active:hover {
+      background: rgba(245, 158, 11, 0.2);
+    }
+
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -195,6 +285,8 @@
       width: 94%;
       max-width: 500px;
       position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
     }
 
     .modal h3 {
@@ -293,52 +385,6 @@
       color: var(--sub);
     }
 
-    /* ── Admin badge ────────────────────────── */
-    .admin-badge {
-      position: fixed;
-      top: calc(var(--nav-h, 58px) + 10px);
-      right: 14px;
-      z-index: 20;
-      display: flex;
-      align-items: center;
-      gap: 7px;
-    }
-
-    .admin-pill {
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      padding: 5px 12px;
-      border-radius: 99px;
-      font-family: 'Manrope', sans-serif;
-      border: 1px solid;
-      cursor: pointer;
-      transition: background 0.15s, transform 0.15s;
-    }
-
-    .admin-pill.login {
-      color: var(--muted);
-      border-color: var(--border);
-      background: none;
-    }
-
-    .admin-pill.login:hover {
-      color: var(--sub);
-      border-color: var(--border-h);
-      background: rgba(255, 255, 255, 0.04);
-    }
-
-    .admin-pill.active {
-      color: var(--gold);
-      border-color: rgba(245, 158, 11, 0.35);
-      background: var(--gold-gl);
-    }
-
-    .admin-pill.active:hover {
-      background: rgba(245, 158, 11, 0.2);
-    }
-
     .toast {
       position: fixed;
       bottom: 90px;
@@ -416,6 +462,7 @@
       <p class="page-sub">Latest news, completed features, and upcoming improvements to TheUnlockedWeb.</p>
     </header>
 
+    <div id="adminButtonContainer"></div>
     <div class="updates-container" id="updatesContainer"></div>
   </div>
 
@@ -429,39 +476,11 @@
     </div>
   </footer>
 
-  <!-- Admin Badge -->
+  <!-- Admin Badge (top right) -->
   <div class="admin-badge">
     <button class="admin-pill login" id="adminBtn">
       <i class="fa-solid fa-shield-halved"></i> Admin
     </button>
-  </div>
-
-  <!-- Edit Modal -->
-  <div class="modal-overlay" id="editModal">
-    <div class="modal">
-      <button class="modal-close" onclick="closeModal('editModal')">×</button>
-      <h3><i class="fa-solid fa-pen" style="color:var(--gold);margin-right:8px"></i>Edit Update</h3>
-      <label>Title</label>
-      <input type="text" id="editTitle" maxlength="80">
-      <label>Description</label>
-      <textarea id="editDescription" rows="4" maxlength="300"></textarea>
-      <label>Status</label>
-      <select id="editStatus">
-        <option value="completed">Completed</option>
-        <option value="in-progress">In Progress</option>
-        <option value="upcoming">Upcoming</option>
-      </select>
-      <label>Color</label>
-      <select id="editColor">
-        <option value="gold">Gold</option>
-        <option value="purple">Purple</option>
-        <option value="green">Green</option>
-      </select>
-      <div class="modal-btns">
-        <button class="btn-cancel" onclick="closeModal('editModal')">Cancel</button>
-        <button class="btn-confirm" id="editSaveBtn">Save</button>
-      </div>
-    </div>
   </div>
 
   <!-- Admin Login Modal -->
@@ -469,11 +488,44 @@
     <div class="modal">
       <button class="modal-close" onclick="closeModal('adminLoginModal')">×</button>
       <h3><i class="fa-solid fa-shield-halved" style="color:var(--gold);margin-right:8px"></i>Admin Login</h3>
+      <label>Username</label>
+      <input type="text" id="adminUser" autocomplete="off">
       <label>Password</label>
-      <input type="password" id="adminPassword" autocomplete="off">
+      <input type="password" id="adminPass" autocomplete="off">
+      <div class="modal-error" id="adminError" style="font-size:.78rem;color:#f87171;margin-top:10px;min-height:18px;font-family:'Manrope',sans-serif;"></div>
       <div class="modal-btns">
         <button class="btn-cancel" onclick="closeModal('adminLoginModal')">Cancel</button>
         <button class="btn-confirm" id="adminLoginBtn">Login</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit/Add Update Modal -->
+  <div class="modal-overlay" id="editModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('editModal')">×</button>
+      <h3><i class="fa-solid fa-pen" style="color:var(--gold);margin-right:8px"></i><span id="modalTitle">Add Update</span></h3>
+      <label>Title</label>
+      <input type="text" id="editTitle" maxlength="80">
+      <label>Description</label>
+      <textarea id="editDescription" rows="4" maxlength="300"></textarea>
+      <label>Status</label>
+      <select id="editStatus">
+        <option value="completed">✓ Completed</option>
+        <option value="in-progress">⟳ In Progress</option>
+        <option value="upcoming">→ Upcoming</option>
+      </select>
+      <label>Color</label>
+      <select id="editColor">
+        <option value="gold">Gold</option>
+        <option value="purple">Purple</option>
+        <option value="green">Green</option>
+      </select>
+      <label>Date</label>
+      <input type="text" id="editDate" placeholder="e.g., May 10, 2026">
+      <div class="modal-btns">
+        <button class="btn-cancel" onclick="closeModal('editModal')">Cancel</button>
+        <button class="btn-confirm" id="editSaveBtn">Save</button>
       </div>
     </div>
   </div>
@@ -484,13 +536,13 @@
     // ═══════════════════════════════════════════════════════════
     // EDITABLE UPDATES DATA — CHANGE NOTES HERE
     // ═══════════════════════════════════════════════════════════
-    const UPDATES = [
+    let UPDATES = [
       {
         id: 1,
         title: 'YouTube Videos Integration',
         description: 'Auto-fetching video and shorts data from your YouTube channel every 6 hours. Videos now display with proper filtering.',
-        status: 'completed', // completed, in-progress, upcoming
-        color: 'green', // gold, purple, green
+        status: 'completed',
+        color: 'green',
         date: 'May 10, 2026',
       },
       {
@@ -517,17 +569,10 @@
         color: 'gold',
         date: 'Coming Soon',
       },
-      {
-        id: 5,
-        title: 'Dark Mode Toggle',
-        description: 'Users will be able to switch between dark and light theme. Theme preference will be saved locally.',
-        status: 'upcoming',
-        color: 'gold',
-        date: 'Coming Soon',
-      },
     ];
 
-    const ADMIN_PASSWORD_HASH = '286755fad04869ca523320acce0dc6a4'; // MD5 hash of "admin"
+    const ADMIN_USER = 'admin';
+    const ADMIN_PASS = 'goodpassword';
     let isAdmin = false;
     let editingId = null;
 
@@ -549,13 +594,6 @@
       setTimeout(() => toast.classList.remove('show'), 3000);
     }
 
-    async function hashPassword(str) {
-      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-      return Array.from(new Uint8Array(buf))
-        .map((b) => b.toString(16).padStart(2, '0'))
-        .join('');
-    }
-
     // ═══════════════════════════════════════════════════════════
     // RENDER UPDATES
     // ═══════════════════════════════════════════════════════════
@@ -570,7 +608,10 @@
             <span class="update-status-badge badge-${u.status}">
               ${u.status === 'completed' ? '✓ Done' : u.status === 'in-progress' ? '⟳ In Progress' : '→ Upcoming'}
             </span>
-            ${isAdmin ? `<button class="edit-btn" onclick="editUpdate(${u.id})"><i class="fa-solid fa-pen"></i> Edit</button>` : ''}
+            ${isAdmin ? `<div class="update-actions">
+              <button class="adm-btn adm-btn-edit" onclick="editUpdate(${u.id})"><i class="fa-solid fa-pen"></i></button>
+              <button class="adm-btn adm-btn-del" onclick="deleteUpdate(${u.id})"><i class="fa-solid fa-trash"></i></button>
+            </div>` : ''}
           </div>
           <p class="update-description">${u.description}</p>
           <div class="update-meta">
@@ -589,14 +630,18 @@
     function setAdmin(val) {
       isAdmin = val;
       const btn = document.getElementById('adminBtn');
+      const container = document.getElementById('adminButtonContainer');
+
       if (val) {
         btn.className = 'admin-pill active';
         btn.innerHTML = '<i class="fa-solid fa-shield-halved"></i> Admin ✓';
         btn.onclick = logoutAdmin;
+        container.innerHTML = `<button class="admin-add-btn" onclick="addUpdate()"><i class="fa-solid fa-plus"></i> Add Update</button>`;
       } else {
         btn.className = 'admin-pill login';
         btn.innerHTML = '<i class="fa-solid fa-shield-halved"></i> Admin';
         btn.onclick = () => openModal('adminLoginModal');
+        container.innerHTML = '';
       }
       renderUpdates();
     }
@@ -608,48 +653,103 @@
 
     document.getElementById('adminBtn').onclick = () => openModal('adminLoginModal');
 
-    document.getElementById('adminLoginBtn').addEventListener('click', async () => {
-      const pass = document.getElementById('adminPassword').value;
-      if (!pass) {
-        showToast('Enter password');
+    document.getElementById('adminLoginBtn').addEventListener('click', () => {
+      const u = document.getElementById('adminUser').value.trim();
+      const p = document.getElementById('adminPass').value;
+      const errEl = document.getElementById('adminError');
+      errEl.textContent = '';
+
+      if (!u || !p) {
+        errEl.textContent = 'Enter both fields.';
         return;
       }
-      const hash = await hashPassword(pass);
-      if (hash === ADMIN_PASSWORD_HASH) {
+
+      if (u === ADMIN_USER && p === ADMIN_PASS) {
         closeModal('adminLoginModal');
-        document.getElementById('adminPassword').value = '';
+        document.getElementById('adminUser').value = '';
+        document.getElementById('adminPass').value = '';
         setAdmin(true);
         showToast('Admin mode enabled 🛡️');
       } else {
-        showToast('❌ Invalid password');
+        errEl.textContent = 'Invalid credentials.';
       }
     });
 
-    document.getElementById('adminPassword').addEventListener('keydown', (e) => {
+    document.getElementById('adminPass').addEventListener('keydown', (e) => {
       if (e.key === 'Enter') document.getElementById('adminLoginBtn').click();
     });
+
+    function addUpdate() {
+      editingId = null;
+      document.getElementById('modalTitle').textContent = 'Add Update';
+      document.getElementById('editTitle').value = '';
+      document.getElementById('editDescription').value = '';
+      document.getElementById('editStatus').value = 'upcoming';
+      document.getElementById('editColor').value = 'gold';
+      document.getElementById('editDate').value = '';
+      openModal('editModal');
+    }
 
     function editUpdate(id) {
       const update = UPDATES.find((u) => u.id === id);
       if (!update) return;
       editingId = id;
+      document.getElementById('modalTitle').textContent = 'Edit Update';
       document.getElementById('editTitle').value = update.title;
       document.getElementById('editDescription').value = update.description;
       document.getElementById('editStatus').value = update.status;
       document.getElementById('editColor').value = update.color;
+      document.getElementById('editDate').value = update.date;
       openModal('editModal');
     }
 
+    function deleteUpdate(id) {
+      if (confirm('Delete this update?')) {
+        UPDATES = UPDATES.filter((u) => u.id !== id);
+        renderUpdates();
+        showToast('Update deleted 🗑️');
+      }
+    }
+
     document.getElementById('editSaveBtn').addEventListener('click', () => {
-      const update = UPDATES.find((u) => u.id === editingId);
-      if (!update) return;
-      update.title = document.getElementById('editTitle').value.trim();
-      update.description = document.getElementById('editDescription').value.trim();
-      update.status = document.getElementById('editStatus').value;
-      update.color = document.getElementById('editColor').value;
+      const title = document.getElementById('editTitle').value.trim();
+      const description = document.getElementById('editDescription').value.trim();
+      const status = document.getElementById('editStatus').value;
+      const color = document.getElementById('editColor').value;
+      const date = document.getElementById('editDate').value.trim();
+
+      if (!title || !description || !date) {
+        showToast('Please fill all fields');
+        return;
+      }
+
+      if (editingId === null) {
+        // Add new
+        const newId = Math.max(...UPDATES.map((u) => u.id), 0) + 1;
+        UPDATES.push({
+          id: newId,
+          title,
+          description,
+          status,
+          color,
+          date,
+        });
+        showToast('Update added! 📝');
+      } else {
+        // Edit existing
+        const update = UPDATES.find((u) => u.id === editingId);
+        if (update) {
+          update.title = title;
+          update.description = description;
+          update.status = status;
+          update.color = color;
+          update.date = date;
+          showToast('Update saved! 📝');
+        }
+      }
+
       closeModal('editModal');
       renderUpdates();
-      showToast('Update saved! 📝');
     });
 
     // Initial render
