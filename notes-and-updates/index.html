@@ -476,15 +476,17 @@
       const hasGraph = u.extra && u.extra.includes('/graph');
       const cleanExtra = u.extra ? u.extra.replace('/graph', '').trim() : '';
 
-      const processText = (str) => {
+const processText = (str) => {
         if (!str) return '';
         const urlRegex = /\/url\(([^,]+),\s*([^)]+)\)/g; 
         const mediaRegex = /\/media\(([^)]+)\)/g;      
         const rawUrlRegex = /(?<!["=>])(https?:\/\/[^\s<]+)/g; 
+
         return str
           .replace(urlRegex, '<a href="$2" target="_blank" class="text-link">$1</a>')
           .replace(mediaRegex, '<div class="update-media-content"><img src="$1" onclick="window.open(this.src)"></div>')
           .replace(rawUrlRegex, '<a href="$1" target="_blank" class="text-link">$1</a>')
+          // Table Logic
           .replace(/\[TABLE:(\d+)x(\d+)\]/g, (match, r, c) => {
              let table = '<table class="generated-table">';
              for(let i=0; i<r; i++) {
@@ -493,6 +495,15 @@
                table += '</tr>';
              }
              return table + '</table>';
+          })
+          // Code Highlighting Logic
+          .replace(/\[CODE:([^\]]+)\]\n([\s\S]*?)\n\[\/CODE\]/g, (match, lang, code) => {
+            let highlighted = code
+              .replace(/</g, '&lt;').replace(/>/g, '&gt;') // Escape HTML
+              .replace(/("(.*?)"|'(.*?)')/g, '<span style="color:#ce9178">$1</span>') // Strings
+              .replace(/\b(function|const|let|var|if|else|return|class|def|import)\b/g, '<span style="color:#569cd6">$1</span>') // Keywords
+              .replace(/\/\/.*/g, '<span style="color:#6a9955">$&</span>'); // Comments
+            return `<div class="code-block-wrapper"><div class="code-header">${lang}</div><pre class="code-body"><code>${highlighted}</code></pre></div>`;
           });
       };
 
@@ -597,26 +608,45 @@
     openModal('editModal');
   }
 
-  // 5. Tool Support
-  function toggleExtra(btn) {
-    btn.nextElementSibling.classList.toggle('open');
-    btn.classList.toggle('active');
-  }
-
+// 5. Support Tools
   function updateToolUI(select) {
     const container = select.nextElementSibling;
-    container.innerHTML = select.value === 'table' ? 
-      '<div style="display:flex;gap:5px"><input type="number" placeholder="Rows" class="tool-input"><input type="number" placeholder="Cols" class="tool-input"></div>' : 
-      '<textarea placeholder="Code..." class="tool-area" rows="4"></textarea>';
+    const tool = select.value;
+    if (tool === 'code') {
+      container.innerHTML = `
+        <select class="tool-input" id="codeLang">
+          <option value="javascript">JavaScript</option>
+          <option value="python">Python</option>
+          <option value="html">HTML</option>
+          <option value="css">CSS</option>
+        </select>
+        <textarea placeholder="Paste code..." class="tool-area" rows="4" id="codeContent"></textarea>`;
+    } else if (tool === 'table') {
+      container.innerHTML = '<div style="display:flex;gap:5px"><input type="number" placeholder="Rows" class="tool-input"><input type="number" placeholder="Cols" class="tool-input"></div>';
+    }
   }
 
   function finalizeGraphCommand(btn) {
     const container = btn.previousElementSibling;
-    const isTable = container.querySelector('input');
-    const val = isTable ? 
-      `\n[TABLE:${container.querySelectorAll('input')[0].value}x${container.querySelectorAll('input')[1].value}]` : 
-      `\n[CODE]\n${container.querySelector('textarea').value}\n[/CODE]`;
-    document.getElementById('editExtra').value += val;
+    const tool = container.previousElementSibling.value;
+    const extraArea = document.getElementById('editExtra');
+    let finalSnippet = '';
+
+    if (tool === 'code') {
+      const lang = document.getElementById('codeLang').value;
+      const code = document.getElementById('codeContent').value;
+      finalSnippet = `\n[CODE:${lang}]\n${code}\n[/CODE]`;
+    } else if (tool === 'table') {
+      const r = container.querySelectorAll('input')[0].value || 2;
+      const c = container.querySelectorAll('input')[1].value || 2;
+      finalSnippet = `\n[TABLE:${r}x${c}]`;
+    }
+
+    if (extraArea && finalSnippet) {
+      if (!extraArea.value.includes('/graph')) extraArea.value = '/graph ' + extraArea.value;
+      extraArea.value += finalSnippet;
+      showToast('Inserted! Click GOLD SAVE.');
+    }
   }
 
   // 6. Init and Event Listeners
