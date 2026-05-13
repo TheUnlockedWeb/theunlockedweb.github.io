@@ -529,66 +529,61 @@
     }).join('');
   }
 
-  // 4. Admin Interaction
+// 4. Admin Interaction (Improved Connection)
   function setAdmin(val) {
     isAdmin = val;
     const btn = document.getElementById('adminBtn');
     const container = document.getElementById('adminButtonContainer');
+
     if (val) {
-      btn.className = 'admin-pill active';
-      btn.innerHTML = 'Admin ✓';
-      btn.onclick = () => setAdmin(false);
-      container.innerHTML = `<button class="admin-add-btn" onclick="addUpdate()">+ Add Update</button>`;
+      if(btn) {
+        btn.className = 'admin-pill active';
+        btn.innerHTML = '<i class="fa-solid fa-shield-halved"></i> Admin ✓';
+      }
+      if(container) container.innerHTML = `<button class="admin-add-btn" onclick="addUpdate()"><i class="fa-solid fa-plus"></i> Add Update</button>`;
     } else {
-      btn.className = 'admin-pill login';
-      btn.innerHTML = 'Admin';
-      btn.onclick = () => document.getElementById('adminLoginModal').classList.add('open');
-      container.innerHTML = '';
+      if(btn) {
+        btn.className = 'admin-pill login';
+        btn.innerHTML = '<i class="fa-solid fa-shield-halved"></i> Admin';
+      }
+      if(container) container.innerHTML = '';
     }
     renderUpdates();
   }
 
-  document.getElementById('adminLoginBtn').onclick = () => {
-    const u = document.getElementById('adminUser').value;
+  // This function handles the login click
+  function handleLogin() {
+    const u = document.getElementById('adminUser').value.trim();
     const p = document.getElementById('adminPass').value;
-    if (u === ADMIN_USER && p === ADMIN_PASS) {
-      document.getElementById('adminLoginModal').classList.remove('open');
-      setAdmin(true);
-    }
-  };
-
-  function addUpdate() {
-    editingId = null;
-    document.getElementById('editTitle').value = '';
-    document.getElementById('editDescription').value = '';
-    document.getElementById('editExtra').value = '';
-    document.getElementById('editModal').classList.add('open');
-  }
-
-  function editUpdate(id) {
-    const u = UPDATES.find(x => x.id === id);
-    if (!u) return;
-    editingId = id;
-    document.getElementById('editTitle').value = u.title;
-    document.getElementById('editDescription').value = u.description;
-    document.getElementById('editExtra').value = u.extra || '';
-    document.getElementById('editModal').classList.add('open');
-  }
-
-  document.getElementById('editSaveBtn').onclick = () => {
-    const title = document.getElementById('editTitle').value;
-    const desc = document.getElementById('editDescription').value;
-    const extra = document.getElementById('editExtra').value;
+    const errEl = document.getElementById('adminError');
     
-    if (editingId === null) {
-      UPDATES.push({ id: Date.now(), title, description: desc, extra, status: 'upcoming', color: 'gold', date: 'May 2026' });
+    if (u === ADMIN_USER && p === ADMIN_PASS) {
+      closeModal('adminLoginModal');
+      setAdmin(true);
+      showToast('Admin mode enabled 🛡️');
     } else {
-      const u = UPDATES.find(x => x.id === editingId);
-      u.title = title; u.description = desc; u.extra = extra;
+      if(errEl) errEl.textContent = 'Invalid credentials.';
     }
-    saveUpdates();
-    document.getElementById('editModal').classList.remove('open');
-    renderUpdates();
+  }
+
+  // Re-binding the click event directly to the element
+  window.onload = () => {
+    const loginPill = document.getElementById('adminBtn');
+    if (loginPill) {
+      loginPill.onclick = () => {
+        if (isAdmin) {
+          setAdmin(false);
+          showToast('Logged out');
+        } else {
+          openModal('adminLoginModal');
+        }
+      };
+    }
+
+    const loginSubmit = document.getElementById('adminLoginBtn');
+    if (loginSubmit) {
+      loginSubmit.onclick = handleLogin;
+    }
   };
 
   // 5. Support Tools
