@@ -421,9 +421,6 @@
 <div class="toast" id="toast"></div>
 <div id="cmdMenu" class="command-suggestions"></div>
 <script>
-  // ═══════════════════════════════════════════════════════════
-  // DEFAULT UPDATES
-  // ═══════════════════════════════════════════════════════════
 // 1. Data & State
   const DEFAULT_UPDATES = [
     { id: 1, title: 'YouTube Integration', description: 'Auto-fetching videos.', status: 'completed', color: 'green', date: 'May 10, 2026' },
@@ -448,6 +445,9 @@
     localStorage.setItem(STORAGE_KEY, JSON.stringify(UPDATES));
   }
 
+  function openModal(id) { document.getElementById(id).classList.add('open'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
   function showToast(msg) {
     const toast = document.getElementById('toast');
     if (toast) {
@@ -457,7 +457,7 @@
     }
   }
 
-  // 3. The Main Render Engine
+  // 3. Render Engine
   function renderUpdates() {
     const container = document.getElementById('updatesContainer');
     if (!container) return;
@@ -496,7 +496,7 @@
             <span>Learn More</span> <i class="fa-solid fa-chevron-down"></i>
           </button>
           <div class="extra-content ${hasGraph ? 'open' : ''}">
-            <div>${extraTextHTML}</div>
+            <div class="extra-text-body">${extraTextHTML}</div>
             ${(hasGraph && isAdmin) ? `
               <div class="graph-builder">
                 <p class="builder-label">Admin Tool Builder</p>
@@ -519,7 +519,7 @@
             <div class="update-title">${u.title}</div>
             <span class="update-status-badge badge-${u.status}">${u.status}</span>
             ${isAdmin ? `<div class="update-actions">
-              <button class="adm-btn adm-btn-edit" onclick="editUpdate(${u.id})">Edit</button>
+              <button class="adm-btn adm-btn-edit" onclick="editUpdate(${u.id})"><i class="fa-solid fa-pen"></i></button>
             </div>` : ''}
           </div>
           <p class="update-description">${descHTML}</p>
@@ -529,135 +529,22 @@
     }).join('');
   }
 
-// 4. Admin Interaction (Improved Connection)
+  // 4. Admin Logic
   function setAdmin(val) {
     isAdmin = val;
     const btn = document.getElementById('adminBtn');
     const container = document.getElementById('adminButtonContainer');
-
     if (val) {
-      if(btn) {
-        btn.className = 'admin-pill active';
-        btn.innerHTML = '<i class="fa-solid fa-shield-halved"></i> Admin ✓';
-      }
-      if(container) container.innerHTML = `<button class="admin-add-btn" onclick="addUpdate()"><i class="fa-solid fa-plus"></i> Add Update</button>`;
+      if(btn) { btn.className = 'admin-pill active'; btn.innerHTML = 'Admin ✓'; }
+      if(container) container.innerHTML = `<button class="admin-add-btn" onclick="addUpdate()">+ Add Update</button>`;
     } else {
-      if(btn) {
-        btn.className = 'admin-pill login';
-        btn.innerHTML = '<i class="fa-solid fa-shield-halved"></i> Admin';
-      }
+      if(btn) { btn.className = 'admin-pill login'; btn.innerHTML = 'Admin'; }
       if(container) container.innerHTML = '';
     }
     renderUpdates();
   }
 
-  // This function handles the login click
   function handleLogin() {
-    const u = document.getElementById('adminUser').value.trim();
-    const p = document.getElementById('adminPass').value;
-    const errEl = document.getElementById('adminError');
-    
-    if (u === ADMIN_USER && p === ADMIN_PASS) {
-      closeModal('adminLoginModal');
-      setAdmin(true);
-      showToast('Admin mode enabled 🛡️');
-    } else {
-      if(errEl) errEl.textContent = 'Invalid credentials.';
-    }
-  }
-
-  // Re-binding the click event directly to the element
-  window.onload = () => {
-    const loginPill = document.getElementById('adminBtn');
-    if (loginPill) {
-      loginPill.onclick = () => {
-        if (isAdmin) {
-          setAdmin(false);
-          showToast('Logged out');
-        } else {
-          openModal('adminLoginModal');
-        }
-      };
-    }
-
-    const loginSubmit = document.getElementById('adminLoginBtn');
-    if (loginSubmit) {
-      loginSubmit.onclick = handleLogin;
-    }
-  };
-
-// 5. Support Tools
-  function toggleExtra(btn) {
-    const content = btn.nextElementSibling;
-    btn.classList.toggle('active');
-    content.classList.toggle('open');
-  }
-
-  function updateToolUI(select) {
-    const container = select.nextElementSibling;
-    const tool = select.value;
-    let html = '';
-    if (tool === 'code') {
-      html = `<input type="text" placeholder="Language" class="tool-input">
-              <textarea placeholder="Paste code..." class="tool-area" rows="4"></textarea>`;
-    } else if (tool === 'table') {
-      html = `<div style="display:flex; gap:8px;"><input type="number" placeholder="Rows" class="tool-input"><input type="number" placeholder="Cols" class="tool-input"></div>`;
-    }
-    container.innerHTML = html;
-  }
-
-  function finalizeGraphCommand(btn) {
-    const container = btn.previousElementSibling; 
-    const toolSelect = container.previousElementSibling; 
-    const tool = toolSelect.value;
-    let finalSnippet = '';
-
-    if (tool === 'code') {
-      const lang = container.querySelector('input').value || 'text';
-      const code = container.querySelector('textarea').value;
-      finalSnippet = `\n[CODE:${lang}]\n${code}\n[/CODE]`;
-    } else if (tool === 'table') {
-      const r = container.querySelectorAll('input')[0].value || 2;
-      const c = container.querySelectorAll('input')[1].value || 2;
-      finalSnippet = `\n[TABLE:${r}x${c}]`;
-    }
-
-    if (finalSnippet) {
-      document.getElementById('editExtra').value += finalSnippet;
-      showToast('Inserted! Click the Gold Save button.');
-    }
-  }
-
-  // 6. Slash Menu
-  const commands = [ {name:'/graph', t:'/graph'}, {name:'/media', t:'/media()'}, {name:'/url', t:'/url(,)'} ];
-  function attachCmdListener(id) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.oninput = () => {
-      const cursor = el.selectionStart;
-      if (el.value[cursor - 1] === '/') {
-        const menu = document.getElementById('cmdMenu');
-        menu.style.display = 'block';
-        menu.style.top = `${el.getBoundingClientRect().top + window.scrollY - 100}px`;
-        menu.style.left = `${el.getBoundingClientRect().left}px`;
-        menu.innerHTML = commands.map(c => `<div class="suggestion-item" onclick="document.getElementById('${id}').value+='${c.t}'; this.parentElement.style.display='none'; document.getElementById('${id}').focus();"><b>${c.name}</b></div>`).join('');
-      }
-    };
-  }
-  ['editDescription', 'editExtra'].forEach(attachCmdListener);
-
-  // 7. The Bridge (Connects HTML clicks to the functions above)
-  window.toggleAdminPanel = function() {
-    if (isAdmin) {
-      setAdmin(false);
-      showToast('Logged out');
-    } else {
-      openModal('adminLoginModal');
-    }
-  };
-
-  window.handleLogin = function() {
-    // This calls the handleLogin function you showed in your last screenshot
     const u = document.getElementById('adminUser').value.trim();
     const p = document.getElementById('adminPass').value;
     if (u === ADMIN_USER && p === ADMIN_PASS) {
@@ -668,9 +555,57 @@
       const err = document.getElementById('adminError');
       if(err) err.textContent = 'Invalid credentials.';
     }
-  };
+  }
 
-  // Initial Load
-  loadUpdates();
-  renderUpdates();
+  // 5. Tool Support
+  function toggleExtra(btn) {
+    btn.nextElementSibling.classList.toggle('open');
+    btn.classList.toggle('active');
+  }
+
+  function updateToolUI(select) {
+    const container = select.nextElementSibling;
+    container.innerHTML = select.value === 'table' ? 
+      '<div style="display:flex;gap:5px"><input type="number" placeholder="Rows" class="tool-input"><input type="number" placeholder="Cols" class="tool-input"></div>' : 
+      '<textarea placeholder="Code..." class="tool-area" rows="4"></textarea>';
+  }
+
+  function finalizeGraphCommand(btn) {
+    const container = btn.previousElementSibling;
+    const isTable = container.querySelector('input');
+    const val = isTable ? 
+      `\n[TABLE:${container.querySelectorAll('input')[0].value}x${container.querySelectorAll('input')[1].value}]` : 
+      `\n[CODE]\n${container.querySelector('textarea').value}\n[/CODE]`;
+    document.getElementById('editExtra').value += val;
+  }
+
+  // 6. Init and Event Listeners
+  window.onload = () => {
+    loadUpdates();
+    renderUpdates();
+    
+    // Bind Pill Click
+    const pill = document.getElementById('adminBtn');
+    if(pill) pill.onclick = () => isAdmin ? setAdmin(false) : openModal('adminLoginModal');
+    
+    // Bind Login Confirm
+    const loginConfirm = document.getElementById('adminLoginBtn');
+    if(loginConfirm) loginConfirm.onclick = handleLogin;
+
+    // Attach slash menu listeners
+    ['editDescription', 'editExtra'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.oninput = () => {
+        if (el.value[el.selectionStart - 1] === '/') {
+          const menu = document.getElementById('cmdMenu');
+          menu.style.display = 'block';
+          menu.style.top = `${el.getBoundingClientRect().top + window.scrollY - 100}px`;
+          menu.style.left = `${el.getBoundingClientRect().left}px`;
+          menu.innerHTML = ['/graph', '/media()', '/url(,)'].map(c => 
+            `<div class="suggestion-item" onclick="document.getElementById('${id}').value+='${c}'; this.parentElement.style.display='none';"><b>${c}</b></div>`
+          ).join('');
+        }
+      };
+    });
+  };
 </script>
