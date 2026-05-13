@@ -335,6 +335,8 @@
     <input type="text" id="editDate" placeholder="e.g., May 10, 2026">
     <label>Estimate (ETA)</label>
     <input type="text" id="editEta" placeholder="e.g., 2 hours, Next Monday">
+    <label>Learn More Details</label>
+    <textarea id="editExtra" rows="3" placeholder="Extra info for the dropdown..."></textarea>
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeModal('editModal')">Cancel</button>
       <button class="btn-confirm" id="editSaveBtn">Save</button>
@@ -438,6 +440,15 @@
     container.innerHTML = UPDATES.map(
       (u) => {
       const etaHtml = u.eta ? `<div class="meta-item"><i class="fa-solid fa-clock" style="color:var(--gold)"></i> ${u.eta}</div>` : '';
+      
+      const extraHtml = u.extra ? `
+        <div class="update-extra-wrapper">
+          <button class="learn-more-btn" onclick="this.nextElementSibling.classList.toggle('open'); this.classList.toggle('active')">
+            Learn More <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          <div class="extra-content">${u.extra}</div>
+        </div>` : '';
+
       return `
       <div class="update-item">
         <div class="update-header">
@@ -452,6 +463,7 @@
           </div>` : ''}
         </div>
         <p class="update-description">${u.description}</p>
+        ${extraHtml}
         <div class="update-meta">
           <div class="meta-item">
             <i class="fa-regular fa-calendar"></i> ${u.date}
@@ -527,6 +539,7 @@
     document.getElementById('editColor').value = 'gold';
     document.getElementById('editDate').value = '';
     document.getElementById('editEta').value = '';
+    document.getElementById('editExtra').value = '';
     openModal('editModal');
   }
 
@@ -541,6 +554,7 @@
     document.getElementById('editColor').value = update.color;
     document.getElementById('editDate').value = update.date;
     document.getElementById('editEta').value = update.eta || '';
+    document.getElementById('editExtra').value = update.extra || '';
     openModal('editModal');
   }
 
@@ -560,6 +574,7 @@
     const color = document.getElementById('editColor').value;
     const date = document.getElementById('editDate').value.trim();
     const eta = document.getElementById('editEta').value.trim();
+    const extra = document.getElementById('editExtra').value.trim();
     
     if (!title || !description || !date) {
       showToast('Please fill all fields');
@@ -581,6 +596,7 @@
         update.color = color;
         update.date = date;
         update.eta = eta;
+        update.extra = extra;
         showToast('Update saved! 📝');
       }
     }
