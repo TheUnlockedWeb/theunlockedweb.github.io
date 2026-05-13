@@ -608,7 +608,66 @@ function editUpdate(id) {
   window.onload = () => {
     loadUpdates();
     renderUpdates();
+    // Bind the Admin Pill (Top of page)
+    const pill = document.getElementById('adminBtn');
+    if(pill) pill.onclick = () => isAdmin ? setAdmin(false) : openModal('adminLoginModal');
     
+    // Bind the Login Confirm (Inside Modal)
+    const loginConfirm = document.getElementById('adminLoginBtn');
+    if(loginConfirm) loginConfirm.onclick = handleLogin;
+
+    // Bind the Gold Save Button
+    const editSaveBtn = document.getElementById('editSaveBtn');
+    if (editSaveBtn) {
+      editSaveBtn.onclick = () => {
+        const title = document.getElementById('editTitle').value.trim();
+        const desc = document.getElementById('editDescription').value.trim();
+        const extra = document.getElementById('editExtra').value.trim();
+
+        if (!title || !desc) {
+          showToast('Title and Description are required!');
+          return;
+        }
+
+        if (editingId === null) {
+          // New Update
+          const newId = Date.now();
+          UPDATES.push({ 
+            id: newId, title, description: desc, extra, 
+            status: 'upcoming', color: 'gold', 
+            date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) 
+          });
+        } else {
+          // Edit Existing
+          const u = UPDATES.find(x => x.id === editingId);
+          if (u) {
+            u.title = title; u.description = desc; u.extra = extra;
+          }
+        }
+        saveUpdates();
+        closeModal('editModal');
+        renderUpdates();
+        showToast('Changes saved! 💾');
+      };
+    }
+
+    // Attach slash menu listeners
+    ['editDescription', 'editExtra'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.oninput = () => {
+          if (el.value[el.selectionStart - 1] === '/') {
+            const menu = document.getElementById('cmdMenu');
+            menu.style.display = 'block';
+            menu.style.top = `${el.getBoundingClientRect().top + window.scrollY - 100}px`;
+            menu.style.left = `${el.getBoundingClientRect().left}px`;
+            menu.innerHTML = ['/graph', '/media()', '/url(,)'].map(c => 
+              `<div class="suggestion-item" onclick="document.getElementById('${id}').value+='${c}'; document.getElementById('cmdMenu').style.display='none';"><b>${c}</b></div>`
+            ).join('');
+          }
+        };
+      }
+    });
     // Bind Pill Click
     const pill = document.getElementById('adminBtn');
     if(pill) pill.onclick = () => isAdmin ? setAdmin(false) : openModal('adminLoginModal');
