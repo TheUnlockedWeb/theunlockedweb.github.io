@@ -457,7 +457,7 @@
     }
   }
 
-  // 3. Render Engine
+// 3. Render Engine
   function renderUpdates() {
     const container = document.getElementById('updatesContainer');
     if (!container) return;
@@ -518,7 +518,7 @@
             <div class="update-dot dot-${u.color}"></div>
             <div class="update-title">${u.title}</div>
             <span class="update-status-badge badge-${u.status}">${u.status}</span>
-             ${isAdmin ? `<div class="update-actions">
+            ${isAdmin ? `<div class="update-actions">
               <button class="adm-btn adm-btn-edit" onclick="editUpdate(${u.id})"><i class="fa-solid fa-pen"></i></button>
               <button class="adm-btn adm-btn-del" onclick="deleteUpdate(${u.id})"><i class="fa-solid fa-trash"></i></button>
             </div>` : ''}
@@ -557,19 +557,15 @@
       if(err) err.textContent = 'Invalid credentials.';
     }
   }
-  
-function editUpdate(id) {
+
+  function editUpdate(id) {
     const update = UPDATES.find((u) => u.id === id);
     if (!update) return;
     editingId = id;
-    
-    // Fill the modal with the update's current data
     document.getElementById('modalTitle').textContent = 'Edit Update';
     document.getElementById('editTitle').value = update.title;
     document.getElementById('editDescription').value = update.description;
     document.getElementById('editExtra').value = update.extra || '';
-    
-    // Open the modal
     openModal('editModal');
   }
 
@@ -581,7 +577,16 @@ function editUpdate(id) {
       showToast('Update deleted');
     }
   }
-  
+
+  function addUpdate() {
+    editingId = null;
+    document.getElementById('modalTitle').textContent = 'Add Update';
+    document.getElementById('editTitle').value = '';
+    document.getElementById('editDescription').value = '';
+    document.getElementById('editExtra').value = '';
+    openModal('editModal');
+  }
+
   // 5. Tool Support
   function toggleExtra(btn) {
     btn.nextElementSibling.classList.toggle('open');
@@ -603,38 +608,18 @@ function editUpdate(id) {
       `\n[CODE]\n${container.querySelector('textarea').value}\n[/CODE]`;
     document.getElementById('editExtra').value += val;
   }
-function editUpdate(id) {
-    const update = UPDATES.find((u) => u.id === id);
-    if (!update) return;
-    editingId = id;
-    document.getElementById('modalTitle').textContent = 'Edit Update';
-    document.getElementById('editTitle').value = update.title;
-    document.getElementById('editDescription').value = update.description;
-    document.getElementById('editExtra').value = update.extra || '';
-    openModal('editModal');
-  }
 
-  function deleteUpdate(id) {
-    if (confirm('Are you sure you want to delete this update? 🗑️')) {
-      UPDATES = UPDATES.filter((u) => u.id !== id);
-      saveUpdates();
-      renderUpdates();
-      showToast('Update deleted');
-    }
-  }
   // 6. Init and Event Listeners
   window.onload = () => {
     loadUpdates();
     renderUpdates();
-    // Bind the Admin Pill (Top of page)
+    
     const pill = document.getElementById('adminBtn');
     if(pill) pill.onclick = () => isAdmin ? setAdmin(false) : openModal('adminLoginModal');
     
-    // Bind the Login Confirm (Inside Modal)
     const loginConfirm = document.getElementById('adminLoginBtn');
     if(loginConfirm) loginConfirm.onclick = handleLogin;
 
-    // Bind the Gold Save Button
     const editSaveBtn = document.getElementById('editSaveBtn');
     if (editSaveBtn) {
       editSaveBtn.onclick = () => {
@@ -648,7 +633,6 @@ function editUpdate(id) {
         }
 
         if (editingId === null) {
-          // New Update
           const newId = Date.now();
           UPDATES.push({ 
             id: newId, title, description: desc, extra, 
@@ -656,7 +640,6 @@ function editUpdate(id) {
             date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) 
           });
         } else {
-          // Edit Existing
           const u = UPDATES.find(x => x.id === editingId);
           if (u) {
             u.title = title; u.description = desc; u.extra = extra;
@@ -669,32 +652,6 @@ function editUpdate(id) {
       };
     }
 
-    // Attach slash menu listeners
-    ['editDescription', 'editExtra'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) {
-        el.oninput = () => {
-          if (el.value[el.selectionStart - 1] === '/') {
-            const menu = document.getElementById('cmdMenu');
-            menu.style.display = 'block';
-            menu.style.top = `${el.getBoundingClientRect().top + window.scrollY - 100}px`;
-            menu.style.left = `${el.getBoundingClientRect().left}px`;
-            menu.innerHTML = ['/graph', '/media()', '/url(,)'].map(c => 
-              `<div class="suggestion-item" onclick="document.getElementById('${id}').value+='${c}'; document.getElementById('cmdMenu').style.display='none';"><b>${c}</b></div>`
-            ).join('');
-          }
-        };
-      }
-    });
-    // Bind Pill Click
-    const pill = document.getElementById('adminBtn');
-    if(pill) pill.onclick = () => isAdmin ? setAdmin(false) : openModal('adminLoginModal');
-    
-    // Bind Login Confirm
-    const loginConfirm = document.getElementById('adminLoginBtn');
-    if(loginConfirm) loginConfirm.onclick = handleLogin;
-
-    // Attach slash menu listeners
     ['editDescription', 'editExtra'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.oninput = () => {
@@ -704,7 +661,7 @@ function editUpdate(id) {
           menu.style.top = `${el.getBoundingClientRect().top + window.scrollY - 100}px`;
           menu.style.left = `${el.getBoundingClientRect().left}px`;
           menu.innerHTML = ['/graph', '/media()', '/url(,)'].map(c => 
-            `<div class="suggestion-item" onclick="document.getElementById('${id}').value+='${c}'; this.parentElement.style.display='none';"><b>${c}</b></div>`
+            `<div class="suggestion-item" onclick="document.getElementById('${id}').value+='${c}'; document.getElementById('cmdMenu').style.display='none';"><b>${c}</b></div>`
           ).join('');
         }
       };
