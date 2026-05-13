@@ -424,106 +424,53 @@
   // ═══════════════════════════════════════════════════════════
   // DEFAULT UPDATES
   // ═══════════════════════════════════════════════════════════
+// 1. Data & State
   const DEFAULT_UPDATES = [
-    {
-      id: 1,
-      title: 'YouTube Videos Integration',
-      description: 'Auto-fetching video and shorts data from your YouTube channel every 6 hours. Videos now display with proper filtering.',
-      status: 'completed',
-      color: 'green',
-      date: 'May 10, 2026',
-    },
-    {
-      id: 2,
-      title: 'Shorts Detection System',
-      description: 'Working on better detection of YouTube Shorts vs regular short videos. Will properly distinguish real shorts from regular uploads under 60 seconds.',
-      status: 'in-progress',
-      color: 'purple',
-      date: 'May 13, 2026',
-    },
-    {
-      id: 3,
-      title: 'New Games Section',
-      description: 'Adding 2 new games to the Games page. Removing 1 older game. Site currently under maintenance for these updates.',
-      status: 'in-progress',
-      color: 'purple',
-      date: 'May 10, 2026',
-    },
+    { id: 1, title: 'YouTube Integration', description: 'Auto-fetching videos.', status: 'completed', color: 'green', date: 'May 10, 2026' },
+    { id: 2, title: 'Shorts System', description: 'Detecting YouTube Shorts.', status: 'in-progress', color: 'purple', date: 'May 13, 2026' }
   ];
-
   const ADMIN_USER = 'admin';
   const ADMIN_PASS = 'goodpassword';
   const STORAGE_KEY = 'tuw_updates_data';
-  
   let UPDATES = [];
   let isAdmin = false;
   let editingId = null;
 
-  // ═══════════════════════════════════════════════════════════
-  // LOAD/SAVE FUNCTIONS
-  // ═══════════════════════════════════════════════════════════
+  // 2. Core Functions
   function loadUpdates() {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        UPDATES = JSON.parse(stored);
-        console.log('✅ Loaded updates from localStorage:', UPDATES);
-      } else {
-        UPDATES = JSON.parse(JSON.stringify(DEFAULT_UPDATES));
-        console.log('📝 Using default updates');
-      }
-    } catch (e) {
-      console.error('❌ Error loading updates:', e);
-      UPDATES = JSON.parse(JSON.stringify(DEFAULT_UPDATES));
-    }
+      UPDATES = stored ? JSON.parse(stored) : JSON.parse(JSON.stringify(DEFAULT_UPDATES));
+    } catch (e) { UPDATES = JSON.parse(JSON.stringify(DEFAULT_UPDATES)); }
   }
 
   function saveUpdates() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(UPDATES));
-      console.log('💾 Saved updates to localStorage:', UPDATES);
-    } catch (e) {
-      console.error('❌ Error saving updates:', e);
-      showToast('Failed to save changes');
-    }
-  }
-
-  // ═══════════════════════════════════════════════════════════
-  // MODAL FUNCTIONS
-  // ═══════════════════════════════════════════════════════════
-  function openModal(modalId) {
-    document.getElementById(modalId).classList.add('open');
-  }
-
-  function closeModal(modalId) {
-    document.getElementById(modalId).classList.remove('open');
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(UPDATES));
   }
 
   function showToast(msg) {
     const toast = document.getElementById('toast');
-    if (!toast) return;
-    toast.textContent = msg;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 3000);
+    if (toast) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
   }
 
-  // ═══════════════════════════════════════════════════════════
-  // RENDER UPDATES
-  // ═══════════════════════════════════════════════════════════
+  // 3. The Main Render Engine
   function renderUpdates() {
     const container = document.getElementById('updatesContainer');
     if (!container) return;
-    
+
     container.innerHTML = UPDATES.map((u) => {
       const hasGraph = u.extra && u.extra.includes('/graph');
       const cleanExtra = u.extra ? u.extra.replace('/graph', '').trim() : '';
 
-      const urlRegex = /\/url\(([^,]+),\s*([^)]+)\)/g; 
-      const mediaRegex = /\/media\(([^)]+)\)/g;      
-      const rawUrlRegex = /(?<!["=>])(https?:\/\/[^\s<]+)/g; 
-
       const processText = (str) => {
         if (!str) return '';
+        const urlRegex = /\/url\(([^,]+),\s*([^)]+)\)/g; 
+        const mediaRegex = /\/media\(([^)]+)\)/g;      
+        const rawUrlRegex = /(?<!["=>])(https?:\/\/[^\s<]+)/g; 
         return str
           .replace(urlRegex, '<a href="$2" target="_blank" class="text-link">$1</a>')
           .replace(mediaRegex, '<div class="update-media-content"><img src="$1" onclick="window.open(this.src)"></div>')
@@ -546,31 +493,22 @@
       const extraHtml = u.extra ? `
         <div class="update-extra-wrapper">
           <button class="learn-more-btn ${hasGraph ? 'active' : ''}" onclick="toggleExtra(this)">
-            <span>Learn More</span>
-            <i class="fa-solid fa-chevron-down"></i>
+            <span>Learn More</span> <i class="fa-solid fa-chevron-down"></i>
           </button>
           <div class="extra-content ${hasGraph ? 'open' : ''}">
-            <div class="extra-text-body">${extraTextHTML}</div>
-            
+            <div>${extraTextHTML}</div>
             ${(hasGraph && isAdmin) ? `
               <div class="graph-builder">
                 <p class="builder-label">Admin Tool Builder</p>
                 <select class="tool-select" onchange="updateToolUI(this)">
-                  <option value="">-- Select a Tool --</option>
-                  <option value="code">Insert Code Snippet</option>
-                  <option value="chart">Draw Graph</option>
-                  <option value="table">Create Table</option>
-                  <option value="list">Make List</option>
+                  <option value="">-- Tool --</option>
+                  <option value="code">Code</option>
+                  <option value="table">Table</option>
                 </select>
                 <div class="tool-ui-container"></div>
-                <button class="adm-btn adm-btn-edit" style="margin-top:10px; width:100%" onclick="finalizeGraphCommand(this)">
-                  Insert into Edit Panel
-                </button>
+                <button class="adm-btn adm-btn-edit" style="width:100%;margin-top:10px" onclick="finalizeGraphCommand(this)">Insert Command</button>
               </div>` : ''}
-
-            <span class="close-extra" onclick="toggleExtra(this.parentElement.previousElementSibling)">
-              CLOSE <i class="fa-solid fa-xmark"></i>
-            </span>
+            <span class="close-extra" onclick="toggleExtra(this.parentElement.previousElementSibling)">CLOSE</span>
           </div>
         </div>` : '';
 
@@ -579,248 +517,113 @@
           <div class="update-header">
             <div class="update-dot dot-${u.color}"></div>
             <div class="update-title">${u.title}</div>
-            <span class="update-status-badge badge-${u.status}">
-              ${u.status === 'completed' ? '✓ Done' : u.status === 'in-progress' ? '⟳ In Progress' : '→ Upcoming'}
-            </span>
+            <span class="update-status-badge badge-${u.status}">${u.status}</span>
             ${isAdmin ? `<div class="update-actions">
-              <button class="adm-btn adm-btn-edit" onclick="editUpdate(${u.id})"><i class="fa-solid fa-pen"></i></button>
-              <button class="adm-btn adm-btn-del" onclick="deleteUpdate(${u.id})"><i class="fa-solid fa-trash"></i></button>
+              <button class="adm-btn adm-btn-edit" onclick="editUpdate(${u.id})">Edit</button>
             </div>` : ''}
           </div>
           <p class="update-description">${descHTML}</p>
           ${extraHtml}
-          <div class="update-meta">
-            <div class="meta-item">
-              <i class="fa-regular fa-calendar"></i> ${u.date}
-            </div>
-            ${etaHtml}
-          </div>
-        </div>
-      `;
+          <div class="update-meta"><i class="fa-regular fa-calendar"></i> ${u.date} ${etaHtml}</div>
+        </div>`;
     }).join('');
   }
 
-  // ═══════════════════════════════════════════════════════════
-  // ADMIN FUNCTIONS
-  // ═══════════════════════════════════════════════════════════
+  // 4. Admin Interaction
   function setAdmin(val) {
     isAdmin = val;
     const btn = document.getElementById('adminBtn');
     const container = document.getElementById('adminButtonContainer');
-
     if (val) {
       btn.className = 'admin-pill active';
-      btn.innerHTML = '<i class="fa-solid fa-shield-halved"></i> Admin ✓';
-      btn.onclick = logoutAdmin;
-      container.innerHTML = `<button class="admin-add-btn" onclick="addUpdate()"><i class="fa-solid fa-plus"></i> Add Update</button>`;
+      btn.innerHTML = 'Admin ✓';
+      btn.onclick = () => setAdmin(false);
+      container.innerHTML = `<button class="admin-add-btn" onclick="addUpdate()">+ Add Update</button>`;
     } else {
       btn.className = 'admin-pill login';
-      btn.innerHTML = '<i class="fa-solid fa-shield-halved"></i> Admin';
-      btn.onclick = () => openModal('adminLoginModal');
+      btn.innerHTML = 'Admin';
+      btn.onclick = () => document.getElementById('adminLoginModal').classList.add('open');
       container.innerHTML = '';
     }
     renderUpdates();
   }
 
-  function logoutAdmin() {
-    setAdmin(false);
-    showToast('Logged out of admin');
-  }
-
-  document.getElementById('adminBtn').onclick = () => openModal('adminLoginModal');
-
-  document.getElementById('adminLoginBtn').addEventListener('click', () => {
-    const u = document.getElementById('adminUser').value.trim();
+  document.getElementById('adminLoginBtn').onclick = () => {
+    const u = document.getElementById('adminUser').value;
     const p = document.getElementById('adminPass').value;
-    const errEl = document.getElementById('adminError');
-    errEl.textContent = '';
-
     if (u === ADMIN_USER && p === ADMIN_PASS) {
-      closeModal('adminLoginModal');
-      document.getElementById('adminUser').value = '';
-      document.getElementById('adminPass').value = '';
+      document.getElementById('adminLoginModal').classList.remove('open');
       setAdmin(true);
-      showToast('Admin mode enabled 🛡️');
-    } else {
-      errEl.textContent = 'Invalid credentials.';
     }
-  });
+  };
 
   function addUpdate() {
     editingId = null;
-    document.getElementById('modalTitle').textContent = 'Add Update';
     document.getElementById('editTitle').value = '';
     document.getElementById('editDescription').value = '';
-    document.getElementById('editStatus').value = 'upcoming';
-    document.getElementById('editColor').value = 'gold';
-    document.getElementById('editDate').value = '';
-    document.getElementById('editEta').value = '';
     document.getElementById('editExtra').value = '';
-    openModal('editModal');
+    document.getElementById('editModal').classList.add('open');
   }
 
   function editUpdate(id) {
-    const update = UPDATES.find((u) => u.id === id);
-    if (!update) return;
+    const u = UPDATES.find(x => x.id === id);
+    if (!u) return;
     editingId = id;
-    document.getElementById('modalTitle').textContent = 'Edit Update';
-    document.getElementById('editTitle').value = update.title;
-    document.getElementById('editDescription').value = update.description;
-    document.getElementById('editStatus').value = update.status;
-    document.getElementById('editColor').value = update.color;
-    document.getElementById('editDate').value = update.date;
-    document.getElementById('editEta').value = update.eta || '';
-    document.getElementById('editExtra').value = update.extra || '';
-    openModal('editModal');
+    document.getElementById('editTitle').value = u.title;
+    document.getElementById('editDescription').value = u.description;
+    document.getElementById('editExtra').value = u.extra || '';
+    document.getElementById('editModal').classList.add('open');
   }
 
-  function deleteUpdate(id) {
-    if (confirm('Delete this update?')) {
-      UPDATES = UPDATES.filter((u) => u.id !== id);
-      saveUpdates();
-      renderUpdates();
-      showToast('Update deleted 🗑️');
-    }
-  }
-
-  document.getElementById('editSaveBtn').addEventListener('click', () => {
-    const title = document.getElementById('editTitle').value.trim();
-    const description = document.getElementById('editDescription').value.trim();
-    const status = document.getElementById('editStatus').value;
-    const color = document.getElementById('editColor').value;
-    const date = document.getElementById('editDate').value.trim();
-    const eta = document.getElementById('editEta').value.trim();
-    const extra = document.getElementById('editExtra').value.trim();
+  document.getElementById('editSaveBtn').onclick = () => {
+    const title = document.getElementById('editTitle').value;
+    const desc = document.getElementById('editDescription').value;
+    const extra = document.getElementById('editExtra').value;
     
-    if (!title || !description || !date) {
-      showToast('Please fill all fields');
-      return;
-    }
-
     if (editingId === null) {
-      const newId = Math.max(...UPDATES.map((u) => u.id), 0) + 1;
-      UPDATES.push({ id: newId, title, description, status, color, date, eta, extra });
+      UPDATES.push({ id: Date.now(), title, description: desc, extra, status: 'upcoming', color: 'gold', date: 'May 2026' });
     } else {
-      const update = UPDATES.find((u) => u.id === editingId);
-      if (update) {
-        update.title = title;
-        update.description = description;
-        update.status = status;
-        update.color = color;
-        update.date = date;
-        update.eta = eta;
-        update.extra = extra;
-      }
+      const u = UPDATES.find(x => x.id === editingId);
+      u.title = title; u.description = desc; u.extra = extra;
     }
     saveUpdates();
-    closeModal('editModal');
+    document.getElementById('editModal').classList.remove('open');
     renderUpdates();
-  });
+  };
 
-  // --- Support Functions for Dropdown and Graph Builder ---
+  // 5. Support Tools
   function toggleExtra(btn) {
-    const content = btn.nextElementSibling;
-    btn.classList.toggle('active');
-    content.classList.toggle('open');
+    btn.nextElementSibling.classList.toggle('open');
   }
 
   function updateToolUI(select) {
     const container = select.nextElementSibling;
     const tool = select.value;
-    let html = '';
-    if (tool === 'code') {
-      html = `<input type="text" placeholder="Language (e.g. JS)" class="tool-input">
-              <textarea placeholder="Paste code..." class="tool-area" rows="4"></textarea>`;
-    } else if (tool === 'chart') {
-      html = `<select class="tool-input"><option>Line Graph</option><option>Bar Graph</option></select>
-              <input type="text" placeholder="Data (10, 20, 30)" class="tool-input">`;
-    } else if (tool === 'table') {
-      html = `<div style="display:flex; gap:8px;"><input type="number" placeholder="Rows" class="tool-input"><input type="number" placeholder="Cols" class="tool-input"></div>`;
-    } else if (tool === 'list') {
-      html = `<textarea placeholder="• Item 1..." class="tool-area" rows="4"></textarea>`;
-    }
-    container.innerHTML = html;
+    container.innerHTML = tool === 'table' ? '<input type="number" placeholder="Rows"> <input type="number" placeholder="Cols">' : '<textarea placeholder="Code..."></textarea>';
   }
 
   function finalizeGraphCommand(btn) {
-    const container = btn.previousElementSibling; 
-    const toolSelect = container.previousElementSibling; 
-    const tool = toolSelect.value;
-    let finalSnippet = '';
-
-    if (tool === 'code') {
-      const lang = container.querySelector('input').value;
-      const code = container.querySelector('textarea').value;
-      finalSnippet = `\n[CODE:${lang}]\n${code}\n[/CODE]`;
-    } else if (tool === 'table') {
-      const r = container.querySelectorAll('input')[0].value || 2;
-      const c = container.querySelectorAll('input')[1].value || 2;
-      finalSnippet = `\n[TABLE:${r}x${c}]`;
-    } else if (tool === 'chart') {
-      const type = container.querySelector('select').value;
-      const data = container.querySelector('input').value;
-      finalSnippet = `\n[CHART:${type}](${data})`;
-    } else if (tool === 'list') {
-      const list = container.querySelector('textarea').value;
-      finalSnippet = `\n[LIST]\n${list}\n[/LIST]`;
-    }
-
-    if (finalSnippet) {
-      const extraArea = document.getElementById('editExtra');
-      extraArea.value += finalSnippet;
-      showToast('Inserted! Now click the GOLD SAVE button.');
-    }
+    const container = btn.previousElementSibling;
+    const val = container.querySelector('textarea') ? `\n[CODE]\n${container.querySelector('textarea').value}\n[/CODE]` : `\n[TABLE:${container.querySelectorAll('input')[0].value}x${container.querySelectorAll('input')[1].value}]`;
+    document.getElementById('editExtra').value += val;
   }
 
-  // Slash Commands Menu logic
-  const commands = [
-    { name: '/graph', desc: 'Open Tool Builder', text: '/graph' },
-    { name: '/media', desc: 'Add image: /media(URL)', text: '/media()' },
-    { name: '/url', desc: 'Custom link: /url(Text, URL)', text: '/url(, )' }
-  ];
-
-  const cmdMenu = document.getElementById('cmdMenu');
-  let activeInput = null;
-
+  // 6. Slash Menu
+  const commands = [ {name:'/graph', t:'/graph'}, {name:'/media', t:'/media()'}, {name:'/url', t:'/url(,)'} ];
   function attachCmdListener(id) {
     const el = document.getElementById(id);
     if (!el) return;
-    el.addEventListener('input', (e) => {
-      const cursor = el.selectionStart;
-      if (el.value[cursor - 1] === '/') {
-        activeInput = el;
-        const rect = el.getBoundingClientRect();
-        cmdMenu.style.display = 'block';
-        cmdMenu.style.top = `${window.scrollY + rect.top - 145}px`;
-        cmdMenu.style.left = `${rect.left}px`;
-        cmdMenu.innerHTML = commands.map(cmd => `
-          <div class="suggestion-item" onclick="insertCmd('${cmd.text}')">
-            <b>${cmd.name}</b><span>${cmd.desc}</span>
-          </div>`).join('');
-      } else { cmdMenu.style.display = 'none'; }
-    });
+    el.oninput = () => {
+      if (el.value[el.selectionStart - 1] === '/') {
+        const menu = document.getElementById('cmdMenu');
+        menu.style.display = 'block';
+        menu.innerHTML = commands.map(c => `<div onclick="this.parentElement.style.display='none'; document.getElementById('${id}').value+='${c.t}'">${c.name}</div>`).join('');
+      }
+    };
   }
-
-  function insertCmd(text) {
-    const start = activeInput.selectionStart;
-    activeInput.value = activeInput.value.substring(0, start - 1) + text + activeInput.value.substring(activeInput.selectionEnd);
-    cmdMenu.style.display = 'none';
-    activeInput.focus();
-    const offset = text.includes('(, )') ? 4 : (text.includes('()') ? 7 : text.length);
-    activeInput.setSelectionRange(start + offset - 1, start + offset - 1);
-  }
-
   ['editDescription', 'editExtra'].forEach(attachCmdListener);
 
-  document.addEventListener('click', (e) => {
-    if (cmdMenu && !cmdMenu.contains(e.target) && !['editDescription', 'editExtra'].includes(e.target.id)) {
-      cmdMenu.style.display = 'none';
-    }
-  });
-
-  // ═══════════════════════════════════════════════════════════
-  // INIT
-  // ═══════════════════════════════════════════════════════════
+  // Initial Load
   loadUpdates();
   renderUpdates();
 </script>
