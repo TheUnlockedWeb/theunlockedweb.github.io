@@ -488,7 +488,7 @@
     }
   }
 
-  // ═══════════════════════════════���═══════════════════════════
+  // ═══════════════════════════════════════════════════════════
   // MODAL FUNCTIONS
   // ═══════════════════════════════════════════════════════════
   function openModal(modalId) {
@@ -501,6 +501,7 @@
 
   function showToast(msg) {
     const toast = document.getElementById('toast');
+    if (!toast) return;
     toast.textContent = msg;
     toast.classList.add('show');
     setTimeout(() => toast.classList.remove('show'), 3000);
@@ -509,71 +510,69 @@
   // ═══════════════════════════════════════════════════════════
   // RENDER UPDATES
   // ═══════════════════════════════════════════════════════════
-function renderUpdates() {
+  function renderUpdates() {
     const container = document.getElementById('updatesContainer');
+    if (!container) return;
+    
     container.innerHTML = UPDATES.map((u) => {
-      // 1. Process /graph detection
       const hasGraph = u.extra && u.extra.includes('/graph');
       const cleanExtra = u.extra ? u.extra.replace('/graph', '').trim() : '';
 
-      // 2. Define Regex for Links & Media
       const urlRegex = /\/url\(([^,]+),\s*([^)]+)\)/g; 
       const mediaRegex = /\/media\(([^)]+)\)/g;      
       const rawUrlRegex = /(?<!["=>])(https?:\/\/[^\s<]+)/g; 
 
-      // 3. Helper to inject HTML tags into plain text
-const processText = (str) => {
-      if (!str) return '';
-      return str
-        .replace(urlRegex, '<a href="$2" target="_blank" class="text-link">$1</a>')
-        .replace(mediaRegex, '<div class="update-media-content"><img src="$1" onclick="window.open(this.src)"></div>')
-        .replace(rawUrlRegex, '<a href="$1" target="_blank" class="text-link">$1</a>')
-        // This part finds [TABLE:Rows x Cols] and builds the HTML
-        .replace(/\[TABLE:(\d+)x(\d+)\]/g, (match, r, c) => {
-           let table = '<table class="generated-table">';
-           for(let i=0; i<r; i++) {
-             table += '<tr>';
-             for(let j=0; j<c; j++) table += '<td>Data</td>';
-             table += '</tr>';
-           }
-           return table + '</table>';
-        });
-    };
+      const processText = (str) => {
+        if (!str) return '';
+        return str
+          .replace(urlRegex, '<a href="$2" target="_blank" class="text-link">$1</a>')
+          .replace(mediaRegex, '<div class="update-media-content"><img src="$1" onclick="window.open(this.src)"></div>')
+          .replace(rawUrlRegex, '<a href="$1" target="_blank" class="text-link">$1</a>')
+          .replace(/\[TABLE:(\d+)x(\d+)\]/g, (match, r, c) => {
+             let table = '<table class="generated-table">';
+             for(let i=0; i<r; i++) {
+               table += '<tr>';
+               for(let j=0; j<c; j++) table += '<td>Data</td>';
+               table += '</tr>';
+             }
+             return table + '</table>';
+          });
+      };
+
       const descHTML = processText(u.description);
       const extraTextHTML = processText(cleanExtra);
       const etaHtml = u.eta ? `<div class="meta-item"><i class="fa-solid fa-clock" style="color:var(--gold)"></i> ${u.eta}</div>` : '';
 
-      // 4. Build the Dropdown HTML
-const extraHtml = u.extra ? `
-      <div class="update-extra-wrapper">
-        <button class="learn-more-btn ${hasGraph ? 'active' : ''}" onclick="toggleExtra(this)">
-          <span>Learn More</span>
-          <i class="fa-solid fa-chevron-down"></i>
-        </button>
-        <div class="extra-content ${hasGraph ? 'open' : ''}">
-          <div class="extra-text-body">${extraTextHTML}</div>
-          
-          ${(hasGraph && isAdmin) ? `
-            <div class="graph-builder">
-              <p class="builder-label">Admin Tool Builder</p>
-              <select class="tool-select" onchange="updateToolUI(this)">
-                <option value="">-- Select a Tool --</option>
-                <option value="code">Insert Code Snippet</option>
-                <option value="chart">Draw Graph</option>
-                <option value="table">Create Table</option>
-                <option value="list">Make List</option>
-              </select>
-              <div class="tool-ui-container"></div>
-              <button class="adm-btn adm-btn-edit" style="margin-top:10px; width:100%" onclick="finalizeGraphCommand(this)">
-                Insert into Edit Panel
-              </button>
-            </div>` : ''}
+      const extraHtml = u.extra ? `
+        <div class="update-extra-wrapper">
+          <button class="learn-more-btn ${hasGraph ? 'active' : ''}" onclick="toggleExtra(this)">
+            <span>Learn More</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          <div class="extra-content ${hasGraph ? 'open' : ''}">
+            <div class="extra-text-body">${extraTextHTML}</div>
+            
+            ${(hasGraph && isAdmin) ? `
+              <div class="graph-builder">
+                <p class="builder-label">Admin Tool Builder</p>
+                <select class="tool-select" onchange="updateToolUI(this)">
+                  <option value="">-- Select a Tool --</option>
+                  <option value="code">Insert Code Snippet</option>
+                  <option value="chart">Draw Graph</option>
+                  <option value="table">Create Table</option>
+                  <option value="list">Make List</option>
+                </select>
+                <div class="tool-ui-container"></div>
+                <button class="adm-btn adm-btn-edit" style="margin-top:10px; width:100%" onclick="finalizeGraphCommand(this)">
+                  Insert into Edit Panel
+                </button>
+              </div>` : ''}
 
-          <span class="close-extra" onclick="toggleExtra(this.parentElement.previousElementSibling)">
-            CLOSE <i class="fa-solid fa-xmark"></i>
-          </span>
-        </div>
-      </div>` : '';
+            <span class="close-extra" onclick="toggleExtra(this.parentElement.previousElementSibling)">
+              CLOSE <i class="fa-solid fa-xmark"></i>
+            </span>
+          </div>
+        </div>` : '';
 
       return `
         <div class="update-item">
@@ -636,11 +635,6 @@ const extraHtml = u.extra ? `
     const errEl = document.getElementById('adminError');
     errEl.textContent = '';
 
-    if (!u || !p) {
-      errEl.textContent = 'Enter both fields.';
-      return;
-    }
-
     if (u === ADMIN_USER && p === ADMIN_PASS) {
       closeModal('adminLoginModal');
       document.getElementById('adminUser').value = '';
@@ -650,10 +644,6 @@ const extraHtml = u.extra ? `
     } else {
       errEl.textContent = 'Invalid credentials.';
     }
-  });
-
-  document.getElementById('adminPass').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') document.getElementById('adminLoginBtn').click();
   });
 
   function addUpdate() {
@@ -708,12 +698,9 @@ const extraHtml = u.extra ? `
     }
 
     if (editingId === null) {
-      // Add new
       const newId = Math.max(...UPDATES.map((u) => u.id), 0) + 1;
       UPDATES.push({ id: newId, title, description, status, color, date, eta, extra });
-      showToast('Update added! 📝');
     } else {
-      // Edit existing
       const update = UPDATES.find((u) => u.id === editingId);
       if (update) {
         update.title = title;
@@ -723,91 +710,14 @@ const extraHtml = u.extra ? `
         update.date = date;
         update.eta = eta;
         update.extra = extra;
-        showToast('Update saved! 📝');
       }
     }
-
     saveUpdates();
     closeModal('editModal');
     renderUpdates();
   });
 
-  // ═══════════════════════════════════════════════════════════
-  // INIT
-  // ═══════════════════════════════════════════════════════════
-  loadUpdates();
-  renderUpdates();
   // --- Support Functions for Dropdown and Graph Builder ---
-  function toggleExtra(btn) {
-    const content = btn.nextElementSibling;
-    btn.classList.toggle('active');
-    content.classList.toggle('open');
-  }
-
-  function updateToolUI(select) {
-    const container = select.nextElementSibling;
-    const tool = select.value;
-    let html = '';
-    
-    if (tool === 'code') {
-      html = `<input type="text" placeholder="Language (e.g. Python)" class="tool-input">
-              <textarea placeholder="Paste code here..." class="tool-area" rows="4"></textarea>`;
-    } else if (tool === 'chart') {
-      html = `<select class="tool-input"><option>Line Graph</option><option>Bar Graph</option></select>
-              <input type="text" placeholder="Data points (e.g. 10, 20, 30)" class="tool-input">`;
-    } else if (tool === 'table') {
-      html = `<div style="display:flex;gap:8px">
-                <input type="number" placeholder="Rows" class="tool-input">
-                <input type="number" placeholder="Cols" class="tool-input">
-              </div>`;
-    } else if (tool === 'list') {
-      html = `<textarea placeholder="Enter list items..." class="tool-area" rows="4"></textarea>`;
-    }
-    
-    container.innerHTML = html;
-  }
-  // --- Command Menu & Support Logic ---
-  const commands = [
-    { name: '/graph', desc: 'Open Tool Builder', text: '/graph' },
-    { name: '/media', desc: 'Add image: /media(URL)', text: '/media()' },
-    { name: '/url', desc: 'Custom link: /url(Text, URL)', text: '/url(, )' }
-  ];
-
-  const cmdMenu = document.getElementById('cmdMenu');
-  let activeInput = null;
-
-  function attachCmdListener(id) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.addEventListener('input', (e) => {
-      const cursor = el.selectionStart;
-      if (el.value[cursor - 1] === '/') {
-        activeInput = el;
-        const rect = el.getBoundingClientRect();
-        cmdMenu.style.display = 'block';
-        cmdMenu.style.top = `${window.scrollY + rect.top - 145}px`;
-        cmdMenu.style.left = `${rect.left}px`;
-        cmdMenu.innerHTML = commands.map(cmd => `
-          <div class="suggestion-item" onclick="insertCmd('${cmd.text}')">
-            <b>${cmd.name}</b><span>${cmd.desc}</span>
-          </div>`).join('');
-      } else { 
-        cmdMenu.style.display = 'none'; 
-      }
-    });
-  }
-
-  function insertCmd(text) {
-    const start = activeInput.selectionStart;
-    activeInput.value = activeInput.value.substring(0, start - 1) + text + activeInput.value.substring(activeInput.selectionEnd);
-    cmdMenu.style.display = 'none';
-    activeInput.focus();
-    const offset = text.includes('(, )') ? 4 : (text.includes('()') ? 7 : text.length);
-    activeInput.setSelectionRange(start + offset - 1, start + offset - 1);
-  }
-
-  ['editDescription', 'editExtra'].forEach(attachCmdListener);
-
   function toggleExtra(btn) {
     const content = btn.nextElementSibling;
     btn.classList.toggle('active');
@@ -832,7 +742,6 @@ const extraHtml = u.extra ? `
     container.innerHTML = html;
   }
 
-  // NEW: Finalize function that writes the command into your edit box
   function finalizeGraphCommand(btn) {
     const container = btn.previousElementSibling; 
     const toolSelect = container.previousElementSibling; 
@@ -859,12 +768,59 @@ const extraHtml = u.extra ? `
     if (finalSnippet) {
       const extraArea = document.getElementById('editExtra');
       extraArea.value += finalSnippet;
-      showToast('Inserted! Now click the GOLD SAVE button in the main panel.');
+      showToast('Inserted! Now click the GOLD SAVE button.');
     }
   }
+
+  // Slash Commands Menu logic
+  const commands = [
+    { name: '/graph', desc: 'Open Tool Builder', text: '/graph' },
+    { name: '/media', desc: 'Add image: /media(URL)', text: '/media()' },
+    { name: '/url', desc: 'Custom link: /url(Text, URL)', text: '/url(, )' }
+  ];
+
+  const cmdMenu = document.getElementById('cmdMenu');
+  let activeInput = null;
+
+  function attachCmdListener(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', (e) => {
+      const cursor = el.selectionStart;
+      if (el.value[cursor - 1] === '/') {
+        activeInput = el;
+        const rect = el.getBoundingClientRect();
+        cmdMenu.style.display = 'block';
+        cmdMenu.style.top = `${window.scrollY + rect.top - 145}px`;
+        cmdMenu.style.left = `${rect.left}px`;
+        cmdMenu.innerHTML = commands.map(cmd => `
+          <div class="suggestion-item" onclick="insertCmd('${cmd.text}')">
+            <b>${cmd.name}</b><span>${cmd.desc}</span>
+          </div>`).join('');
+      } else { cmdMenu.style.display = 'none'; }
+    });
+  }
+
+  function insertCmd(text) {
+    const start = activeInput.selectionStart;
+    activeInput.value = activeInput.value.substring(0, start - 1) + text + activeInput.value.substring(activeInput.selectionEnd);
+    cmdMenu.style.display = 'none';
+    activeInput.focus();
+    const offset = text.includes('(, )') ? 4 : (text.includes('()') ? 7 : text.length);
+    activeInput.setSelectionRange(start + offset - 1, start + offset - 1);
+  }
+
+  ['editDescription', 'editExtra'].forEach(attachCmdListener);
 
   document.addEventListener('click', (e) => {
     if (cmdMenu && !cmdMenu.contains(e.target) && !['editDescription', 'editExtra'].includes(e.target.id)) {
       cmdMenu.style.display = 'none';
     }
   });
+
+  // ═══════════════════════════════════════════════════════════
+  // INIT
+  // ═══════════════════════════════════════════════════════════
+  loadUpdates();
+  renderUpdates();
+</script>
