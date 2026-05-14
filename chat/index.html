@@ -850,6 +850,120 @@ function showToast(msg) {
   const t = el('toast'); t.textContent = msg; t.classList.add('show');
   clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
 }
+  // ── Chat Admin System ────────────────────────
+const CHAT_ADMIN_USER = 'admin';
+const CHAT_ADMIN_PASS = 'goodpassword';
+const ADMIN_STORAGE_KEY = 'tuw_chat_admin_status';
+let isChatAdmin = false;
+let selectedMessageId = null;
+
+function closeChatModal(id) { document.getElementById(id).classList.remove('open'); }
+function openChatModal(id) { document.getElementById(id).classList.add('open'); }
+
+// Check for saved admin status on page load
+function restoreAdminStatus() {
+  const saved = localStorage.getItem(ADMIN_STORAGE_KEY);
+  if (saved === 'true') {
+    isChatAdmin = true;
+    updateAdminUI();
+  }
+}
+
+// Update admin UI (name badge, settings button, etc)
+function updateAdminUI() {
+  const userNameEl = el('userName');
+  const settingsBtn = el('roomSettingsBtn');
+  
+  if (isChatAdmin) {
+    // Add admin badge to name
+    if (!userNameEl.querySelector('.admin-badge-name')) {
+      const badge = document.createElement('span');
+      badge.className = 'admin-badge-name';
+      badge.textContent = 'ADMIN';
+      userNameEl.appendChild(badge);
+    }
+    
+    // Show settings button
+    if (settingsBtn) settingsBtn.style.display = 'flex';
+    
+    // Update admin pill
+    el('chatAdminBtn').className = 'admin-pill active';
+    el('chatAdminBtn').innerHTML = '<i class="fa-solid fa-shield-halved"></i> Admin ✓';
+  } else {
+    // Remove admin badge
+    userNameEl.querySelector('.admin-badge-name')?.remove();
+    
+    // Hide settings button
+    if (settingsBtn) settingsBtn.style.display = 'none';
+    
+    // Update admin pill
+    el('chatAdminBtn').className = 'admin-pill login';
+    el('chatAdminBtn').innerHTML = '<i class="fa-solid fa-shield-halved"></i> Admin';
+  }
+}
+
+// Admin login
+el('chatAdminBtn').addEventListener('click', () => {
+  if (isChatAdmin) { 
+    // Sign out of admin
+    isChatAdmin = false;
+    localStorage.removeItem(ADMIN_STORAGE_KEY);
+    updateAdminUI();
+    showToast('Admin mode disabled');
+  } else {
+    openChatModal('chatAdminLoginModal');
+  }
+});
+
+el('chatAdminLoginBtn').addEventListener('click', () => {
+  const u = el('chatAdminUser').value.trim();
+  const p = el('chatAdminPass').value;
+  if (u === CHAT_ADMIN_USER && p === CHAT_ADMIN_PASS) {
+    closeChatModal('chatAdminLoginModal');
+    isChatAdmin = true;
+    localStorage.setItem(ADMIN_STORAGE_KEY, 'true');
+    updateAdminUI();
+    el('chatAdminUser').value = '';
+    el('chatAdminPass').value = '';
+    el('chatAdminError').textContent = '';
+    showToast('Admin mode enabled 🛡️');
+  } else {
+    el('chatAdminError').textContent = 'Invalid credentials.';
+  }
+});
+
+// Add context menu for admin message actions (right-click on message)
+document.addEventListener('contextmenu', (e) => {
+  if (!isChatAdmin) return;
+  const msgEl = e.target.closest('.msg');
+  if (!msgEl) return;
+  e.preventDefault();
+  selectedMessageId = msgEl.dataset.msgId;
+  openChatModal('messageActionsModal');
+});
+
+// Edit/delete message handlers
+el('saveEditMessageBtn').addEventListener('click', async () => {
+  if (!selectedMessageId || !isChatAdmin) return;
+  const newText = el('editMessageText').value.trim();
+  if (!newText) { showToast('❌ Message cannot be empty.'); return; }
+  try {
+    await set(ref(db, `messages/${currentRoom}/${selectedMessageId}/text`), newText);
+    await set(ref(db, `messages/${currentRoom}/${selectedMessageId}/edited`), true);
+    closeChatModal('messageActionsModal');
+    showToast('✅ Message edited.');
+  } catch { showToast('❌ Failed to edit message.'); }
+});
+
+el('deleteMessageBtn').addEventListener('click', async () => {
+  if (!selectedMessageId || !isChatAdmin) return;
+  if (!confirm('Delete this message?')) return;
+  try {
+    await remove(ref(db, `messages/${currentRoom}/${selectedMessageId}`));
+    closeChatModal('messageActionsModal');
+    showToast('🗑️ Message deleted.');
+  } catch { showToast('❌ Failed to delete message.'); }
+});
 </script>
 </body>
 </html>
