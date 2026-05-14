@@ -528,6 +528,8 @@ function showChat(user) {
 
   el('userName').textContent  = user.displayName || 'Anonymous';
   el('userEmail').textContent = user.email;
+  restoreAdminStatus();
+  updateAdminUI();
 
   trackPresence(user);
   seedDefaultRooms().then(loadRoomList);
