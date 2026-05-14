@@ -706,6 +706,14 @@ const moderateRoomName = async n => {
   return r;
 };
 
+/* ── Sign out ─────────────────────────────────── */
+el('signoutBtn')?.addEventListener('click', async () => {
+  setTyping(false);
+  if (currentUser) await remove(ref(db, `presence/${currentUser.uid}`)).catch(() => {});
+  await signOut(auth); 
+  showToast('Signed out. See ya! 👋');
+});
+
 /* ── Send message ─────────────────────────────── */
 async function sendMessage() {
   const input = el('chatInput'), text = input.value.trim();
