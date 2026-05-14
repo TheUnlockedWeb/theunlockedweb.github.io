@@ -650,6 +650,24 @@
       showToast('Inserted! Click GOLD SAVE.');
     }
   }
+// --- This is roughly Line 620 ---
+  function deleteUpdate(id) {
+    if (confirm('Are you sure you want to delete this update? 🗑️')) {
+      UPDATES = UPDATES.filter((u) => u.id !== id);
+      saveUpdates();
+      renderUpdates();
+      showToast('Update deleted');
+    }
+  }
+
+  // >>> PASTE IT HERE (Line 624) <<<
+  function toggleExtra(btn) {
+    const wrapper = btn.closest('.update-extra-wrapper');
+    if (!wrapper) return;
+    const content = wrapper.querySelector('.extra-content');
+    btn.classList.toggle('active');
+    content.classList.toggle('open');
+  }
 
   // 6. Init and Event Listeners
   window.onload = () => {
