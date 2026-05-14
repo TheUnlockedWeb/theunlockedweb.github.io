@@ -31,18 +31,39 @@ jobs:
           }
 
           print(f'Fetching {CHANNEL}')
-          req = urllib.request.Request(CHANNEL, headers=headers)
-          with urllib.request.urlopen(req, timeout=20) as r:
-            html = r.read().decode('utf-8')
-
-          # YouTube embeds all page data as a JS variable
-          match = re.search(r'var ytInitialData\s*=\s*(\{.+?\});</script>', html, re.DOTALL)
-          if not match:
-            print('Could not find ytInitialData in page', file=sys.stderr)
-            print('HTML snippet:', html[:500])
+          try:
+            req = urllib.request.Request(CHANNEL, headers=headers)
+            with urllib.request.urlopen(req, timeout=20) as r:
+              html = r.read().decode('utf-8')
+          except Exception as e:
+            print(f'Error fetching channel: {e}', file=sys.stderr)
             sys.exit(1)
 
-          data = json.loads(match.group(1))
+          # Try to find ytInitialData
+          match = re.search(r'var ytInitialData\s*=\s*(\{.+?\});</script>', html, re.DOTALL)
+          if not match:
+            print('⚠️  ytInitialData not found, trying alternative method...', file=sys.stderr)
+            # Try alternate patterns
+            match = re.search(r'ytInitialData\s*=\s*(\{.+?\})\s*;\s*(?:var|window)', html, re.DOTALL)
+          
+          if not match:
+            print('❌ Could not find ytInitialData in page', file=sys.stderr)
+            print('This may be due to YouTube blocking the request or changing their page structure.')
+            print('Consider using yt-dlp or YouTube Data API instead.')
+            # Create empty videos.json to prevent 404
+            os.makedirs('json', exist_ok=True)
+            with open('json/videos.json', 'w') as f:
+              json.dump([], f, indent=2)
+            sys.exit(0)
+
+          try:
+            data = json.loads(match.group(1))
+          except json.JSONDecodeError as e:
+            print(f'Error parsing JSON: {e}', file=sys.stderr)
+            os.makedirs('json', exist_ok=True)
+            with open('json/videos.json', 'w') as f:
+              json.dump([], f, indent=2)
+            sys.exit(0)
 
           # Navigate the nested structure to find video items
           tabs = data.get('contents', {}) \
@@ -61,7 +82,7 @@ jobs:
               if vi:
                 video_items.append(vi)
 
-          print(f'Found {len(video_items)} videos')
+          print(f'✅ Found {len(video_items)} videos')
 
           videos = []
           for vi in video_items:
@@ -70,18 +91,8 @@ jobs:
             length = vi.get('lengthText', {}).get('simpleText', '')
             date_str = vi.get('publishedTimeText', {}).get('simpleText', '')
 
-            # Detect shorts by duration (≤60s)
-            total_secs = 0
-            if length:
-              parts = length.split(':')
-              try:
-                if len(parts) == 2:
-                  total_secs = int(parts[0]) * 60 + int(parts[1])
-                elif len(parts) == 3:
-                  total_secs = int(parts[0]) * 3600 + int(parts[1]) * 60 + int(parts[2])
-              except:
-                pass
-            is_short = (total_secs > 0 and total_secs <= 60) or '#short' in title.lower()
+            # Detect shorts: only if title has #short tag (not duration-based)
+            is_short = '#short' in title.lower()
 
             thumb = f'https://i.ytimg.com/vi/{vid_id}/hqdefault.jpg'
 
@@ -95,13 +106,13 @@ jobs:
             })
 
           if not videos:
-            print('No videos parsed — channel may have no public videos or YouTube changed its page structure')
+            print('⚠️  No videos parsed')
 
           os.makedirs('json', exist_ok=True)
           with open('json/videos.json', 'w') as f:
             json.dump(videos, f, indent=2)
 
-          print(f'Wrote {len(videos)} videos to json/videos.json')
+          print(f'✅ Wrote {len(videos)} videos to json/videos.json')
           EOF
 
       - name: Commit if changed
