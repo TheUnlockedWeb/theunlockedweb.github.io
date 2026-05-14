@@ -79,6 +79,19 @@
     .user-email { font-size: .66rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .signout-btn { background: none; border: none; color: var(--muted); cursor: pointer; font-size: .85rem; padding: 4px; transition: color .15s, transform .15s; }
     .signout-btn:hover { color: #f87171; transform: rotate(10deg); }
+    .admin-badge-name {
+  display: inline-block;
+  font-size: .65rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(245,158,11,.15);
+  color: var(--gold);
+  border: 1px solid rgba(245,158,11,.3);
+  margin-left: 6px;
+}
 
     /* ── Main chat ───────────────────────────── */
     .chat-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
@@ -270,15 +283,18 @@
   </aside>
 
   <main class="chat-main">
-    <div class="chat-header">
-      <i class="fa-solid fa-hashtag chat-header-icon"></i>
-      <span class="chat-header-name" id="roomName">general</span>
-      <span class="chat-header-desc" id="roomDesc"></span>
-      <span class="chat-header-owner" id="roomOwnerBadge" style="display:none">
-        <i class="fa-solid fa-crown" style="color:var(--gold);font-size:.75rem"></i>
-        <span id="roomOwnerName"></span>
-      </span>
-    </div>
+<div class="chat-header">
+  <i class="fa-solid fa-hashtag chat-header-icon"></i>
+  <span class="chat-header-name" id="roomName">general</span>
+  <span class="chat-header-desc" id="roomDesc"></span>
+  <span class="chat-header-owner" id="roomOwnerBadge" style="display:none">
+    <i class="fa-solid fa-crown" style="color:var(--gold);font-size:.75rem"></i>
+    <span id="roomOwnerName"></span>
+  </span>
+  <button id="roomSettingsBtn" onclick="openPermissionsModal()" style="margin-left: auto; background: none; border: none; color: var(--gold); cursor: pointer; font-size: 1rem; transition: transform .2s; padding: 8px; display: none;" title="Room Settings">
+    <i class="fa-solid fa-sliders"></i>
+  </button>
+</div>
     <div class="messages-wrap" id="messagesWrap"></div>
     <div class="typing-indicator" id="typingIndicator"></div>
     <div class="input-bar">
