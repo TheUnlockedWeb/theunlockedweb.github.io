@@ -341,7 +341,7 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import {
   getAuth, onAuthStateChanged, signOut,
-  GoogleAuthProvider, signInWithPopup,
+  GoogleAuthProvider, signInWithPopup, OAuthProvider, sendSignInLinkToEmail,
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 import {
   getDatabase, ref, push, onChildAdded, onChildRemoved,
@@ -440,7 +440,59 @@ el('googleSignInBtn').addEventListener('click', async () => {
     }
   }
 });
+  
+// Discord Sign In
+el('discordSignInBtn').addEventListener('click', async () => {
+  el('authError').textContent = '';
+  el('discordSignInBtn').disabled = true;
+  try {
+    const discordProvider = new OAuthProvider('discord.com');
+    discordProvider.addScope('identify');
+    discordProvider.addScope('email');
+    await signInWithPopup(auth, discordProvider);
+  } catch (e) {
+    el('discordSignInBtn').disabled = false;
+    if (e.code !== 'auth/popup-closed-by-user') {
+      el('authError').textContent = 'Discord sign-in failed — ' + (e.message || 'please try again.');
+    }
+  }
+});
 
+// GitHub Sign In
+el('githubSignInBtn').addEventListener('click', async () => {
+  el('authError').textContent = '';
+  el('githubSignInBtn').disabled = true;
+  try {
+    const githubProvider = new OAuthProvider('github.com');
+    githubProvider.addScope('user:email');
+    await signInWithPopup(auth, githubProvider);
+  } catch (e) {
+    el('githubSignInBtn').disabled = false;
+    if (e.code !== 'auth/popup-closed-by-user') {
+      el('authError').textContent = 'GitHub sign-in failed — ' + (e.message || 'please try again.');
+    }
+  }
+});
+
+// Email Sign In
+el('emailSignInBtn').addEventListener('click', async () => {
+  const email = prompt('Enter your email:');
+  if (!email) return;
+  el('authError').textContent = '';
+  el('emailSignInBtn').disabled = true;
+  try {
+    await sendSignInLinkToEmail(auth, email, {
+      url: window.location.href,
+      handleCodeInApp: true,
+    });
+    window.localStorage.setItem('emailForSignIn', email);
+    el('authError').textContent = '✅ Check your email for a sign-in link!';
+    el('emailSignInBtn').disabled = false;
+  } catch (e) {
+    el('emailSignInBtn').disabled = false;
+    el('authError').textContent = 'Email sign-in failed — ' + (e.message || 'please try again.');
+  }
+});
 function showAuth() {
   el('authOverlay').classList.remove('hidden');
   el('chatShell').style.display = 'none';
