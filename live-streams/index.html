@@ -262,8 +262,7 @@
     .input-name { width: 200px; }
     .input-msg { flex: 1; min-width: 260px; }
     
-    .board-meta-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-    @media (max-width: 768px) { .board-meta-controls { grid-template-columns: 1fr; } }
+    .board-meta-controls { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 20px; }
     
     .owner-terminal-box {
       background: #05050a; border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 10px; padding: 14px; font-family: monospace; display: flex; flex-direction: column; gap: 8px;
@@ -272,11 +271,23 @@
     .terminal-row { display: flex; gap: 10px; }
     .terminal-input { background: #0a0a14; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #fff; padding: 6px 10px; flex: 1; font-size: 0.8rem; }
 
-    .board-settings-box {
-      background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 8px;
+    /* Conditional Custom Controls wrappers mapping definitions */
+    .custom-sounds-panel-group {
+      display: none; 
+      flex-direction: column; 
+      gap: 12px; 
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--border);
     }
-    .settings-title { color: var(--gold); font-size: 0.85rem; font-family: 'Syne', sans-serif; font-weight: 700; display: flex; align-items: center; gap: 6px; }
-    .settings-select { background: #0d0d1b; border: 1px solid var(--border); border-radius: 6px; color: var(--text); padding: 6px 10px; font-family: 'Manrope', sans-serif; font-size: 0.8rem; cursor: pointer; }
+    .custom-sounds-panel-group.visible {
+      display: flex;
+    }
+    .sound-item-row-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
 
     .suggestions-scroll-container {
       max-height: 700px; overflow-y: auto; padding-right: 6px; scrollbar-width: thin;
@@ -348,17 +359,37 @@
     .watch-link:hover { text-shadow: 0 0 8px rgba(212,175,55,0.4); color: #fff; }
 
     .admin-add-btn { display: inline-flex; align-items: center; gap: 9px; font-family: 'Manrope', sans-serif; font-size: .87rem; font-weight: 600; padding: 11px 22px; border-radius: 10px; border: 1px solid; cursor: pointer; background: var(--gold); color: #000; border-color: var(--gold); margin-top: 4px; margin-bottom: 24px; }
-    .admin-badge { position: fixed; top: calc(var(--nav-h, 58px) + 10px); right: 14px; z-index: 20; }
-    .admin-pill { font-size: .7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 5px 12px; border-radius: 99px; font-family: 'Manrope', sans-serif; border: 1px solid; cursor: pointer; transition: all .15s; }
-    .admin-pill.login { color: var(--muted); border-color: var(--border); background: none; }
-    .admin-pill.login:hover { color: var(--sub); border-color: var(--border-h); background: rgba(255,255,255,.04); }
-    .admin-pill.active-owner { color: #f87171; border-color: rgba(248,113,113,0.35); background: rgba(248,113,113,0.1); }
-    .admin-pill.active-staff { color: #fb923c; border-color: rgba(251,146,60,0.35); background: rgba(251,146,60,0.1); }
+    
+    /* Bottom Cluster styles mapping alignment nodes layout */
+    .utility-badge-cluster { position: fixed; bottom: 20px; right: 20px; z-index: 20; display: flex; gap: 8px; }
+    .utility-pill { font-size: .7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 8px 16px; border-radius: 99px; font-family: 'Manrope', sans-serif; border: 1px solid; cursor: pointer; transition: all .15s; display: inline-flex; align-items: center; gap: 6px; }
+    .utility-pill.login-btn { color: var(--muted); border-color: var(--border); background: var(--card); }
+    .utility-pill.login-btn:hover { color: var(--sub); border-color: var(--border-h); background: rgba(255,255,255,.04); }
+    .utility-pill.active-owner { color: #f87171; border-color: rgba(248,113,113,0.35); background: rgba(248,113,113,0.1); }
+    .utility-pill.active-staff { color: #fb923c; border-color: rgba(251,146,60,0.35); background: rgba(251,146,60,0.1); }
+    
+    .utility-pill.settings-btn { color: var(--muted); border-color: var(--border); background: var(--card); }
+    .utility-pill.settings-btn:hover { color: var(--gold); border-color: var(--gold); background: rgba(212,175,55,0.05); }
 
+    /* Modal frameworks configuration */
     .modal-overlay { position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,.82); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; }
     .modal-overlay.open { display: flex; }
     .modal { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; width: 94%; max-width: 500px; position: relative; max-height: 90vh; overflow-y: auto; }
+    .modal label { display: block; font-size: .72rem; font-weight: 600; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; margin-top: 14px; margin-bottom: 6px; }
+    .modal input, .modal textarea, .modal select { width: 100%; background: #0d0d1b; border: 1px solid var(--border); border-radius: 8px; color: var(--text); padding: 9px 12px; font-family: 'Manrope', sans-serif; font-size: .88rem; }
+    .modal-btns { display: flex; gap: 10px; margin-top: 18px; }
+    .modal-btns button { flex: 1; padding: 10px; border-radius: 8px; border: none; font-family: 'Syne', sans-serif; font-weight: 700; cursor: pointer; }
+    .btn-confirm { background: var(--gold); color: #000; }
+    .btn-cancel { background: rgba(255,255,255,.07); color: var(--sub); }
     
+    /* Inline operational preview buttons configuration */
+    .audio-preview-btn {
+      align-self: flex-start; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--sub); font-size: 0.72rem; font-weight: 600; padding: 4px 10px; border-radius: 4px; cursor: pointer; transition: all 0.15s; font-family: 'Manrope', sans-serif;
+    }
+    .audio-preview-btn:hover {
+      background: rgba(212,175,55,0.1); border-color: var(--gold); color: var(--gold);
+    }
+
     @keyframes pulse-glow {
       0% { opacity: 0.4; transform: scale(0.96); box-shadow: 0 0 4px rgba(239, 68, 68, 0.4); }
       50% { opacity: 1; transform: scale(1.04); box-shadow: 0 0 14px rgba(239, 68, 68, 0.8); }
@@ -417,8 +448,9 @@
   <span class="f-copy">© 2026 EthanUnlocked's gaming hits</span>
 </footer>
 
-<div class="admin-badge">
-  <button class="admin-pill login" id="adminBtn"><i class="fa-solid fa-shield-halved"></i> Admin</button>
+<div class="utility-badge-cluster">
+  <button class="utility-pill settings-btn" onclick="openModal('globalSettingsModal')"><i class="fa-solid fa-gear"></i> Settings</button>
+  <button class="utility-pill login-btn" id="adminBtn"><i class="fa-solid fa-shield-halved"></i> Admin</button>
 </div>
 
 <div class="modal-overlay" id="adminLoginModal">
@@ -433,6 +465,84 @@
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeModal('adminLoginModal')">Cancel</button>
       <button class="btn-confirm" id="adminLoginBtn">Login</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="globalSettingsModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('globalSettingsModal')">×</button>
+    <h3><i class="fa-solid fa-gear" style="color:var(--gold);margin-right:8px;"></i> Suggestions Board Settings</h3>
+    
+    <label>Counter Badge Options</label>
+    <select class="settings-select" id="counterSettingSelect" onchange="updateCounterSettingFilter(this.value)">
+      <option value="all">Every single post and reply</option>
+      <option value="personal">Only replies to me or mentions</option>
+      <option value="off">Turn counter badge completely off</option>
+    </select>
+
+    <label style="margin-top:16px;">System Master Audio Settings Rule</label>
+    <select class="settings-select" id="soundMasterLogicSelect" onchange="updateSoundMasterLogic(this.value)">
+      <option value="everything">Everything (Tracks load path default 1 options)</option>
+      <option value="custom">Custom (Manually map unique files paths index values)</option>
+      <option value="random">Random (Shuffles array bounds elements continuously)</option>
+      <option value="none">None (Completely silences background audio drivers)</option>
+    </select>
+
+    <div class="custom-sounds-panel-group" id="customAudioPanelContainer">
+      <h4 style="font-family:'Syne',sans-serif; font-size:0.9rem; color:var(--text); border-bottom:1px solid var(--border); padding-bottom:6px; margin: 6px 0 0 0;">Map Custom Track Presets</h4>
+      
+      <div class="sound-item-row-wrapper">
+        <label>You Post Sound Allocation</label>
+        <select class="settings-select" id="soundPostSelect" onchange="updateSoundPreset('post', this.value)">
+          <option value="none">none (Muted)</option><option value="1">posted-1.mp3</option><option value="2">posted-2.mp3</option><option value="3">posted-3.mp3</option><option value="4">posted-4.mp3</option><option value="5">posted-5.mp3</option>
+        </select>
+        <button class="audio-preview-btn" onclick="previewIsolatedTrack('post')"><i class="fa-solid fa-play"></i> Preview sound</button>
+      </div>
+
+      <div class="sound-item-row-wrapper">
+        <label>Someone Replies Sound Allocation</label>
+        <select class="settings-select" id="soundReplySelect" onchange="updateSoundPreset('reply', this.value)">
+          <option value="none">none (Muted)</option><option value="1">replied-1.mp3</option><option value="2">replied-2.mp3</option><option value="3">replied-3.mp3</option><option value="4">replied-4.mp3</option><option value="5">replied-5.mp3</option>
+        </select>
+        <button class="audio-preview-btn" onclick="previewIsolatedTrack('reply')"><i class="fa-solid fa-play"></i> Preview sound</button>
+      </div>
+
+      <div class="sound-item-row-wrapper">
+        <label>Tab Switch Sound Allocation</label>
+        <select class="settings-select" id="soundTabSelect" onchange="updateSoundPreset('tab', this.value)">
+          <option value="none">none (Muted)</option><option value="1">tabclick-1.mp3</option><option value="2">tabclick-2.mp3</option><option value="3">tabclick-3.mp3</option><option value="4">tabclick-4.mp3</option><option value="5">tabclick-5.mp3</option>
+        </select>
+        <button class="audio-preview-btn" onclick="previewIsolatedTrack('tab')"><i class="fa-solid fa-play"></i> Preview sound</button>
+      </div>
+
+      <div class="sound-item-row-wrapper">
+        <label>Owner Bans Sound Allocation</label>
+        <select class="settings-select" id="soundBanSelect" onchange="updateSoundPreset('ban', this.value)">
+          <option value="none">none (Muted)</option><option value="1">banned-1.mp3</option><option value="2">banned-2.mp3</option><option value="3">banned-3.mp3</option><option value="4">banned-4.mp3</option><option value="5">banned-5.mp3</option>
+        </select>
+        <button class="audio-preview-btn" onclick="previewIsolatedTrack('ban')"><i class="fa-solid fa-play"></i> Preview sound</button>
+      </div>
+
+      <div class="sound-item-row-wrapper">
+        <label>Someone Edits Post Sound Allocation</label>
+        <select class="settings-select" id="soundEditSelect" onchange="updateSoundPreset('edit', this.value)">
+          <option value="none">none (Muted)</option><option value="1">edited-1.mp3</option><option value="2">edited-2.mp3</option><option value="3">edited-3.mp3</option><option value="4">edited-4.mp3</option><option value="5">edited-5.mp3</option>
+        </select>
+        <button class="audio-preview-btn" onclick="previewIsolatedTrack('edit')"><i class="fa-solid fa-play"></i> Preview sound</button>
+      </div>
+
+      <div class="sound-item-row-wrapper">
+        <label>Someone Deletes Post Sound Allocation</label>
+        <select class="settings-select" id="soundDeleteSelect" onchange="updateSoundPreset('delete', this.value)">
+          <option value="none">none (Muted)</option><option value="1">deleted-1.mp3</option><option value="2">deleted-2.mp3</option><option value="3">deleted-3.mp3</option><option value="4">deleted-4.mp3</option><option value="5">deleted-5.mp3</option>
+        </select>
+        <button class="audio-preview-btn" onclick="previewIsolatedTrack('delete')"><i class="fa-solid fa-play"></i> Preview sound</button>
+      </div>
+    </div>
+
+    <div class="modal-btns">
+      <button class="btn-confirm" style="width:100%; margin-top: 10px;" onclick="closeModal('globalSettingsModal')">Save Preferences</button>
     </div>
   </div>
 </div>
@@ -486,6 +596,8 @@
   const STORAGE_KEY = 'tuw_streams_data_v2';
   const BOARD_STORAGE_KEY = 'tuw_stream_board_ideas';
   const SETTINGS_STORAGE_KEY = 'tuw_stream_board_settings';
+  const AUDIO_STORAGE_KEY = 'tuw_stream_audio_presets';
+  const MASTER_LOGIC_STORAGE_KEY = 'tuw_stream_audio_master_logic';
   
   const OWNER_USER = 'Ethan Ioannou';
   const OWNER_PASS = 'leonisGOAT';
@@ -510,56 +622,115 @@
 
   const USER_SESSION_POSTS = new Set();
 
+  let masterSoundLogic = 'everything'; // 'everything', 'custom', 'random', 'none'
+  let AUDIO_PRESETS = { post: '1', reply: '1', tab: '1', ban: '1', edit: '1', delete: '1' };
+
+  function triggerAudioPlaybackModule(actionType) {
+    if (masterSoundLogic === 'none') return;
+    
+    let assignedIndex = '1';
+    
+    if (masterSoundLogic === 'everything') {
+      assignedIndex = '1';
+    } else if (masterSoundLogic === 'random') {
+      assignedIndex = Math.floor(Math.random() * 5 + 1).toString();
+    } else if (masterSoundLogic === 'custom') {
+      assignedIndex = AUDIO_PRESETS[actionType] || '1';
+      if (assignedIndex === 'none') return; // Isolated track set to none macro muting
+    }
+
+    let soundFilename = '';
+    if (actionType === 'post') soundFilename = `posted-${assignedIndex}.mp3`;
+    else if (actionType === 'reply') soundFilename = `replied-${assignedIndex}.mp3`;
+    else if (actionType === 'tab') soundFilename = `tabclick-${assignedIndex}.mp3`;
+    else if (actionType === 'ban') soundFilename = `banned-${assignedIndex}.mp3`;
+    else if (actionType === 'edit') soundFilename = `edited-${assignedIndex}.mp3`;
+    else if (actionType === 'delete') soundFilename = `deleted-${assignedIndex}.mp3`;
+
+    if(soundFilename) {
+      const audioInstance = new Audio(`./sounds/${soundFilename}`);
+      audioInstance.play().catch(e => console.log("Audio block context anomaly feedback intercept: ", e));
+    }
+  }
+
+  // Previews explicit audio assets safely from custom settings selectors panels directly
+  function previewIsolatedTrack(actionType) {
+    const selectorValue = document.getElementById(`sound${actionType.charAt(0).toUpperCase() + actionType.slice(1)}Select`).value;
+    if (selectorValue === 'none') {
+      showToast("Track mapped as none. Configuration is currently muted.");
+      return;
+    }
+    let soundFilename = '';
+    if (actionType === 'post') soundFilename = `posted-${selectorValue}.mp3`;
+    else if (actionType === 'reply') soundFilename = `replied-${selectorValue}.mp3`;
+    else if (actionType === 'tab') soundFilename = `tabclick-${selectorValue}.mp3`;
+    else if (actionType === 'ban') soundFilename = `banned-${selectorValue}.mp3`;
+    else if (actionType === 'edit') soundFilename = `edited-${selectorValue}.mp3`;
+    else if (actionType === 'delete') soundFilename = `deleted-${selectorValue}.mp3`;
+
+    if(soundFilename) {
+      const previewAudio = new Audio(`./sounds/${soundFilename}`);
+      previewAudio.play().catch(e => console.error("Audio pipeline block failure tracker feedback: ", e));
+    }
+  }
+
+  function updateSoundMasterLogic(value) {
+    masterSoundLogic = value;
+    localStorage.setItem(MASTER_LOGIC_STORAGE_KEY, value);
+    evaluateCustomSoundPanelVisibility();
+  }
+
+  function evaluateCustomSoundPanelVisibility() {
+    const customPanel = document.getElementById('customAudioPanelContainer');
+    if (!customPanel) return;
+    if (masterSoundLogic === 'custom') {
+      customPanel.classList.add('visible');
+    } else {
+      customPanel.classList.remove('visible');
+    }
+  }
+
+  function updateSoundPreset(action, indexValue) {
+    AUDIO_PRESETS[action] = indexValue;
+    localStorage.setItem(AUDIO_STORAGE_KEY, JSON.stringify(AUDIO_PRESETS));
+  }
+
   async function loadAllStreamsPipeline() {
     let localSaved = [];
-    try { 
-      const stored = localStorage.getItem(STORAGE_KEY); 
-      localSaved = stored ? JSON.parse(stored) : []; 
-    } catch(e) { 
-      localSaved = []; 
-    }
-    
+    try { const stored = localStorage.getItem(STORAGE_KEY); localSaved = stored ? JSON.parse(stored) : []; } catch(e) { localSaved = []; }
     STREAMS = localSaved.filter(s => s.status === 'past');
     const adminManualOverrides = localSaved.filter(s => s.status !== 'past');
 
-    try { 
-      const boardStored = localStorage.getItem(BOARD_STORAGE_KEY); 
-      BOARD_IDEAS = boardStored ? JSON.parse(boardStored) : []; 
-    } catch(e) { 
-      BOARD_IDEAS = []; 
-    }
+    try { const boardStored = localStorage.getItem(BOARD_STORAGE_KEY); BOARD_IDEAS = boardStored ? JSON.parse(boardStored) : []; } catch(e) { BOARD_IDEAS = []; }
+    try { const settingsStored = localStorage.getItem(SETTINGS_STORAGE_KEY); counterConfigMode = settingsStored || 'all'; } catch(e) { counterConfigMode = 'all'; }
+    try { const logicStored = localStorage.getItem(MASTER_LOGIC_STORAGE_KEY); masterSoundLogic = logicStored || 'everything'; document.getElementById('soundMasterLogicSelect').value = masterSoundLogic; } catch(e) { masterSoundLogic = 'everything'; }
     
+    evaluateCustomSoundPanelVisibility();
+
     try { 
-      const settingsStored = localStorage.getItem(SETTINGS_STORAGE_KEY); 
-      counterConfigMode = settingsStored || 'all'; 
-    } catch(e) { 
-      counterConfigMode = 'all'; 
-    }
+      const audioStored = localStorage.getItem(AUDIO_STORAGE_KEY); 
+      if(audioStored) {
+        AUDIO_PRESETS = JSON.parse(audioStored);
+        document.getElementById('soundPostSelect').value = AUDIO_PRESETS.post || '1';
+        document.getElementById('soundReplySelect').value = AUDIO_PRESETS.reply || '1';
+        document.getElementById('soundTabSelect').value = AUDIO_PRESETS.tab || '1';
+        document.getElementById('soundBanSelect').value = AUDIO_PRESETS.ban || '1';
+        document.getElementById('soundEditSelect').value = AUDIO_PRESETS.edit || '1';
+        document.getElementById('soundDeleteSelect').value = AUDIO_PRESETS.delete || '1';
+      }
+    } catch(e) {}
 
     computeInitialUnreadMetatags();
 
     if(!API_KEY || API_KEY.includes('PASTE_YOUR_')) {
-      STREAMS = [...adminManualOverrides, ...STREAMS]; 
-      evaluateLiveStatusDot(); 
-      renderStreams(); 
-      return;
+      STREAMS = [...adminManualOverrides, ...STREAMS]; evaluateLiveStatusDot(); renderStreams(); return;
     }
 
     try {
       const liveRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&type=video&eventType=live&key=${API_KEY}`);
       const liveData = await liveRes.json();
       if(liveData.items) {
-        liveData.items.forEach((item, i) => { 
-          STREAMS.push({ 
-            id: 'live-' + i + Date.now(), 
-            title: item.snippet.title, 
-            description: item.snippet.description, 
-            videoId: item.id.videoId, 
-            status: 'live', 
-            targetDate: '', 
-            isPremiere: false 
-          }); 
-        });
+        liveData.items.forEach((item, i) => { STREAMS.push({ id: 'live-' + i + Date.now(), title: item.snippet.title, description: item.snippet.description, videoId: item.id.videoId, status: 'live', targetDate: '', isPremiere: false }); });
       }
       
       const upRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&type=video&eventType=upcoming&order=date&key=${API_KEY}`);
@@ -575,15 +746,7 @@
               liveScheduledTime = detailData.items[0].liveStreamingDetails.scheduledStartTime;
             }
           } catch(err) {}
-          STREAMS.push({ 
-            id: 'upcoming-' + i + Date.now(), 
-            title: item.snippet.title, 
-            description: item.snippet.description, 
-            videoId: item.id.videoId, 
-            status: 'upcoming', 
-            targetDate: liveScheduledTime || item.snippet.publishedAt, 
-            isPremiere: false 
-          });
+          STREAMS.push({ id: 'upcoming-' + i + Date.now(), title: item.snippet.title, description: item.snippet.description, videoId: item.id.videoId, status: 'upcoming', targetDate: liveScheduledTime || item.snippet.publishedAt, isPremiere: false });
         }
       }
 
@@ -598,24 +761,13 @@
             const lsd = video.liveStreamingDetails;
             if(lsd && lsd.scheduledStartTime && !lsd.actualEndTime) {
               if(!STREAMS.some(s => s.videoId === video.id)) {
-                STREAMS.push({ 
-                  id: 'premiere-' + video.id, 
-                  title: video.snippet.title, 
-                  description: video.snippet.description, 
-                  videoId: video.id, 
-                  status: 'premieres', 
-                  targetDate: lsd.scheduledStartTime, 
-                  isPremiere: true, 
-                  liveNow: new Date().getTime() >= new Date(lsd.scheduledStartTime).getTime() 
-                });
+                STREAMS.push({ id: 'premiere-' + video.id, title: video.snippet.title, description: video.snippet.description, videoId: video.id, status: 'premieres', targetDate: lsd.scheduledStartTime, isPremiere: true, liveNow: new Date().getTime() >= new Date(lsd.scheduledStartTime).getTime() });
               }
             }
           });
         }
       }
-    } catch(err) {
-      console.error("API Fetch Error: ", err);
-    }
+    } catch(err) { console.error("Dynamic pipelines trace logic warning output: ", err); }
 
     adminManualOverrides.forEach(m => { if(!STREAMS.some(a => a.videoId === m.videoId)) STREAMS.push(m); });
     evaluateLiveStatusDot();
@@ -777,17 +929,7 @@
       container.innerHTML = `
         <div class="tab-board-card">
           <p class="board-header"><i class="fa-solid fa-lightbulb"></i> Stream & Premiere Suggestions Box</p>
-          <div class="board-meta-controls">
-            ${ownerTerminalElement}
-            <div class="board-settings-box">
-              <div class="settings-title"><i class="fa-solid fa-sliders"></i> Counter Badge Options</div>
-              <select class="settings-select" id="counterSettingSelect" onchange="updateCounterSettingFilter(this.value)">
-                <option value="all" ${counterConfigMode === 'all' ? 'selected' : ''}>Every single post and reply</option>
-                <option value="personal" ${counterConfigMode === 'personal' ? 'selected' : ''}>Only replies to me or mentions</option>
-                <option value="off" ${counterConfigMode === 'off' ? 'selected' : ''}>Turn counter badge completely off</option>
-              </select>
-            </div>
-          </div>
+          ${ownerTerminalElement}
           <div class="board-input-group">
             <div class="board-row-inputs">
               <input type="text" class="board-input input-name" id="globalSugName" placeholder="Your Username..." value="${defaultInputValue}" ${isAdmin ? 'disabled' : ''}>
@@ -812,7 +954,7 @@
     }
 
     const filtered = STREAMS.filter(s => s.status === currentTab);
-    if(filtered.length === 0) { container.innerHTML = `<div class="no-streams">No active listings loaded.</div>`; return; }
+    if(filtered.length === 0) { container.innerHTML = `<div class="no-streams">No listings active inside this tier view parameters.</div>`; return; }
     container.innerHTML = filtered.map((s) => {
       const watchUrl = `https://www.youtube.com/watch?v=${s.videoId}`;
       const thumbUrl = s.videoId ? `https://img.youtube.com/vi/${s.videoId}/maxresdefault.jpg` : '../assets/resources/fallback-thumb.jpg';
@@ -898,6 +1040,7 @@
     
     hasScrolledToBottomToClear = false;
     saveBoardState(); msgInput.value = ''; renderStreams();
+    triggerAudioPlaybackModule('post');
   }
 
   function submitSubReply(parentId, btnNode) {
@@ -918,6 +1061,7 @@
       hasScrolledToBottomToClear = false;
 
       saveBoardState(); renderStreams();
+      triggerAudioPlaybackModule('reply');
     }
   }
 
@@ -939,6 +1083,7 @@
       });
       saveBoardState(); renderStreams();
       showToast(`Banned user ${targetUser}.`);
+      triggerAudioPlaybackModule('ban');
     }
     input.value = '';
   }
@@ -958,6 +1103,7 @@
       if(rootMatch?.replies) { const subMatch = rootMatch.replies.find(y => y.id === targetId); if(subMatch) subMatch.text = newText; }
     }
     saveBoardState(); closeModal('editIdeaModal'); renderStreams();
+    triggerAudioPlaybackModule('edit');
   }
 
   function deleteSuggestionRecord(targetId, parentId) {
@@ -965,6 +1111,7 @@
     if(!parentId) { BOARD_IDEAS = BOARD_IDEAS.filter(x => x.id !== targetId); } 
     else { const rootMatch = BOARD_IDEAS.find(x => x.id === parentId); if(rootMatch?.replies) rootMatch.replies = rootMatch.replies.filter(y => y.id !== targetId); }
     saveBoardState(); renderStreams();
+    triggerAudioPlaybackModule('delete');
   }
 
   function banSuggestionRecord(targetId, parentId) {
@@ -975,6 +1122,7 @@
       if(rootMatch?.replies) rootMatch.replies = rootMatch.replies.filter(y => y.id !== targetId);
     }
     saveBoardState(); renderStreams(); showToast('Post hidden.');
+    triggerAudioPlaybackModule('ban');
   }
 
   function setAdmin(val, role = '') {
@@ -982,39 +1130,41 @@
     const btn = document.getElementById('adminBtn');
     const container = document.getElementById('adminButtonContainer');
     if (val) {
-      btn.className = adminRole === 'OWNER' ? 'admin-pill active-owner' : 'admin-pill active-staff';
+      btn.className = adminRole === 'OWNER' ? 'utility-pill active-owner' : 'utility-pill active-staff';
       btn.innerHTML = adminRole === 'OWNER' ? 'Owner ✓' : 'Staff ✓';
       if(container) container.innerHTML = `<button class="admin-add-btn" onclick="addStream()">+ Add Entry</button>`;
     } else {
-      btn.className = 'admin-pill login'; btn.innerHTML = 'Admin'; if(container) container.innerHTML = '';
+      btn.className = 'utility-pill login-btn'; btn.innerHTML = '<i class="fa-solid fa-shield-halved"></i> Admin'; if(container) container.innerHTML = '';
     }
     renderStreams();
   }
 
   function handleLogin() {
     const u = document.getElementById('adminUser').value.trim(); const p = document.getElementById('adminPass').value;
-    if (u === OWNER_USER && p === OWNER_PASS) { closeModal('adminLoginModal'); setAdmin(true, 'OWNER'); showToast('Welcome back, Ethan Unlocked! 🛡️'); } 
+    if (u === OWNER_USER && p === OWNER_PASS) { closeModal('adminLoginModal'); setAdmin(true, 'OWNER'); showToast('Welcome back, Owner EthanUnlocked!'); } 
     else if (u === STAFF_USER && p === STAFF_PASS) { closeModal('adminLoginModal'); setAdmin(true, 'STAFF'); showToast('Staff access granted.'); } 
     else { document.getElementById('adminError').textContent = 'Invalid account.'; }
   }
 
   function evaluateLiveStatusDot() { const p = document.getElementById('livePulseAlert'); if(p) p.style.display = STREAMS.some(s => s.status === 'live') ? 'block' : 'none'; }
-  function switchTab(t) { currentTab = t; document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); if(b.id.toLowerCase().includes(t.toLowerCase())) b.classList.add('active'); }); renderStreams(); }
+  
+  function switchTab(t) { 
+    currentTab = t; 
+    document.querySelectorAll('.tab-btn').forEach(b => { 
+      b.classList.remove('active'); 
+      if(b.id.toLowerCase().includes(t.toLowerCase())) b.classList.add('active'); 
+    }); 
+    renderStreams(); 
+    triggerAudioPlaybackModule('tab');
+  }
+
+  function openModal(id) { document.getElementById(id).classList.add('open'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
   window.onload = () => {
     loadAllStreamsPipeline();
     document.getElementById('adminBtn').onclick = () => isAdmin ? setAdmin(false) : openModal('adminLoginModal');
-    
-    // RESTORED LOGIN EVENT ASSIGNMENT:
     document.getElementById('adminLoginBtn').onclick = handleLogin;
-    
-    document.getElementById('streamSaveBtn').onclick = () => {
-      const title = document.getElementById('streamTitle').value.trim();
-      const vId = document.getElementById('streamVideoId').value.trim();
-      if(!title || !vId) return;
-      STREAMS.push({ id: Date.now(), title, description: document.getElementById('streamDescription').value.trim(), videoId: vId, status: document.getElementById('streamStatus').value, targetDate: document.getElementById('streamTargetDate').value, isPremiere: false });
-      saveLocalState(); closeModal('streamModal'); renderStreams();
-    };
   };
 </script>
 </body>
