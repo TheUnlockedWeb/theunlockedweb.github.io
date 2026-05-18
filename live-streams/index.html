@@ -44,11 +44,11 @@
       overflow-x: auto;
       white-space: nowrap;
       -webkit-overflow-scrolling: touch;
-      scrollbar-width: none; /* Hide standard scrollbar across firefox templates */
+      scrollbar-width: none;
       animation: fadeUp .6s .18s cubic-bezier(.22,1,.36,1) both;
     }
     .stream-tabs::-webkit-scrollbar {
-      display: none; /* Hide scrollbars safely across webkit core distributions */
+      display: none;
     }
     .tab-btn {
       background: rgba(255, 255, 255, 0.02);
@@ -79,7 +79,6 @@
       text-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
     }
 
-    /* Tab Pulse Tracker Glow Layout */
     .tab-pulse-indicator {
       display: none;
       width: 8px;
@@ -125,7 +124,6 @@
       .stream-top-row { flex-direction: column; gap: 16px; }
     }
 
-    /* Thumbnail Node Wrapper styles */
     .stream-thumb-wrapper {
       position: relative;
       width: 280px;
@@ -272,15 +270,34 @@
     }
 
     /* Administrative Highlights */
-    .admin-sug-author {
+    .owner-sug-author {
       color: var(--gold) !important; text-shadow: 0 0 8px rgba(212,175,55,0.3);
       display: inline-flex; align-items: center; gap: 5px;
     }
-    .admin-sug-author::after {
+    .owner-sug-author::after {
       content: '👑 OWNER'; font-size: 0.58rem; font-weight: 800; background: rgba(239,68,68,0.15);
       padding: 1px 5px; border-radius: 3px; border: 1px solid rgba(239,68,68,0.4); color: #ef4444;
     }
+    
+    .staff-sug-author {
+      color: var(--gold) !important; text-shadow: 0 0 8px rgba(212,175,55,0.3);
+      display: inline-flex; align-items: center; gap: 5px;
+    }
+    .staff-sug-author::after {
+      content: '🛡️ STAFF'; font-size: 0.58rem; font-weight: 800; background: rgba(212,175,55,0.15);
+      padding: 1px 5px; border-radius: 3px; border: 1px solid rgba(212,175,55,0.3); color: var(--gold);
+    }
+    
     .admin-sug-text { color: var(--gold) !important; font-weight: 500; }
+
+    /* Action Controls within Board System */
+    .sug-controls { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
+    .board-action-link {
+      background: none; border: none; font-family: 'Manrope', sans-serif; font-size: 0.7rem;
+      font-weight: 600; cursor: pointer; color: var(--muted); padding: 0; transition: color 0.15s;
+    }
+    .board-action-link:hover { color: var(--text); }
+    .board-action-link.delete-link:hover { color: #f87171; }
 
     .reply-toggle-btn {
       background: none; border: none; color: var(--muted); font-family: 'Manrope', sans-serif;
@@ -290,7 +307,7 @@
     .reply-toggle-btn:hover { color: var(--gold); }
     .reply-form-sub-panel { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
 
-    /* Countdown Matrix Modules */
+    /* Countdown Modules */
     .countdown-box {
       background: rgba(212, 175, 55, 0.04);
       border: 1px dashed rgba(212, 175, 55, 0.2);
@@ -337,9 +354,9 @@
     }
     .admin-pill.login { color: var(--muted); border-color: var(--border); background: none; }
     .admin-pill.login:hover { color: var(--sub); border-color: var(--border-h); background: rgba(255,255,255,.04); }
-    .admin-pill.active { color: #ef4444; border-color: rgba(239,68,68,0.35); background: rgba(239,68,68,0.1); }
+    .admin-pill.active-owner { color: #ef4444; border-color: rgba(239,68,68,0.35); background: rgba(239,68,68,0.1); }
+    .admin-pill.active-staff { color: var(--gold); border-color: rgba(245,158,11,0.35); background: rgba(245,158,11,0.1); }
 
-    /* Modals CSS mapping properties */
     .modal-overlay {
       position: fixed; inset: 0; z-index: 100;
       background: rgba(0,0,0,.82); backdrop-filter: blur(8px);
@@ -461,9 +478,9 @@
     <button class="modal-close" onclick="closeModal('adminLoginModal')">×</button>
     <h3><i class="fa-solid fa-shield-halved" style="color:var(--gold);margin-right:8px"></i>Admin Login</h3>
     <label>Username</label>
-    <input type="text" id="adminUser" autocomplete="off">
+    <input type="text" id="adminUser" autocomplete="off" placeholder="Username...">
     <label>Password</label>
-    <input type="password" id="adminPass" autocomplete="off">
+    <input type="password" id="adminPass" autocomplete="off" placeholder="Password...">
     <div class="modal-error" id="adminError" style="font-size:.78rem;color:#f87171;margin-top:10px;min-height:18px;"></div>
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeModal('adminLoginModal')">Cancel</button>
@@ -499,6 +516,20 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="editIdeaModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('editIdeaModal')">×</button>
+    <h3><i class="fa-solid fa-pen" style="color:var(--gold);margin-right:8px"></i>Modify Text Entry</h3>
+    <label>Suggestion Message Content</label>
+    <textarea id="editIdeaContent" rows="4" maxlength="400"></textarea>
+    <input type="hidden" id="editIdeaTargetId">
+    <input type="hidden" id="editIdeaParentId"> <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal('editIdeaModal')">Cancel</button>
+      <button class="btn-confirm" onclick="saveIdeaEditModification()">Apply Changes</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -507,15 +538,22 @@
   const CHANNEL_ID = 'UCi8DgxMDGJ-Qsjqfdi-uoIw';
   const STORAGE_KEY = 'tuw_streams_data_v2';
   const BOARD_STORAGE_KEY = 'tuw_stream_board_ideas';
-  const ADMIN_USER = 'Ethan Ioannou';
-  const ADMIN_PASS = 'leonisGOAT';
+  
+  const OWNER_USER = 'Ethan Ioannou';
+  const OWNER_PASS = 'leonisGOAT';
+  const STAFF_USER = 'admin';
+  const STAFF_PASS = 'goodpassword';
   
   let STREAMS = [];
   let BOARD_IDEAS = [];
   let currentTab = 'live';
   let isAdmin = false;
+  let adminRole = ''; 
   let editingId = null;
   let countdownInterval = null;
+
+  // Track posts generated by current user within active window session memory
+  const USER_SESSION_POSTS = new Set();
 
   const INITIAL_PAST_STREAMS = [];
 
@@ -692,9 +730,18 @@
     currentTab = tabName;
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.classList.remove('active');
-      if(btn.id.toLowerCase().includes(tabName)) btn.classList.add('active');
+      if(btn.id.toLowerCase().includes(tabName.toLowerCase())) btn.classList.add('active');
     });
     renderStreams();
+  }
+
+  // Helper macro parsing logic mapping permissions filters cleanly
+  function canModifySuggestionRecord(itemRole, itemId) {
+    if (isAdmin && adminRole === 'OWNER') return true; 
+    if (isAdmin && adminRole === 'STAFF') {
+      return itemRole !== 'OWNER'; 
+    }
+    return USER_SESSION_POSTS.has(itemId);
   }
 
   // 3. Document Layout Render Engine
@@ -702,8 +749,12 @@
     const container = document.getElementById('streamsContainer');
     if (!container) return;
 
-    // RENDERING LOGIC FOR INDEPENDENT STANDALONE SUGGESTIONS TAB PANEL
     if(currentTab === 'suggestions') {
+      let defaultInputValue = '';
+      if (isAdmin) {
+        defaultInputValue = (adminRole === 'OWNER') ? 'EthanUnlocked' : 'TUW Admin';
+      }
+      
       container.innerHTML = `
         <div class="tab-board-card">
           <p class="board-header"><i class="fa-solid fa-lightbulb"></i> Stream & Premiere Suggestions Box</p>
@@ -711,7 +762,7 @@
           
           <div class="board-input-group">
             <div class="board-row-inputs">
-              <input type="text" class="board-input input-name" id="globalSugName" placeholder="Your Username..." value="${isAdmin ? 'EthanUnlocked' : ''}" ${isAdmin ? 'disabled' : ''}>
+              <input type="text" class="board-input input-name" id="globalSugName" placeholder="Your Username..." value="${defaultInputValue}" ${isAdmin ? 'disabled' : ''}>
               <input type="text" class="board-input input-msg" id="globalSugMsg" placeholder="Type your stream or premiere suggestion here...">
             </div>
             <button class="board-submit-btn" onclick="submitGlobalSuggestion()">Post Idea</button>
@@ -720,8 +771,13 @@
           <div class="suggestions-list">
             ${BOARD_IDEAS.length === 0 ? '<div class="no-streams" style="padding:20px;">No records posted yet. Be the first to drop an idea!</div>' : 
               BOARD_IDEAS.map(msg => {
-                const authorAdminClass = msg.isAdminInput ? 'admin-sug-author' : '';
-                const bodyAdminClass = msg.isAdminInput ? 'admin-sug-text' : '';
+                let authorAdminClass = '';
+                if(msg.role === 'OWNER') authorAdminClass = 'owner-sug-author';
+                else if(msg.role === 'STAFF') authorAdminClass = 'staff-sug-author';
+                
+                const bodyAdminClass = (msg.role === 'OWNER' || msg.role === 'STAFF') ? 'admin-sug-text' : '';
+                const allowsModification = canModifySuggestionRecord(msg.role, msg.id);
+
                 return `
                   <div class="sug-node">
                     <div class="sug-meta">
@@ -730,21 +786,42 @@
                     </div>
                     <p class="sug-body ${bodyAdminClass}">${msg.text}</p>
                     
+                    <div class="sug-controls">
+                      ${allowsModification ? `
+                        <button class="board-action-link" onclick="openIdeaEditModal('${msg.id}', null, '${msg.text.replace(/'/g, "\\'")}')">Edit</button>
+                        <button class="board-action-link delete-link" onclick="deleteSuggestionRecord('${msg.id}', null)">Delete</button>
+                      ` : ''}
+                    </div>
+
                     <div class="replies-box">
-                      ${(msg.replies || []).map(rep => `
-                        <div class="reply-node">
-                          <div class="sug-meta" style="margin-bottom:3px;">
-                            <span class="sug-author ${rep.isAdminInput ? 'admin-sug-author' : ''}">${rep.name}</span>
-                            <span class="sug-time">${rep.time}</span>
+                      ${(msg.replies || []).map(rep => {
+                        let replyAuthorClass = '';
+                        if(rep.role === 'OWNER') replyAuthorClass = 'owner-sug-author';
+                        else if(rep.role === 'STAFF') replyAuthorClass = 'staff-sug-author';
+                        
+                        const allowsReplyModification = canModifySuggestionRecord(rep.role, rep.id);
+
+                        return `
+                          <div class="reply-node">
+                            <div class="sug-meta" style="margin-bottom:3px;">
+                              <span class="sug-author ${replyAuthorClass}">${rep.name}</span>
+                              <span class="sug-time">${rep.time}</span>
+                            </div>
+                            <p class="sug-body ${(rep.role === 'OWNER' || rep.role === 'STAFF') ? 'admin-sug-text' : ''}" style="font-size:0.85rem;">${rep.text}</p>
+                            <div class="sug-controls">
+                              ${allowsReplyModification ? `
+                                <button class="board-action-link" style="font-size:0.65rem;" onclick="openIdeaEditModal('${rep.id}', '${msg.id}', '${rep.text.replace(/'/g, "\\'")}')">Edit</button>
+                                <button class="board-action-link delete-link" style="font-size:0.65rem;" onclick="deleteSuggestionRecord('${rep.id}', '${msg.id}')">Delete</button>
+                              ` : ''}
+                            </div>
                           </div>
-                          <p class="sug-body ${rep.isAdminInput ? 'admin-sug-text' : ''}" style="font-size:0.85rem;">${rep.text}</p>
-                        </div>
-                      `).join('')}
+                        `;
+                      }).join('')}
                     </div>
 
                     <button class="reply-toggle-btn" onclick="toggleReplyInput(this)"><i class="fa-solid fa-reply"></i> Reply</button>
                     <div class="reply-form-sub-panel" style="display:none;">
-                      <input type="text" class="board-input reply-user-name" placeholder="Name..." style="width:120px;" value="${isAdmin ? 'EthanUnlocked' : ''}" ${isAdmin ? 'disabled' : ''}>
+                      <input type="text" class="board-input reply-user-name" placeholder="Name..." style="width:120px;" value="${defaultInputValue}" ${isAdmin ? 'disabled' : ''}>
                       <input type="text" class="board-input reply-user-msg" placeholder="Write response...">
                       <button class="board-submit-btn" style="align-self:center;" onclick="submitSubReply('${msg.id}', this)">Post</button>
                     </div>
@@ -863,25 +940,30 @@
     const nameInput = document.getElementById('globalSugName');
     if(!msgInput || !msgInput.value.trim()) return;
 
-    const authorName = isAdmin ? 'EthanUnlocked' : (nameInput.value.trim() || 'Anonymous');
+    let authorName = nameInput.value.trim() || 'Anonymous';
+    if (isAdmin) {
+      authorName = (adminRole === 'OWNER') ? 'EthanUnlocked' : 'TUW Admin';
+    }
+
+    const uniqueId = 'sug-' + Date.now() + Math.random().toString(36).substr(2, 4);
 
     const newSuggestion = {
-      id: 'sug-' + Date.now() + Math.random().toString(36).substr(2, 4),
+      id: uniqueId,
       name: authorName,
       text: msgInput.value.trim(),
-      isAdminInput: isAdmin,
+      role: isAdmin ? adminRole : 'USER',
       time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) + ' - ' + new Date().toLocaleDateString([], {month:'short', day:'numeric'}),
       replies: []
     };
 
     BOARD_IDEAS.unshift(newSuggestion);
+    USER_SESSION_POSTS.add(uniqueId);
     saveBoardState();
     msgInput.value = '';
     renderStreams();
     showToast('Suggestion added to board!');
   }
 
-  // Handle nested comment toggling loops safely without layout shifts
   function toggleReplyInput(btn) {
     const panel = btn.nextElementSibling;
     panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
@@ -893,21 +975,80 @@
     const msgVal = wrapper.querySelector('.reply-user-msg').value.trim();
 
     if(!msgVal) return;
-    const authorName = isAdmin ? 'EthanUnlocked' : (nameVal || 'Anonymous');
+    
+    let authorName = nameVal || 'Anonymous';
+    if (isAdmin) {
+      authorName = (adminRole === 'OWNER') ? 'EthanUnlocked' : 'TUW Admin';
+    }
 
+    const uniqueReplyId = 'rep-' + Date.now() + Math.random().toString(36).substr(2, 4);
     const match = BOARD_IDEAS.find(idea => idea.id === parentId);
+    
     if(match) {
       if(!match.replies) match.replies = [];
       match.replies.push({
+        id: uniqueReplyId,
         name: authorName,
         text: msgVal,
-        isAdminInput: isAdmin,
+        role: isAdmin ? adminRole : 'USER',
         time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
       });
+      USER_SESSION_POSTS.add(uniqueReplyId);
       saveBoardState();
       renderStreams();
       showToast('Reply published successfully!');
     }
+  }
+
+  // Modals modification routing engine mapping
+  function openIdeaEditModal(targetId, parentId, textVal) {
+    document.getElementById('editIdeaContent').value = textVal;
+    document.getElementById('editIdeaTargetId').value = targetId;
+    document.getElementById('editIdeaParentId').value = parentId || '';
+    openModal('editIdeaModal');
+  }
+
+  function saveIdeaEditModification() {
+    const targetId = document.getElementById('editIdeaTargetId').value;
+    const parentId = document.getElementById('editIdeaParentId').value;
+    const newText = document.getElementById('editIdeaContent').value.trim();
+
+    if(!newText) return;
+
+    if(!parentId) {
+      // Modifying root comment nodes
+      const match = BOARD_IDEAS.find(x => x.id === targetId);
+      if(match) match.text = newText;
+    } else {
+      // Modifying nested response elements
+      const rootMatch = BOARD_IDEAS.find(x => x.id === parentId);
+      if(rootMatch && rootMatch.replies) {
+        const subMatch = rootMatch.replies.find(y => y.id === targetId);
+        if(subMatch) subMatch.text = newText;
+      }
+    }
+
+    saveBoardState();
+    closeModal('editIdeaModal');
+    renderStreams();
+    showToast('Text content applied successfully.');
+  }
+
+  function deleteSuggestionRecord(targetId, parentId) {
+    if(!confirm('Permanently wipe this message entry from local indexing arrays?')) return;
+
+    if(!parentId) {
+      BOARD_IDEAS = BOARD_IDEAS.filter(x => x.id !== targetId);
+    } else {
+      const rootMatch = BOARD_IDEAS.find(x => x.id === parentId);
+      if(rootMatch && rootMatch.replies) {
+        rootMatch.replies = rootMatch.replies.filter(y => y.id !== targetId);
+      }
+    }
+
+    saveBoardState();
+    renderStreams();
+    showToast('Message wiped.');
   }
 
   // 5. Countdown Engine
@@ -950,12 +1091,18 @@
   }
 
   // 6. Admin State Controllers
-  function setAdmin(val) {
+  function setAdmin(val, role = '') {
     isAdmin = val;
+    adminRole = val ? role : '';
     const btn = document.getElementById('adminBtn');
     const container = document.getElementById('adminButtonContainer');
+    
     if (val) {
-      if(btn) { btn.className = 'admin-pill active'; btn.innerHTML = 'Owner ✓'; }
+      if (adminRole === 'OWNER') {
+        if(btn) { btn.className = 'admin-pill active-owner'; btn.innerHTML = 'Owner ✓'; }
+      } else {
+        if(btn) { btn.className = 'admin-pill active-staff'; btn.innerHTML = 'Staff ✓'; }
+      }
       if(container) container.innerHTML = `<button class="admin-add-btn" onclick="addStream()">+ Add Entry</button>`;
     } else {
       if(btn) { btn.className = 'admin-pill login'; btn.innerHTML = 'Admin'; }
@@ -967,10 +1114,15 @@
   function handleLogin() {
     const u = document.getElementById('adminUser').value.trim();
     const p = document.getElementById('adminPass').value;
-    if (u === ADMIN_USER && p === ADMIN_PASS) {
+    
+    if (u === OWNER_USER && p === OWNER_PASS) {
       closeModal('adminLoginModal');
-      setAdmin(true);
+      setAdmin(true, 'OWNER');
       showToast('Welcome back, Ethan Unlocked! 🛡️');
+    } else if (u === STAFF_USER && p === STAFF_PASS) {
+      closeModal('adminLoginModal');
+      setAdmin(true, 'STAFF');
+      showToast('Staff portal authorized access.');
     } else {
       const err = document.getElementById('adminError');
       if(err) err.textContent = 'Invalid credentials configurations.';
