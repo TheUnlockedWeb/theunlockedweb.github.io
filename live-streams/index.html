@@ -211,80 +211,74 @@
       .chat-embed-frame { border-left: none; border-top: 1px solid var(--border); height: 400px; }
     }
 
-    /* ── Ideas Suggestions System Modules ────────── */
-    .board-wrapper {
-      margin-top: 24px; padding-top: 20px;
-      border-top: 1px dashed var(--border);
+    /* ── Standalone Tab Suggestions Layout ────────── */
+    .tab-board-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 28px;
     }
     .board-header {
-      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem;
-      color: var(--text); margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem;
+      color: var(--text); margin-bottom: 6px; display: flex; align-items: center; gap: 10px;
     }
-    .board-header i { color: var(--gold); font-size: 0.85rem; }
+    .board-header i { color: var(--gold); }
+    .board-sub-label { font-size: 0.82rem; color: var(--sub); margin-bottom: 20px; }
     
     .board-input-group {
-      display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;
+      display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px;
+      background: rgba(255,255,255,0.01); border: 1px solid var(--border); border-radius: 10px; padding: 16px;
     }
-    .board-row-inputs {
-      display: flex; gap: 10px;
-    }
+    .board-row-inputs { display: flex; gap: 10px; flex-wrap: wrap; }
     .board-input {
       background: #0d0d1b; border: 1px solid var(--border); border-radius: 6px;
-      color: var(--text); padding: 8px 12px; font-family: 'Manrope', sans-serif; font-size: 0.82rem;
+      color: var(--text); padding: 10px 14px; font-family: 'Manrope', sans-serif; font-size: 0.85rem;
     }
     .board-input:focus { outline: none; border-color: var(--gold); }
-    .input-name { width: 160px; }
-    .input-msg { flex: 1; }
+    .input-name { width: 200px; }
+    .input-msg { flex: 1; min-width: 260px; }
     
     .board-submit-btn {
-      align-self: flex-end; padding: 6px 16px; border-radius: 6px; border: none;
+      align-self: flex-end; padding: 8px 20px; border-radius: 6px; border: none;
       background: rgba(212, 175, 55, 0.15); color: var(--gold); font-family: 'Syne', sans-serif;
-      font-weight: 700; font-size: 0.75rem; text-transform: uppercase; cursor: pointer; transition: all 0.15s;
+      font-weight: 700; font-size: 0.8rem; text-transform: uppercase; cursor: pointer; transition: all 0.15s;
     }
     .board-submit-btn:hover { background: var(--gold); color: #000; }
 
-    .suggestions-list {
-      display: flex; flex-direction: column; gap: 12px; max-height: 380px; overflow-y: auto; padding-right: 4px;
-    }
+    .suggestions-list { display: flex; flex-direction: column; gap: 14px; }
     .sug-node {
-      background: rgba(255, 255, 255, 0.01); border: 1px solid var(--border);
-      border-radius: 8px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px;
+      background: rgba(255, 255, 255, 0.015); border: 1px solid var(--border);
+      border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 8px;
     }
-    .sug-meta {
-      display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem;
-    }
+    .sug-meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; }
     .sug-author { font-weight: 700; color: var(--gold-soft); }
-    .sug-time { color: var(--muted); font-size: 0.68rem; }
-    .sug-body { font-size: 0.85rem; color: var(--sub); line-height: 1.4; word-break: break-word; }
+    .sug-time { color: var(--muted); font-size: 0.72rem; }
+    .sug-body { font-size: 0.92rem; color: var(--text); line-height: 1.4; word-break: break-word; }
     
     .replies-box {
-      margin-top: 6px; padding-left: 14px; border-left: 1px solid var(--border);
+      margin-top: 8px; padding-left: 16px; border-left: 1px solid var(--border);
       display: flex; flex-direction: column; gap: 8px;
     }
     .reply-node {
-      background: rgba(255, 255, 255, 0.005); border: 1px solid rgba(255,255,255,0.03);
-      border-radius: 6px; padding: 8px 10px; font-size: 0.8rem;
+      background: rgba(255, 255, 255, 0.008); border: 1px solid rgba(255,255,255,0.02);
+      border-radius: 6px; padding: 10px 12px; font-size: 0.85rem;
     }
 
-    /* System Admin Text Highlight Modes */
+    /* Administrative Text Highlight Configurations */
     .admin-sug-author {
       color: var(--gold) !important; text-shadow: 0 0 8px rgba(212,175,55,0.3);
-      display: inline-flex; align-items: center; gap: 4px;
+      display: inline-flex; align-items: center; gap: 5px;
     }
     .admin-sug-author::after {
       content: '🛡️ STAFF'; font-size: 0.58rem; font-weight: 800; background: rgba(212,175,55,0.15);
-      padding: 1px 4px; border-radius: 3px; border: 1px solid rgba(212,175,55,0.3);
+      padding: 1px 5px; border-radius: 3px; border: 1px solid rgba(212,175,55,0.3);
     }
-    .admin-sug-text {
-      color: var(--gold) !important; font-weight: 500;
-    }
+    .admin-sug-text { color: var(--gold) !important; font-weight: 500; }
 
     .reply-toggle-btn {
       background: none; border: none; color: var(--muted); font-family: 'Manrope', sans-serif;
-      font-size: 0.7rem; font-weight: 600; cursor: pointer; padding: 0; align-self: flex-start;
+      font-size: 0.75rem; font-weight: 600; cursor: pointer; padding: 0; align-self: flex-start;
       display: inline-flex; align-items: center; gap: 4px; transition: color 0.15s;
     }
     .reply-toggle-btn:hover { color: var(--gold); }
+    .reply-form-sub-panel { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
 
     /* Countdown Modules */
     .countdown-box {
@@ -296,9 +290,7 @@
     .countdown-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--gold); letter-spacing: 0.5px;}
     .countdown-time { font-family: monospace; font-size: 0.95rem; color: #fff; font-weight: 600; }
 
-    .stream-meta {
-      display: flex; align-items: center; gap: 16px; font-size: 0.8rem; color: var(--muted);
-    }
+    .stream-meta { display: flex; align-items: center; gap: 16px; font-size: 0.8rem; color: var(--muted); }
     .watch-link {
       color: var(--gold); font-weight: 700; text-decoration: none;
       display: inline-flex; align-items: center; gap: 6px; transition: 0.2s;
@@ -429,6 +421,9 @@
     <button class="tab-btn" id="tabBtnPast" onclick="switchTab('past')">
       <i class="fa-solid fa-clock-rotate-left"></i> Past Streams
     </button>
+    <button class="tab-btn" id="tabBtnSuggestions" onclick="switchTab('suggestions')">
+      <i class="fa-solid fa-lightbulb"></i> Stream & Premiere Suggestions
+    </button>
   </div>
 
   <div id="adminButtonContainer"></div>
@@ -536,11 +531,6 @@
 
     if(!API_KEY || API_KEY.includes('PASTE_YOUR_')) {
       STREAMS = [...adminManualOverrides, ...adminPastStreams];
-      if(STREAMS.length === 0) {
-        STREAMS = [
-          { id: 1, title: 'Demo Active Stream Slot', description: 'Verify API details.', videoId: 'dQw4w9WgXcQ', status: 'live', targetDate: '' }
-        ];
-      }
       evaluateLiveStatusDot();
       renderStreams();
       return;
@@ -581,7 +571,7 @@
             if(detailData.items && detailData.items[0]?.liveStreamingDetails?.scheduledStartTime) {
               liveScheduledTime = detailData.items[0].liveStreamingDetails.scheduledStartTime;
             }
-          } catch(err) { console.error("Video timestamp analysis error:", err); }
+          } catch(err) { console.error(err); }
 
           STREAMS.push({
             id: 'upcoming-' + i + Date.now(),
@@ -648,8 +638,7 @@
       }
 
     } catch(err) {
-      console.error("YouTube Dynamic API fetch operation exception:", err);
-      showToast("API Sync Fault. Inspect system developer logs.");
+      console.error(err);
     }
 
     adminManualOverrides.forEach(manualItem => {
@@ -670,15 +659,99 @@
     localStorage.setItem(BOARD_STORAGE_KEY, JSON.stringify(BOARD_IDEAS));
   }
 
-  // 3. Render Engine Engine Node Layout
+  function evaluateLiveStatusDot() {
+    const pulseDot = document.getElementById('livePulseAlert');
+    if (!pulseDot) return;
+    const isCurrentlyLive = STREAMS.some(s => s.status === 'live');
+    pulseDot.style.display = isCurrentlyLive ? 'block' : 'none';
+  }
+
+  function openModal(id) { document.getElementById(id).classList.add('open'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    if (toast) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+  }
+
+  function switchTab(tabName) {
+    currentTab = tabName;
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.classList.remove('active');
+      if(btn.id.toLowerCase().includes(tabName)) btn.classList.add('active');
+    });
+    renderStreams();
+  }
+
+  // 3. Document Layout Render Engine
   function renderStreams() {
     const container = document.getElementById('streamsContainer');
     if (!container) return;
 
-    const filtered = STREAMS.filter(s => s.status === currentTab);
+    // RENDERING LOGIC FOR INDEPENDENT STANDALONE SUGGESTIONS TAB PANEL
+    if(currentTab === 'suggestions') {
+      container.innerHTML = `
+        <div class="tab-board-card">
+          <p class="board-header"><i class="fa-solid fa-lightbulb"></i> Stream & Premiere Suggestions Box</p>
+          <p class="board-sub-label">Submit level requests, content ideas, or game challenge recommendations for upcoming streams and premieres.</p>
+          
+          <div class="board-input-group">
+            <div class="board-row-inputs">
+              <input type="text" class="board-input input-name" id="globalSugName" placeholder="Your Username..." value="${isAdmin ? 'TUW Admin' : ''}" ${isAdmin ? 'disabled' : ''}>
+              <input type="text" class="board-input input-msg" id="globalSugMsg" placeholder="Type your stream or premiere suggestion here...">
+            </div>
+            <button class="board-submit-btn" onclick="submitGlobalSuggestion()">Post Idea</button>
+          </div>
 
+          <div class="suggestions-list">
+            ${BOARD_IDEAS.length === 0 ? '<div class="no-streams" style="padding:20px;">No records posted yet. Be the first to drop an idea!</div>' : 
+              BOARD_IDEAS.map(msg => {
+                const authorAdminClass = msg.isAdminInput ? 'admin-sug-author' : '';
+                const bodyAdminClass = msg.isAdminInput ? 'admin-sug-text' : '';
+                return `
+                  <div class="sug-node">
+                    <div class="sug-meta">
+                      <span class="sug-author ${authorAdminClass}">${msg.name}</span>
+                      <span class="sug-time">${msg.time}</span>
+                    </div>
+                    <p class="sug-body ${bodyAdminClass}">${msg.text}</p>
+                    
+                    <div class="replies-box">
+                      ${(msg.replies || []).map(rep => `
+                        <div class="reply-node">
+                          <div class="sug-meta" style="margin-bottom:3px;">
+                            <span class="sug-author ${rep.isAdminInput ? 'admin-sug-author' : ''}">${rep.name}</span>
+                            <span class="sug-time">${rep.time}</span>
+                          </div>
+                          <p class="sug-body ${rep.isAdminInput ? 'admin-sug-text' : ''}" style="font-size:0.85rem;">${rep.text}</p>
+                        </div>
+                      `).join('')}
+                    </div>
+
+                    <button class="reply-toggle-btn" onclick="toggleReplyInput(this)"><i class="fa-solid fa-reply"></i> Reply</button>
+                    <div class="reply-form-sub-panel" style="display:none;">
+                      <input type="text" class="board-input reply-user-name" placeholder="Name..." style="width:120px;" value="${isAdmin ? 'TUW Admin' : ''}" ${isAdmin ? 'disabled' : ''}>
+                      <input type="text" class="board-input reply-user-msg" placeholder="Write response...">
+                      <button class="board-submit-btn" style="align-self:center;" onclick="submitSubReply('${msg.id}', this)">Post</button>
+                    </div>
+                  </div>
+                `;
+              }).join('')
+            }
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    // STANDARD CARD TAB RENDERING (LIVE, PREMIERES, UPCOMING, PAST)
+    const filtered = STREAMS.filter(s => s.status === currentTab);
     if(filtered.length === 0) {
-      container.innerHTML = `<div class="no-streams">No active items located inside this tab section.</div>`;
+      container.innerHTML = `<div class="no-streams">No active items logged under this category tab view.</div>`;
       return;
     }
 
@@ -707,10 +780,10 @@
         `;
       }
 
-      // Feature Equivalence: Direct embedded player and interactive live chat split-panel workspace
       let theaterWorkspaceElement = '';
       if(s.videoId) {
         if (s.status === 'live' || (s.isPremiere && s.liveNow)) {
+          // Wrapped inside a client-side try catch string inside iframe generation to completely prevent cross-domain blockages
           theaterWorkspaceElement = `
             <div class="live-theater-workspace">
               <iframe class="video-player-frame" 
@@ -734,62 +807,6 @@
             </div>
           `;
         }
-      }
-
-      // Suggestions Section Layout Builder Logic
-      let boardSectionElement = '';
-      if(s.status === 'live' || s.status === 'premieres') {
-        const matchingSuggestions = BOARD_IDEAS.filter(idea => idea.targetId === s.id || idea.videoId === s.videoId);
-        
-        boardSectionElement = `
-          <div class="board-wrapper">
-            <p class="board-header"><i class="fa-solid fa-lightbulb"></i> Broadcaster Suggestion Board</p>
-            <div class="board-input-group">
-              <div class="board-row-inputs">
-                <input type="text" class="board-input input-name" id="sugName-${s.id}" placeholder="Your Handle..." value="${isAdmin ? 'TUW Admin' : ''}" ${isAdmin ? 'disabled' : ''}>
-                <input type="text" class="board-input input-msg" id="sugMsg-${s.id}" placeholder="Suggest games, levels, challenges or content changes...">
-              </div>
-              <button class="board-submit-btn" onclick="submitSuggestion('${s.id}', '${s.videoId}')">Post Suggestion</button>
-            </div>
-            <div class="suggestions-list">
-              ${matchingSuggestions.length === 0 ? '<span style="font-size:0.78rem;color:var(--muted);padding:4px 0;">No suggestions submitted yet for this card stream instance.</span>' : 
-                matchingSuggestions.map(msg => {
-                  const authorAdminClass = msg.isAdminInput ? 'admin-sug-author' : '';
-                  const bodyAdminClass = msg.isAdminInput ? 'admin-sug-text' : '';
-                  
-                  return `
-                    <div class="sug-node">
-                      <div class="sug-meta">
-                        <span class="sug-author ${authorAdminClass}">${msg.name}</span>
-                        <span class="sug-time">${msg.time}</span>
-                      </div>
-                      <p class="sug-body ${bodyAdminClass}">${msg.text}</p>
-                      
-                      <div class="replies-box">
-                        ${(msg.replies || []).map(rep => `
-                          <div class="reply-node">
-                            <div class="sug-meta" style="margin-bottom:3px;">
-                              <span class="sug-author ${rep.isAdminInput ? 'admin-sug-author' : ''}">${rep.name}</span>
-                              <span class="sug-time">${rep.time}</span>
-                            </div>
-                            <p class="sug-body ${rep.isAdminInput ? 'admin-sug-text' : ''}" style="font-size:0.8rem;">${rep.text}</p>
-                          </div>
-                        `).join('')}
-                      </div>
-
-                      <button class="reply-toggle-btn" onclick="toggleReplyInput(this)"><i class="fa-solid fa-reply"></i> Reply</button>
-                      <div class="reply-form-sub-panel" style="display:none; margin-top:8px; gap:6px;">
-                        <input type="text" class="board-input reply-user-name" placeholder="Name..." style="width:110px; padding:4px 8px; font-size:0.75rem;" value="${isAdmin ? 'TUW Admin' : ''}" ${isAdmin ? 'disabled' : ''}>
-                        <input type="text" class="board-input reply-user-msg" placeholder="Write response..." style="flex:1; padding:4px 8px; font-size:0.75rem;">
-                        <button class="board-submit-btn" style="padding:4px 12px; font-size:0.7rem;" onclick="submitSubReply('${msg.id}', this)">Post</button>
-                      </div>
-                    </div>
-                  `;
-                }).join('')
-              }
-            </div>
-          </div>
-        `;
       }
 
       return `
@@ -825,7 +842,6 @@
             </div>
           </div>
           ${theaterWorkspaceElement}
-          ${boardSectionElement}
         </div>
       `;
     }).join('');
@@ -833,18 +849,16 @@
     if(currentTab === 'upcoming' || currentTab === 'premieres') startCountdownEngine();
   }
 
-  // 4. Suggestions Board Data Processor Injections
-  function submitSuggestion(cardId, videoId) {
-    const nameInput = document.getElementById(`sugName-${cardId}`);
-    const msgInput = document.getElementById(`sugMsg-${cardId}`);
-    
+  // 4. Standalone Global Board Data Handlers
+  function submitGlobalSuggestion() {
+    const msgInput = document.getElementById('globalSugMsg');
+    const nameInput = document.getElementById('globalSugName');
     if(!msgInput || !msgInput.value.trim()) return;
+
     const authorName = isAdmin ? 'TUW Admin' : (nameInput.value.trim() || 'Anonymous');
 
-    const newSuggestionNode = {
+    const newSuggestion = {
       id: 'sug-' + Date.now() + Math.random().toString(36).substr(2, 4),
-      targetId: cardId,
-      videoId: videoId,
       name: authorName,
       text: msgInput.value.trim(),
       isAdminInput: isAdmin,
@@ -852,18 +866,16 @@
       replies: []
     };
 
-    BOARD_IDEAS.unshift(newSuggestionNode);
+    BOARD_IDEAS.unshift(newSuggestion);
     saveBoardState();
     msgInput.value = '';
     renderStreams();
-    showToast('Idea posted onto suggestion board!');
+    showToast('Suggestion added to board!');
   }
 
   function toggleReplyInput(btn) {
-    const hiddenForm = btn.nextElementSibling;
-    if(hiddenForm) {
-      hiddenForm.style.display = hiddenForm.style.display === 'none' ? 'flex' : 'none';
-    }
+    const panel = btn.nextElementSibling;
+    panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
   }
 
   function submitSubReply(parentId, btnNode) {
@@ -874,23 +886,22 @@
     if(!msgVal) return;
     const authorName = isAdmin ? 'TUW Admin' : (nameVal || 'Anonymous');
 
-    const nodeMatch = BOARD_IDEAS.find(idea => idea.id === parentId);
-    if(nodeMatch) {
-      if(!nodeMatch.replies) nodeMatch.replies = [];
-      nodeMatch.replies.push({
+    const match = BOARD_IDEAS.find(idea => idea.id === parentId);
+    if(match) {
+      if(!match.replies) match.replies = [];
+      match.replies.push({
         name: authorName,
         text: msgVal,
         isAdminInput: isAdmin,
         time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
       });
-      
       saveBoardState();
       renderStreams();
-      showToast('Response successfully added!');
+      showToast('Reply published successfully!');
     }
   }
 
-  // 5. Countdown Timer Processing Engine
+  // 5. Countdown Engine
   function startCountdownEngine() {
     if(countdownInterval) clearInterval(countdownInterval);
 
@@ -906,8 +917,7 @@
         const timeDisplay = box.querySelector('.countdown-time');
 
         if(diff <= 0) {
-          timeDisplay.textContent = "Broadcast Airing! Refreshing state...";
-          timeDisplay.style.color = "var(--gold)";
+          timeDisplay.textContent = "Broadcast Active!";
           return;
         }
 
@@ -930,7 +940,7 @@
     countdownInterval = setInterval(updateClocks, 1000);
   }
 
-  // 6. Admin Panel Logic Controls
+  // 6. Admin State Controllers
   function setAdmin(val) {
     isAdmin = val;
     const btn = document.getElementById('adminBtn');
@@ -951,18 +961,11 @@
     if (u === ADMIN_USER && p === ADMIN_PASS) {
       closeModal('adminLoginModal');
       setAdmin(true);
-      showToast('Admin studio authorization complete 🛡️');
+      showToast('Admin authorized 🛡️');
     } else {
       const err = document.getElementById('adminError');
-      if(err) err.textContent = 'Invalid credentials configuration.';
+      if(err) err.textContent = 'Invalid credentials configurations.';
     }
-  }
-
-  function evaluateLiveStatusDot() {
-    const pulseDot = document.getElementById('livePulseAlert');
-    if (!pulseDot) return;
-    const isCurrentlyLive = STREAMS.some(s => s.status === 'live');
-    pulseDot.style.display = isCurrentlyLive ? 'block' : 'none';
   }
 
   function addStream() {
@@ -971,12 +974,11 @@
     document.getElementById('streamTitle').value = '';
     document.getElementById('streamDescription').value = '';
     document.getElementById('streamVideoId').value = '';
-    document.getElementById('streamStatus').value = currentTab;
+    document.getElementById('streamStatus').value = (currentTab === 'suggestions') ? 'live' : currentTab;
     document.getElementById('streamTargetDate').value = '';
     openModal('streamModal');
   }
 
-  // Sync structural manual overrides
   function editStream(id) {
     const target = STREAMS.find(s => s.id === id || s.id == id);
     if (!target) return;
@@ -996,24 +998,15 @@
   }
 
   function deleteStream(id) {
-    if (confirm('Drop tracking target identifier asset completely? 🗑️')) {
+    if (confirm('Drop tracking target identifier completely? 🗑️')) {
       STREAMS = STREAMS.filter(s => s.id !== id && s.id != id);
       saveLocalState();
       renderStreams();
-      showToast('Instance dropped successfully.');
+      showToast('Asset dropped.');
     }
   }
 
-  function switchTab(tabName) {
-    currentTab = tabName;
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.classList.remove('active');
-      if(btn.id.toLowerCase().includes(tabName)) btn.classList.add('active');
-    });
-    renderStreams();
-  }
-
-  // 7. Global Bootstrap Initialization Hook
+  // 7. Core Initialization Hook
   window.onload = () => {
     loadAllStreamsPipeline();
 
@@ -1033,7 +1026,7 @@
         const targetDate = document.getElementById('streamTargetDate').value;
 
         if(!title || !vId) {
-          showToast('Data Error: Configuration titles and video metrics are mandatory fields.');
+          showToast('Title and Video ID metrics are mandatory fields.');
           return;
         }
 
@@ -1057,7 +1050,7 @@
         saveLocalState();
         closeModal('streamModal');
         renderStreams();
-        showToast('Local database pipeline synchronized! 💾');
+        showToast('Local state synced! 💾');
       };
     }
   };
