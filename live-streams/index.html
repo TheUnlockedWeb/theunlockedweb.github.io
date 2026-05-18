@@ -304,7 +304,7 @@
 <div class="grain" aria-hidden="true"></div>
 <div class="aurora" aria-hidden="true">
   <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
+  <div class="orb orb-2 ="></div>
   <div class="orb orb-3"></div>
 </div>
 
@@ -424,7 +424,7 @@
   let editingId = null;
   let countdownInterval = null;
 
-  // Local backups or manually logged past VOD items (Rick Astley placeholder removed!)
+  // Local backups or manually logged past VOD items (Rick Astley placeholder permanently cleared!)
   const INITIAL_PAST_STREAMS = [];
 
   // 2. Storage & Dynamic Fetch API Pipeline
@@ -437,18 +437,18 @@
       localSaved = INITIAL_PAST_STREAMS; 
     }
 
-    // Filter out historical past entries saved by admin to merge safely with live API calls
+    // Isolate administrative manual logs from the local array
     const adminPastStreams = localSaved.filter(s => s.status === 'past');
     const adminManualOverrides = localSaved.filter(s => s.status !== 'past');
 
     STREAMS = [...adminPastStreams];
 
-    // If API key is still default template format, fallback to local storage
+    // If API key configuration is missing, render localized backups
     if(!API_KEY || API_KEY.includes('PASTE_YOUR_')) {
       STREAMS = [...adminManualOverrides, ...adminPastStreams];
       if(STREAMS.length === 0) {
         STREAMS = [
-          { id: 1, title: 'Demo Active Stream Slot', description: 'Log into Admin Panel or add your Google API key to activate production real-time updates.', videoId: 'dQw4w9WgXcQ', status: 'live', targetDate: '' }
+          { id: 1, title: 'Demo Active Stream Slot', description: 'Log into Admin Panel or verify your Google API key to activate production real-time updates.', videoId: 'dQw4w9WgXcQ', status: 'live', targetDate: '' }
         ];
       }
       evaluateLiveStatusDot();
@@ -457,7 +457,7 @@
     }
 
     try {
-      // Fetch active stream event details
+      // Fetch 1: Active Live Streams
       const liveRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&type=video&eventType=live&key=${API_KEY}`);
       const liveData = await liveRes.json();
       
@@ -474,7 +474,7 @@
         });
       }
 
-      // Fetch upcoming scheduled broadcast slots
+      // Fetch 2: Upcoming Scheduled Streams
       const upRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&type=video&eventType=upcoming&order=date&key=${API_KEY}`);
       const upData = await upRes.json();
 
@@ -483,7 +483,6 @@
           const item = upData.items[i];
           const vId = item.id.videoId;
           
-          // Request secondary target detail endpoints to acquire real countdown dates safely
           let liveScheduledTime = '';
           try {
             const detailRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=liveStreamingDetails&id=${vId}&key=${API_KEY}`);
@@ -503,12 +502,34 @@
           });
         }
       }
+
+      // Fetch 3: Completed Past Stream VOD Logs
+      const pastRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&type=video&eventType=completed&order=date&maxResults=10&key=${API_KEY}`);
+      const pastData = await pastRes.json();
+
+      if(pastData.items && pastData.items.length > 0) {
+        pastData.items.forEach((item, i) => {
+          // Prevent duplicates if manual admin overrides already match this specific video ID
+          const alreadyLogged = STREAMS.some(s => s.videoId === item.id.videoId);
+          if(!alreadyLogged) {
+            STREAMS.push({
+              id: 'past-api-' + i + Date.now(),
+              title: item.snippet.title,
+              description: item.snippet.description,
+              videoId: item.id.videoId,
+              status: 'past',
+              targetDate: ''
+            });
+          }
+        });
+      }
+
     } catch(err) {
-      console.error("YouTube Live Data Node request drop:", err);
-      showToast("API Sync Fault. Review developer logs console layout.");
+      console.error("YouTube Dynamic API fetch operation exception:", err);
+      showToast("API Sync Fault. Inspect system developer logs.");
     }
 
-    // Merge manual administrative mock blocks that are currently overrides inside local session data
+    // Merge custom administrative mock overlays if not already parsed natively
     adminManualOverrides.forEach(manualItem => {
        const alreadyExists = STREAMS.some(apiItem => apiItem.videoId === manualItem.videoId);
        if(!alreadyExists) STREAMS.push(manualItem);
@@ -727,7 +748,6 @@
     document.getElementById('streamVideoId').value = target.videoId;
     document.getElementById('streamStatus').value = target.status;
     
-    // Standardize ISO timestamps for HTML input values
     if(target.targetDate && target.targetDate.includes('Z')) {
        document.getElementById('streamTargetDate').value = new Date(target.targetDate).toISOString().slice(0, 16);
     } else {
@@ -738,7 +758,7 @@
 
   function deleteStream(id) {
     if (confirm('Drop tracking target identifier asset completely? 🗑️')) {
-      STREAMS = STREAMS.filter(s => s.id !== id && s.id == id);
+      STREAMS = STREAMS.filter(s => s.id !== id && s.id != id);
       saveLocalState();
       renderStreams();
       showToast('Stream instance dropped successfully.');
