@@ -183,7 +183,7 @@
       font-size: 0.92rem; color: var(--sub); line-height: 1.5; margin-bottom: 12px;
     }
 
-    /* ── Live Theater Embed Workspace ────── */
+    /* ── Live / Archive Theater Embed Workspace ────── */
     .live-theater-workspace {
       display: grid;
       grid-template-columns: 2fr 1fr;
@@ -193,6 +193,10 @@
       overflow: hidden;
       border: 1px solid var(--border);
       background: #06060c;
+    }
+    /* Past Streams layout fallback when chat is omitted */
+    .live-theater-workspace.no-chat {
+      grid-template-columns: 1fr;
     }
     @media (max-width: 900px) {
       .live-theater-workspace { grid-template-columns: 1fr; }
@@ -304,7 +308,7 @@
 <div class="grain" aria-hidden="true"></div>
 <div class="aurora" aria-hidden="true">
   <div class="orb orb-1"></div>
-  <div class="orb orb-2 ="></div>
+  <div class="orb orb-2"></div>
   <div class="orb orb-3"></div>
 </div>
 
@@ -424,7 +428,6 @@
   let editingId = null;
   let countdownInterval = null;
 
-  // Local backups or manually logged past VOD items (Rick Astley placeholder permanently cleared!)
   const INITIAL_PAST_STREAMS = [];
 
   // 2. Storage & Dynamic Fetch API Pipeline
@@ -437,13 +440,11 @@
       localSaved = INITIAL_PAST_STREAMS; 
     }
 
-    // Isolate administrative manual logs from the local array
     const adminPastStreams = localSaved.filter(s => s.status === 'past');
     const adminManualOverrides = localSaved.filter(s => s.status !== 'past');
 
     STREAMS = [...adminPastStreams];
 
-    // If API key configuration is missing, render localized backups
     if(!API_KEY || API_KEY.includes('PASTE_YOUR_')) {
       STREAMS = [...adminManualOverrides, ...adminPastStreams];
       if(STREAMS.length === 0) {
@@ -509,7 +510,6 @@
 
       if(pastData.items && pastData.items.length > 0) {
         pastData.items.forEach((item, i) => {
-          // Prevent duplicates if manual admin overrides already match this specific video ID
           const alreadyLogged = STREAMS.some(s => s.videoId === item.id.videoId);
           if(!alreadyLogged) {
             STREAMS.push({
@@ -529,7 +529,6 @@
       showToast("API Sync Fault. Inspect system developer logs.");
     }
 
-    // Merge custom administrative mock overlays if not already parsed natively
     adminManualOverrides.forEach(manualItem => {
        const alreadyExists = STREAMS.some(apiItem => apiItem.videoId === manualItem.videoId);
        if(!alreadyExists) STREAMS.push(manualItem);
@@ -602,21 +601,35 @@
         `;
       }
 
-      // Live Theater Embed Workspace for Active Live streams
+      // Dynamic Video Theater Workspace Embed for ALL Categories
       let theaterWorkspaceElement = '';
-      if(s.status === 'live' && s.videoId) {
-        theaterWorkspaceElement = `
-          <div class="live-theater-workspace">
-            <iframe class="video-player-frame" 
-                    src="https://www.youtube.com/embed/${s.videoId}?autoplay=1&mute=1" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                    allowfullscreen>
-            </iframe>
-            <iframe class="chat-embed-frame" 
-                    src="https://www.youtube.com/live_chat?v=${s.videoId}&embed_domain=${hostname}">
-            </iframe>
-          </div>
-        `;
+      if(s.videoId) {
+        if (s.status === 'live') {
+          // Live Tab: Split view containing the player + active running live chat frame
+          theaterWorkspaceElement = `
+            <div class="live-theater-workspace">
+              <iframe class="video-player-frame" 
+                      src="https://www.youtube.com/embed/${s.videoId}?autoplay=1&mute=1" 
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                      allowfullscreen>
+              </iframe>
+              <iframe class="chat-embed-frame" 
+                      src="https://www.youtube.com/live_chat?v=${s.videoId}&embed_domain=${hostname}">
+              </iframe>
+            </div>
+          `;
+        } else {
+          // Upcoming and Past Tab: Embeds a full-width video player (removes live chat space since chat is historical or locked)
+          theaterWorkspaceElement = `
+            <div class="live-theater-workspace no-chat">
+              <iframe class="video-player-frame" 
+                      src="https://www.youtube.com/embed/${s.videoId}" 
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                      allowfullscreen>
+              </iframe>
+            </div>
+          `;
+        }
       }
 
       return `
