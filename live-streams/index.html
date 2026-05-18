@@ -38,6 +38,7 @@
       margin-bottom: 24px;
       border-bottom: 1px solid var(--border);
       padding-bottom: 12px;
+      flex-wrap: wrap;
       animation: fadeUp .6s .18s cubic-bezier(.22,1,.36,1) both;
     }
     .tab-btn {
@@ -140,6 +141,9 @@
       padding: 3px 8px; border-radius: 4px; letter-spacing: 1px;
       text-transform: uppercase; animation: pulse-glow 1.5s infinite;
     }
+    .live-indicator-tag.premiere-tag {
+      background: #3b82f6;
+    }
 
     .stream-content {
       flex: 1;
@@ -160,6 +164,7 @@
       width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
     }
     .dot-red { background: #ef4444; box-shadow: 0 0 10px #ef4444; animation: pulse-glow 1.5s infinite; }
+    .dot-blue { background: #3b82f6; box-shadow: 0 0 10px #3b82f6; }
     .dot-gold { background: var(--gold); box-shadow: 0 0 10px var(--gold); }
     .dot-muted { background: var(--muted); }
 
@@ -174,6 +179,7 @@
       padding: 4px 10px; border-radius: 6px; white-space: nowrap;
     }
     .badge-live { background: rgba(239,68,68,.13); color: #ef4444; border: 1px solid rgba(239,68,68,.3); }
+    .badge-premieres { background: rgba(59,130,246,.13); color: #3b82f6; border: 1px solid rgba(59,130,246,.3); }
     .badge-upcoming { background: rgba(245,158,11,.13); color: var(--gold); border: 1px solid rgba(245,158,11,.3); }
     .badge-completed { background: rgba(255,255,255,.05); color: var(--muted); border: 1px solid var(--border); }
 
@@ -204,6 +210,81 @@
     @media (max-width: 900px) {
       .chat-embed-frame { border-left: none; border-top: 1px solid var(--border); height: 400px; }
     }
+
+    /* ── Ideas Suggestions System Modules ────────── */
+    .board-wrapper {
+      margin-top: 24px; padding-top: 20px;
+      border-top: 1px dashed var(--border);
+    }
+    .board-header {
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem;
+      color: var(--text); margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+    }
+    .board-header i { color: var(--gold); font-size: 0.85rem; }
+    
+    .board-input-group {
+      display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;
+    }
+    .board-row-inputs {
+      display: flex; gap: 10px;
+    }
+    .board-input {
+      background: #0d0d1b; border: 1px solid var(--border); border-radius: 6px;
+      color: var(--text); padding: 8px 12px; font-family: 'Manrope', sans-serif; font-size: 0.82rem;
+    }
+    .board-input:focus { outline: none; border-color: var(--gold); }
+    .input-name { width: 160px; }
+    .input-msg { flex: 1; }
+    
+    .board-submit-btn {
+      align-self: flex-end; padding: 6px 16px; border-radius: 6px; border: none;
+      background: rgba(212, 175, 55, 0.15); color: var(--gold); font-family: 'Syne', sans-serif;
+      font-weight: 700; font-size: 0.75rem; text-transform: uppercase; cursor: pointer; transition: all 0.15s;
+    }
+    .board-submit-btn:hover { background: var(--gold); color: #000; }
+
+    .suggestions-list {
+      display: flex; flex-direction: column; gap: 12px; max-height: 380px; overflow-y: auto; padding-right: 4px;
+    }
+    .sug-node {
+      background: rgba(255, 255, 255, 0.01); border: 1px solid var(--border);
+      border-radius: 8px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px;
+    }
+    .sug-meta {
+      display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem;
+    }
+    .sug-author { font-weight: 700; color: var(--gold-soft); }
+    .sug-time { color: var(--muted); font-size: 0.68rem; }
+    .sug-body { font-size: 0.85rem; color: var(--sub); line-height: 1.4; word-break: break-word; }
+    
+    .replies-box {
+      margin-top: 6px; padding-left: 14px; border-left: 1px solid var(--border);
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .reply-node {
+      background: rgba(255, 255, 255, 0.005); border: 1px solid rgba(255,255,255,0.03);
+      border-radius: 6px; padding: 8px 10px; font-size: 0.8rem;
+    }
+
+    /* System Admin Text Highlight Modes */
+    .admin-sug-author {
+      color: var(--gold) !important; text-shadow: 0 0 8px rgba(212,175,55,0.3);
+      display: inline-flex; align-items: center; gap: 4px;
+    }
+    .admin-sug-author::after {
+      content: '🛡️ STAFF'; font-size: 0.58rem; font-weight: 800; background: rgba(212,175,55,0.15);
+      padding: 1px 4px; border-radius: 3px; border: 1px solid rgba(212,175,55,0.3);
+    }
+    .admin-sug-text {
+      color: var(--gold) !important; font-weight: 500;
+    }
+
+    .reply-toggle-btn {
+      background: none; border: none; color: var(--muted); font-family: 'Manrope', sans-serif;
+      font-size: 0.7rem; font-weight: 600; cursor: pointer; padding: 0; align-self: flex-start;
+      display: inline-flex; align-items: center; gap: 4px; transition: color 0.15s;
+    }
+    .reply-toggle-btn:hover { color: var(--gold); }
 
     /* Countdown Modules */
     .countdown-box {
@@ -339,8 +420,15 @@
       <i class="fa-solid fa-circle-radial"></i> Live Now
       <span class="tab-pulse-indicator" id="livePulseAlert"></span>
     </button>
-    <button class="tab-btn" id="tabBtnUpcoming" onclick="switchTab('upcoming')"><i class="fa-solid fa-calendar-days"></i> Upcoming Scheduled</button>
-    <button class="tab-btn" id="tabBtnPast" onclick="switchTab('past')"><i class="fa-solid fa-clock-rotate-left"></i> Past Streams</button>
+    <button class="tab-btn" id="tabBtnPremieres" onclick="switchTab('premieres')">
+      <i class="fa-solid fa-film"></i> Premieres
+    </button>
+    <button class="tab-btn" id="tabBtnUpcoming" onclick="switchTab('upcoming')">
+      <i class="fa-solid fa-calendar-days"></i> Upcoming Scheduled
+    </button>
+    <button class="tab-btn" id="tabBtnPast" onclick="switchTab('past')">
+      <i class="fa-solid fa-clock-rotate-left"></i> Past Streams
+    </button>
   </div>
 
   <div id="adminButtonContainer"></div>
@@ -383,7 +471,7 @@
   <div class="modal">
     <button class="modal-close" onclick="closeModal('streamModal')">×</button>
     <h3><i class="fa-solid fa-video" style="color:var(--gold);margin-right:8px"></i><span id="modalTitle">Add Stream Event</span></h3>
-    <label>Stream Title</label>
+    <label>Stream / Premiere Title</label>
     <input type="text" id="streamTitle" maxlength="100" placeholder="Playing Custom Maps with Viewers!">
     <label>Description</label>
     <textarea id="streamDescription" rows="3" maxlength="400" placeholder="Provide context or description highlights..."></textarea>
@@ -391,8 +479,9 @@
     <input type="text" id="streamVideoId" placeholder="e.g., dQw4w9WgXcQ (11 characters from link)">
     <label>Status Tier</label>
     <select id="streamStatus">
-      <option value="live">🔴 Live Now / Premiere Active</option>
-      <option value="upcoming">⏳ Upcoming Event / Scheduled Premiere</option>
+      <option value="live">🔴 Live Now</option>
+      <option value="premieres">🎬 Premiere Section</option>
+      <option value="upcoming">⏳ Upcoming Live Event</option>
       <option value="past">🎬 Past Broadcast Vault</option>
     </select>
     <label>Schedule Target Date/Time (For Countdowns)</label>
@@ -400,7 +489,7 @@
     
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeModal('streamModal')">Cancel</button>
-      <button class="btn-confirm" id="streamSaveBtn">Save Broadcast</button>
+      <button class="btn-confirm" id="streamSaveBtn">Save Entry</button>
     </div>
   </div>
 </div>
@@ -412,10 +501,12 @@
   const API_KEY = 'AIzaSyAYdcohjswp3jcgWZgDFTwYiZsMwSeLrwY';
   const CHANNEL_ID = 'UCi8DgxMDGJ-Qsjqfdi-uoIw';
   const STORAGE_KEY = 'tuw_streams_data_v2';
+  const BOARD_STORAGE_KEY = 'tuw_stream_board_ideas';
   const ADMIN_USER = 'admin';
   const ADMIN_PASS = 'goodpassword';
   
   let STREAMS = [];
+  let BOARD_IDEAS = [];
   let currentTab = 'live';
   let isAdmin = false;
   let editingId = null;
@@ -438,11 +529,16 @@
 
     STREAMS = [...adminPastStreams];
 
+    try {
+      const boardStored = localStorage.getItem(BOARD_STORAGE_KEY);
+      BOARD_IDEAS = boardStored ? JSON.parse(boardStored) : [];
+    } catch(e) { BOARD_IDEAS = []; }
+
     if(!API_KEY || API_KEY.includes('PASTE_YOUR_')) {
       STREAMS = [...adminManualOverrides, ...adminPastStreams];
       if(STREAMS.length === 0) {
         STREAMS = [
-          { id: 1, title: 'Demo Active Stream Slot', description: 'Log into Admin Panel or verify your Google API key to activate production real-time updates.', videoId: 'dQw4w9WgXcQ', status: 'live', targetDate: '' }
+          { id: 1, title: 'Demo Active Stream Slot', description: 'Verify API details.', videoId: 'dQw4w9WgXcQ', status: 'live', targetDate: '' }
         ];
       }
       evaluateLiveStatusDot();
@@ -451,7 +547,7 @@
     }
 
     try {
-      // Fetch 1: Traditional Active Live Streams
+      // Fetch 1: Active Live Streams
       const liveRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&type=video&eventType=live&key=${API_KEY}`);
       const liveData = await liveRes.json();
       
@@ -469,7 +565,7 @@
         });
       }
 
-      // Fetch 2: Upcoming Live Streams AND Upcoming scheduled Premieres
+      // Fetch 2: Upcoming Scheduled Streams
       const upRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&type=video&eventType=upcoming&order=date&key=${API_KEY}`);
       const upData = await upRes.json();
 
@@ -494,67 +590,43 @@
             videoId: vId,
             status: 'upcoming',
             targetDate: liveScheduledTime || item.snippet.publishedAt,
-            isPremiere: false // Handled natively by YouTube's upcoming search endpoint mapping
+            isPremiere: false
           });
         }
       }
 
-      // Fetch 3: Scan all channel public uploads to detect running Premieres (AIRING NOW)
-      const scanRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&type=video&order=date&maxResults=5&key=${API_KEY}`);
+      // Fetch 3: Scan Uploaded Archives for Dynamic Premieres
+      const scanRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&type=video&order=date&maxResults=8&key=${API_KEY}`);
       const scanData = await scanRes.json();
 
       if(scanData.items && scanData.items.length > 0) {
         const videoIds = scanData.items.map(item => item.id.videoId).join(',');
-        
-        // Deep verification check across active broadcast metadata structures
         const detailRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet,liveStreamingDetails&id=${videoIds}&key=${API_KEY}`);
         const detailData = await detailRes.json();
 
         if(detailData.items) {
           detailData.items.forEach((video) => {
             const lsd = video.liveStreamingDetails;
-            // A Premiere is running LIVE if it has live details, a scheduled start time, but NO actual concurrent view count metric
             if(lsd && lsd.scheduledStartTime && !lsd.actualEndTime) {
-              const rightNow = new Date().getTime();
-              const startTime = new Date(lsd.scheduledStartTime).getTime();
-              
-              const cleanTitle = `[PREMIERE] ${video.snippet.title}`;
-
-              // Determine if it belongs in Live Now vs Upcoming Scheduled
-              if(rightNow >= startTime) {
-                // Ensure duplicate entries do not clash if already caught by default stream engines
-                const duplicate = STREAMS.some(s => s.videoId === video.id);
-                if(!duplicate) {
-                  STREAMS.push({
-                    id: 'premiere-live-' + video.id,
-                    title: cleanTitle,
-                    description: video.snippet.description,
-                    videoId: video.id,
-                    status: 'live',
-                    targetDate: '',
-                    isPremiere: true
-                  });
-                }
-              } else {
-                const duplicate = STREAMS.some(s => s.videoId === video.id);
-                if(!duplicate) {
-                  STREAMS.push({
-                    id: 'premiere-up-' + video.id,
-                    title: cleanTitle,
-                    description: video.snippet.description,
-                    videoId: video.id,
-                    status: 'upcoming',
-                    targetDate: lsd.scheduledStartTime,
-                    isPremiere: true
-                  });
-                }
+              const duplicate = STREAMS.some(s => s.videoId === video.id);
+              if(!duplicate) {
+                STREAMS.push({
+                  id: 'premiere-' + video.id,
+                  title: video.snippet.title,
+                  description: video.snippet.description,
+                  videoId: video.id,
+                  status: 'premieres', 
+                  targetDate: lsd.scheduledStartTime,
+                  isPremiere: true,
+                  liveNow: new Date().getTime() >= new Date(lsd.scheduledStartTime).getTime()
+                });
               }
             }
           });
         }
       }
 
-      // Fetch 4: Completed Past Broadcast / Premiere Records
+      // Fetch 4: Completed Past Streams
       const pastRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&type=video&eventType=completed&order=date&maxResults=10&key=${API_KEY}`);
       const pastData = await pastRes.json();
 
@@ -594,17 +666,11 @@
     evaluateLiveStatusDot();
   }
 
-  function evaluateLiveStatusDot() {
-    const pulseDot = document.getElementById('livePulseAlert');
-    if (!pulseDot) return;
-    const isCurrentlyLive = STREAMS.some(s => s.status === 'live');
-    pulseDot.style.display = isCurrentlyLive ? 'block' : 'none';
+  function saveBoardState() {
+    localStorage.setItem(BOARD_STORAGE_KEY, JSON.stringify(BOARD_IDEAS));
   }
 
-  function openModal(id) { document.getElementById(id).classList.add('open'); }
-  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
-  // 3. Render Engine Component Layout
+  // 3. Render Engine Engine Node Layout
   function renderStreams() {
     const container = document.getElementById('streamsContainer');
     if (!container) return;
@@ -612,7 +678,7 @@
     const filtered = STREAMS.filter(s => s.status === currentTab);
 
     if(filtered.length === 0) {
-      container.innerHTML = `<div class="no-streams">No active items located inside this studio tab view.</div>`;
+      container.innerHTML = `<div class="no-streams">No active items located inside this tab section.</div>`;
       return;
     }
 
@@ -623,25 +689,28 @@
       
       let badgeClass = `badge-${s.status}`;
       let indicatorDot = s.status === 'live' ? 'dot-red' : (s.status === 'upcoming' ? 'dot-gold' : 'dot-muted');
+      let badgeLabel = s.status === 'live' ? 'LIVE NOW' : (s.status === 'upcoming' ? 'UPCOMING' : s.status);
       
-      let badgeLabel = s.status === 'live' ? 'LIVE NOW' : s.status;
       if(s.isPremiere) {
-        badgeLabel = s.status === 'live' ? 'PREMIERE LIVE' : 'PREMIERE UPCOMING';
+        indicatorDot = s.liveNow ? 'dot-red' : 'dot-blue';
+        badgeClass = s.liveNow ? 'badge-live' : 'badge-premieres';
+        badgeLabel = s.liveNow ? 'PREMIERE LIVE' : 'SCHEDULED PREMIERE';
       }
 
       let countdownElement = '';
-      if(s.status === 'upcoming' && s.targetDate) {
+      if((s.status === 'upcoming' || (s.isPremiere && !s.liveNow)) && s.targetDate) {
         countdownElement = `
           <div class="countdown-box" data-target="${s.targetDate}">
-            <span class="countdown-label"><i class="fa-regular fa-hourglass-start"></i> ${s.isPremiere ? 'Premiere' : 'Stream'} Starts In:</span>
+            <span class="countdown-label"><i class="fa-regular fa-hourglass-start"></i> Launches In:</span>
             <span class="countdown-time">Calculating...</span>
           </div>
         `;
       }
 
+      // Feature Equivalence: Direct embedded player and interactive live chat split-panel workspace
       let theaterWorkspaceElement = '';
       if(s.videoId) {
-        if (s.status === 'live') {
+        if (s.status === 'live' || (s.isPremiere && s.liveNow)) {
           theaterWorkspaceElement = `
             <div class="live-theater-workspace">
               <iframe class="video-player-frame" 
@@ -667,11 +736,67 @@
         }
       }
 
+      // Suggestions Section Layout Builder Logic
+      let boardSectionElement = '';
+      if(s.status === 'live' || s.status === 'premieres') {
+        const matchingSuggestions = BOARD_IDEAS.filter(idea => idea.targetId === s.id || idea.videoId === s.videoId);
+        
+        boardSectionElement = `
+          <div class="board-wrapper">
+            <p class="board-header"><i class="fa-solid fa-lightbulb"></i> Broadcaster Suggestion Board</p>
+            <div class="board-input-group">
+              <div class="board-row-inputs">
+                <input type="text" class="board-input input-name" id="sugName-${s.id}" placeholder="Your Handle..." value="${isAdmin ? 'TUW Admin' : ''}" ${isAdmin ? 'disabled' : ''}>
+                <input type="text" class="board-input input-msg" id="sugMsg-${s.id}" placeholder="Suggest games, levels, challenges or content changes...">
+              </div>
+              <button class="board-submit-btn" onclick="submitSuggestion('${s.id}', '${s.videoId}')">Post Suggestion</button>
+            </div>
+            <div class="suggestions-list">
+              ${matchingSuggestions.length === 0 ? '<span style="font-size:0.78rem;color:var(--muted);padding:4px 0;">No suggestions submitted yet for this card stream instance.</span>' : 
+                matchingSuggestions.map(msg => {
+                  const authorAdminClass = msg.isAdminInput ? 'admin-sug-author' : '';
+                  const bodyAdminClass = msg.isAdminInput ? 'admin-sug-text' : '';
+                  
+                  return `
+                    <div class="sug-node">
+                      <div class="sug-meta">
+                        <span class="sug-author ${authorAdminClass}">${msg.name}</span>
+                        <span class="sug-time">${msg.time}</span>
+                      </div>
+                      <p class="sug-body ${bodyAdminClass}">${msg.text}</p>
+                      
+                      <div class="replies-box">
+                        ${(msg.replies || []).map(rep => `
+                          <div class="reply-node">
+                            <div class="sug-meta" style="margin-bottom:3px;">
+                              <span class="sug-author ${rep.isAdminInput ? 'admin-sug-author' : ''}">${rep.name}</span>
+                              <span class="sug-time">${rep.time}</span>
+                            </div>
+                            <p class="sug-body ${rep.isAdminInput ? 'admin-sug-text' : ''}" style="font-size:0.8rem;">${rep.text}</p>
+                          </div>
+                        `).join('')}
+                      </div>
+
+                      <button class="reply-toggle-btn" onclick="toggleReplyInput(this)"><i class="fa-solid fa-reply"></i> Reply</button>
+                      <div class="reply-form-sub-panel" style="display:none; margin-top:8px; gap:6px;">
+                        <input type="text" class="board-input reply-user-name" placeholder="Name..." style="width:110px; padding:4px 8px; font-size:0.75rem;" value="${isAdmin ? 'TUW Admin' : ''}" ${isAdmin ? 'disabled' : ''}>
+                        <input type="text" class="board-input reply-user-msg" placeholder="Write response..." style="flex:1; padding:4px 8px; font-size:0.75rem;">
+                        <button class="board-submit-btn" style="padding:4px 12px; font-size:0.7rem;" onclick="submitSubReply('${msg.id}', this)">Post</button>
+                      </div>
+                    </div>
+                  `;
+                }).join('')
+              }
+            </div>
+          </div>
+        `;
+      }
+
       return `
         <div class="stream-item">
           <div class="stream-top-row">
             <div class="stream-thumb-wrapper">
-              ${s.status === 'live' ? `<span class="live-indicator-tag">${s.isPremiere ? 'PREMIERE' : 'LIVE'}</span>` : ''}
+              ${s.status === 'live' || (s.isPremiere && s.liveNow) ? `<span class="live-indicator-tag ${s.isPremiere ? 'premiere-tag' : ''}">${s.isPremiere ? 'PREMIERE' : 'LIVE'}</span>` : ''}
               <img src="${thumbUrl}" alt="Thumbnail" onerror="this.src='https://img.youtube.com/vi/${s.videoId}/hqdefault.jpg'">
             </div>
             <div class="stream-content">
@@ -693,21 +818,79 @@
                 ${countdownElement}
                 <div class="stream-meta">
                   <a href="${watchUrl}" class="watch-link" target="_blank">
-                    <i class="fa-brands fa-youtube"></i> View layout on YouTube Channel portal →
+                    <i class="fa-brands fa-youtube"></i> View directly on YouTube →
                   </a>
                 </div>
               </div>
             </div>
           </div>
           ${theaterWorkspaceElement}
+          ${boardSectionElement}
         </div>
       `;
     }).join('');
 
-    if(currentTab === 'upcoming') startCountdownEngine();
+    if(currentTab === 'upcoming' || currentTab === 'premieres') startCountdownEngine();
   }
 
-  // 4. Countdown Engine Layout Processing Loop
+  // 4. Suggestions Board Data Processor Injections
+  function submitSuggestion(cardId, videoId) {
+    const nameInput = document.getElementById(`sugName-${cardId}`);
+    const msgInput = document.getElementById(`sugMsg-${cardId}`);
+    
+    if(!msgInput || !msgInput.value.trim()) return;
+    const authorName = isAdmin ? 'TUW Admin' : (nameInput.value.trim() || 'Anonymous');
+
+    const newSuggestionNode = {
+      id: 'sug-' + Date.now() + Math.random().toString(36).substr(2, 4),
+      targetId: cardId,
+      videoId: videoId,
+      name: authorName,
+      text: msgInput.value.trim(),
+      isAdminInput: isAdmin,
+      time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) + ' - ' + new Date().toLocaleDateString([], {month:'short', day:'numeric'}),
+      replies: []
+    };
+
+    BOARD_IDEAS.unshift(newSuggestionNode);
+    saveBoardState();
+    msgInput.value = '';
+    renderStreams();
+    showToast('Idea posted onto suggestion board!');
+  }
+
+  function toggleReplyInput(btn) {
+    const hiddenForm = btn.nextElementSibling;
+    if(hiddenForm) {
+      hiddenForm.style.display = hiddenForm.style.display === 'none' ? 'flex' : 'none';
+    }
+  }
+
+  function submitSubReply(parentId, btnNode) {
+    const wrapper = btnNode.parentElement;
+    const nameVal = wrapper.querySelector('.reply-user-name').value.trim();
+    const msgVal = wrapper.querySelector('.reply-user-msg').value.trim();
+
+    if(!msgVal) return;
+    const authorName = isAdmin ? 'TUW Admin' : (nameVal || 'Anonymous');
+
+    const nodeMatch = BOARD_IDEAS.find(idea => idea.id === parentId);
+    if(nodeMatch) {
+      if(!nodeMatch.replies) nodeMatch.replies = [];
+      nodeMatch.replies.push({
+        name: authorName,
+        text: msgVal,
+        isAdminInput: isAdmin,
+        time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+      });
+      
+      saveBoardState();
+      renderStreams();
+      showToast('Response successfully added!');
+    }
+  }
+
+  // 5. Countdown Timer Processing Engine
   function startCountdownEngine() {
     if(countdownInterval) clearInterval(countdownInterval);
 
@@ -723,7 +906,7 @@
         const timeDisplay = box.querySelector('.countdown-time');
 
         if(diff <= 0) {
-          timeDisplay.textContent = "Broadcast Running/Pending Refresh!";
+          timeDisplay.textContent = "Broadcast Airing! Refreshing state...";
           timeDisplay.style.color = "var(--gold)";
           return;
         }
@@ -747,14 +930,14 @@
     countdownInterval = setInterval(updateClocks, 1000);
   }
 
-  // 5. Admin Panel Security Control Accessors
+  // 6. Admin Panel Logic Controls
   function setAdmin(val) {
     isAdmin = val;
     const btn = document.getElementById('adminBtn');
     const container = document.getElementById('adminButtonContainer');
     if (val) {
       if(btn) { btn.className = 'admin-pill active'; btn.innerHTML = 'Admin ✓'; }
-      if(container) container.innerHTML = `<button class="admin-add-btn" onclick="addStream()">+ Add Stream Entry</button>`;
+      if(container) container.innerHTML = `<button class="admin-add-btn" onclick="addStream()">+ Add Entry</button>`;
     } else {
       if(btn) { btn.className = 'admin-pill login'; btn.innerHTML = 'Admin'; }
       if(container) container.innerHTML = '';
@@ -775,9 +958,16 @@
     }
   }
 
+  function evaluateLiveStatusDot() {
+    const pulseDot = document.getElementById('livePulseAlert');
+    if (!pulseDot) return;
+    const isCurrentlyLive = STREAMS.some(s => s.status === 'live');
+    pulseDot.style.display = isCurrentlyLive ? 'block' : 'none';
+  }
+
   function addStream() {
     editingId = null;
-    document.getElementById('modalTitle').textContent = 'Add Stream Entry';
+    document.getElementById('modalTitle').textContent = 'Add Entry';
     document.getElementById('streamTitle').value = '';
     document.getElementById('streamDescription').value = '';
     document.getElementById('streamVideoId').value = '';
@@ -786,11 +976,12 @@
     openModal('streamModal');
   }
 
+  // Sync structural manual overrides
   function editStream(id) {
     const target = STREAMS.find(s => s.id === id || s.id == id);
     if (!target) return;
     editingId = id;
-    document.getElementById('modalTitle').textContent = 'Edit Stream Entry';
+    document.getElementById('modalTitle').textContent = 'Edit Entry';
     document.getElementById('streamTitle').value = target.title;
     document.getElementById('streamDescription').value = target.description;
     document.getElementById('streamVideoId').value = target.videoId;
@@ -809,16 +1000,7 @@
       STREAMS = STREAMS.filter(s => s.id !== id && s.id != id);
       saveLocalState();
       renderStreams();
-      showToast('Stream instance dropped successfully.');
-    }
-  }
-
-  function showToast(msg) {
-    const toast = document.getElementById('toast');
-    if (toast) {
-      toast.textContent = msg;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 3000);
+      showToast('Instance dropped successfully.');
     }
   }
 
@@ -831,7 +1013,7 @@
     renderStreams();
   }
 
-  // 6. Global Bootstrap Initialization Hook
+  // 7. Global Bootstrap Initialization Hook
   window.onload = () => {
     loadAllStreamsPipeline();
 
@@ -855,13 +1037,20 @@
           return;
         }
 
+        const isPrem = status === 'premieres' || title.toLowerCase().includes('premiere');
+
         if(editingId === null) {
-          STREAMS.push({ id: Date.now(), title, description: desc, videoId: vId, status, targetDate, isPremiere: title.toLowerCase().includes('premiere') });
+          STREAMS.push({ 
+            id: Date.now(), title, description: desc, videoId: vId, status, targetDate, 
+            isPremiere: isPrem, 
+            liveNow: isPrem && targetDate && (new Date().getTime() >= new Date(targetDate).getTime())
+          });
         } else {
           const match = STREAMS.find(x => x.id === editingId || x.id == editingId);
           if(match) {
             match.title = title; match.description = desc; match.videoId = vId; match.status = status; match.targetDate = targetDate;
-            match.isPremiere = title.toLowerCase().includes('premiere');
+            match.isPremiere = isPrem;
+            match.liveNow = isPrem && targetDate && (new Date().getTime() >= new Date(targetDate).getTime());
           }
         }
 
