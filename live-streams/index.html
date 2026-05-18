@@ -13,21 +13,28 @@
     /* ── Page header ─────────────────────── */
     .page-header {
       padding: 52px 0 30px;
-      display: flex; flex-direction: column;
-      align-items: flex-start; gap: 12px;
+      display: flex; 
+      flex-direction: column;
+      align-items: flex-start; 
+      gap: 12px;
     }
     .page-title {
-      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-family: 'Syne', sans-serif; 
+      font-weight: 800;
       font-size: clamp(2rem, 7vw, 3.8rem);
-      line-height: 1; letter-spacing: -0.03em;
+      line-height: 1; 
+      letter-spacing: -0.03em;
       background: linear-gradient(140deg, #fff 0%, #f5f3ff 20%, var(--gold) 48%, var(--gold-soft) 68%, #fff 88%);
       background-size: 200% auto;
-      -webkit-background-clip: text; background-clip: text;
+      -webkit-background-clip: text; 
+      background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: shimmer 7s .4s linear infinite, fadeUp .7s cubic-bezier(.22,1,.36,1) both;
     }
     .page-sub {
-      font-size: .88rem; color: var(--sub); font-weight: 500;
+      font-size: .88rem; 
+      color: var(--sub); 
+      font-weight: 500;
       animation: fadeUp .6s .15s cubic-bezier(.22,1,.36,1) both;
     }
 
@@ -47,89 +54,331 @@
       scrollbar-width: none;
       animation: fadeUp .6s .18s cubic-bezier(.22,1,.36,1) both;
     }
-    .stream-tabs::-webkit-scrollbar { display: none; }
-    .tab-btn {
-      background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border); color: var(--muted);
-      padding: 10px 18px; border-radius: 8px; font-family: 'Syne', sans-serif; font-weight: 700;
-      font-size: 0.82rem; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
-      position: relative; flex-shrink: 0; transition: all 0.2s ease;
+    .stream-tabs::-webkit-scrollbar { 
+      display: none; 
     }
-    .tab-btn:hover { color: var(--text); background: rgba(255, 255, 255, 0.05); border-color: var(--border-h); }
-    .tab-btn.active { background: rgba(212, 175, 55, 0.1); border-color: var(--gold); color: var(--gold); text-shadow: 0 0 10px var(--gold-soft); }
+    .tab-btn {
+      background: rgba(255, 255, 255, 0.02); 
+      border: 1px solid var(--border); 
+      color: var(--muted);
+      padding: 10px 18px; 
+      border-radius: 8px; 
+      font-family: 'Syne', sans-serif; 
+      font-weight: 700;
+      font-size: 0.82rem; 
+      cursor: pointer; 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 8px;
+      position: relative; 
+      flex-shrink: 0; 
+      transition: all 0.2s ease;
+    }
+    .tab-btn:hover { 
+      color: var(--text); 
+      background: rgba(255, 255, 255, 0.05); 
+      border-color: var(--border-h); 
+    }
+    .tab-btn.active { 
+      background: rgba(212, 175, 55, 0.1); 
+      border-color: var(--gold); 
+      color: var(--gold); 
+      text-shadow: 0 0 10px var(--gold-soft); 
+    }
 
     .tab-pulse-indicator {
-      display: none; width: 8px; height: 8px; background: #ef4444; border-radius: 50%; position: absolute; top: 6px; right: 6px; box-shadow: 0 0 8px #ef4444; animation: pulse-glow 1.5s infinite;
+      display: none; 
+      width: 8px; 
+      height: 8px; 
+      background: #ef4444; 
+      border-radius: 50%; 
+      position: absolute; 
+      top: 6px; 
+      right: 6px; 
+      box-shadow: 0 0 8px #ef4444; 
+      animation: pulse-glow 1.5s infinite;
     }
 
-    /* Suggestions Counter Badge */
     .tab-counter-badge {
-      display: inline-flex; align-items: center; justify-content: center; background: var(--gold); color: #000;
-      font-size: 0.68rem; font-family: monospace; font-weight: 800; min-width: 18px; height: 18px; border-radius: 50%; padding: 0 4px; margin-left: 2px;
+      display: inline-flex; 
+      align-items: center; 
+      justify-content: center; 
+      background: var(--gold); 
+      color: #000;
+      font-size: 0.68rem; 
+      font-family: monospace; 
+      font-weight: 800; 
+      min-width: 18px; 
+      height: 18px; 
+      border-radius: 50%; 
+      padding: 0 4px; 
+      margin-left: 2px;
       transition: opacity 0.2s;
     }
 
     /* ── Streams Container Layout Grid ───── */
-    .streams-container { display: flex; flex-direction: column; gap: 20px; animation: fadeUp .6s .2s cubic-bezier(.22,1,.36,1) both; }
-    .stream-item { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 24px; display: flex; flex-direction: column; gap: 20px; }
-    .stream-top-row { display: flex; gap: 24px; }
-    @media (max-width: 768px) { .stream-top-row { flex-direction: column; gap: 16px; } }
+    .streams-container { 
+      display: flex; 
+      flex-direction: column; 
+      gap: 20px; 
+      animation: fadeUp .6s .2s cubic-bezier(.22,1,.36,1) both; 
+    }
+    .stream-item { 
+      background: var(--card); 
+      border: 1px solid var(--border); 
+      border-radius: var(--r); 
+      padding: 24px; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 20px; 
+    }
+    .stream-top-row { 
+      display: flex; 
+      gap: 24px; 
+    }
+    @media (max-width: 768px) { 
+      .stream-top-row { flex-direction: column; gap: 16px; } 
+    }
 
-    .stream-thumb-wrapper { position: relative; width: 280px; aspect-ratio: 16/9; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); background: #000; flex-shrink: 0; }
-    .stream-thumb-wrapper img { width: 100%; height: 100%; object-fit: cover; }
-    .stream-content { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
-    .stream-header { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; flex-wrap: wrap; }
-    .stream-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.2rem; color: var(--text); flex: 1; }
-    .stream-status-badge { display: inline-block; font-size: 0.65rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 10px; border-radius: 6px; white-space: nowrap; }
+    .stream-thumb-wrapper { 
+      position: relative; 
+      width: 280px; 
+      aspect-ratio: 16/9; 
+      border-radius: 10px; 
+      overflow: hidden; 
+      border: 1px solid var(--border); 
+      background: #000; 
+      flex-shrink: 0; 
+    }
+    .stream-thumb-wrapper img { 
+      width: 100%; 
+      height: 100%; 
+      object-fit: cover; 
+    }
+    .stream-content { 
+      flex: 1; 
+      display: flex; 
+      flex-direction: column; 
+      justify-content: space-between; 
+    }
+    .stream-header { 
+      display: flex; 
+      align-items: center; 
+      gap: 14px; 
+      margin-bottom: 8px; 
+      flex-wrap: wrap; 
+    }
+    .stream-title { 
+      font-family: 'Syne', sans-serif; 
+      font-weight: 700; 
+      font-size: 1.2rem; 
+      color: var(--text); 
+      flex: 1; 
+    }
+    .stream-status-badge { 
+      display: inline-block; 
+      font-size: 0.65rem; 
+      font-weight: 700; 
+      letter-spacing: 1.5px; 
+      text-transform: uppercase; 
+      padding: 4px 10px; 
+      border-radius: 6px; 
+      white-space: nowrap; 
+    }
 
     /* ── Theater Embedding Container Workspace ── */
-    .live-theater-workspace { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-top: 10px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: #06060c; }
-    .live-theater-workspace.no-chat { grid-template-columns: 1fr; }
-    .video-player-frame { width: 100%; aspect-ratio: 16/9; background: #000; border: none; display: block; }
-    .chat-embed-frame { width: 100%; height: 100%; min-height: 360px; background: #0a0a14; border: none; display: block; border-left: 1px solid var(--border); }
+    .live-theater-workspace { 
+      display: grid; 
+      grid-template-columns: 2fr 1fr; 
+      gap: 14px; 
+      margin-top: 10px; 
+      border-radius: 12px; 
+      overflow: hidden; 
+      border: 1px solid var(--border); 
+      background: #06060c; 
+    }
+    .live-theater-workspace.no-chat { 
+      grid-template-columns: 1fr; 
+    }
+    .video-player-frame { 
+      width: 100%; 
+      aspect-ratio: 16/9; 
+      background: #000; 
+      border: none; 
+      display: block; 
+    }
+    .chat-embed-frame { 
+      width: 100%; 
+      height: 100%; 
+      min-height: 360px; 
+      background: #0a0a14; 
+      border: none; 
+      display: block; 
+      border-left: 1px solid var(--border); 
+    }
 
     /* ── Suggestions Board Styles ──────────────── */
-    .tab-board-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 28px; }
-    .board-input-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; background: rgba(255,255,255,0.01); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
-    .board-row-inputs { display: flex; gap: 10px; flex-wrap: wrap; }
-    .board-input { background: #0d0d1b; border: 1px solid var(--border); border-radius: 6px; color: var(--text); padding: 10px 14px; font-family: 'Manrope', sans-serif; font-size: 0.85rem; }
-    .board-input:focus { outline: none; border-color: var(--gold); }
+    .tab-board-card { 
+      background: var(--card); 
+      border: 1px solid var(--border); 
+      border-radius: var(--r); 
+      padding: 28px; 
+    }
+    .board-input-group { 
+      display: flex; 
+      flex-direction: column; 
+      gap: 10px; 
+      margin-bottom: 24px; 
+      background: rgba(255,255,255,0.01); 
+      border: 1px solid var(--border); 
+      border-radius: 10px; 
+      padding: 16px; 
+    }
+    .board-row-inputs { 
+      display: flex; 
+      gap: 10px; 
+      flex-wrap: wrap; 
+    }
+    .board-input { 
+      background: #0d0d1b; 
+      border: 1px solid var(--border); 
+      border-radius: 6px; 
+      color: var(--text); 
+      padding: 10px 14px; 
+      font-family: 'Manrope', sans-serif; 
+      font-size: 0.85rem; 
+    }
+    .board-input:focus { 
+      outline: none; 
+      border-color: var(--gold); 
+    }
     .input-name { width: 200px; }
     .input-msg { flex: 1; min-width: 260px; }
     
-    /* Board Settings & Terminal Section */
-    .board-meta-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-    @media (max-width: 768px) { .board-meta-controls { grid-template-columns: 1fr; } }
+    .board-meta-controls { 
+      display: grid; 
+      grid-template-columns: 1fr 1fr; 
+      gap: 16px; 
+      margin-bottom: 20px; 
+    }
+    @media (max-width: 768px) { 
+      .board-meta-controls { grid-template-columns: 1fr; } 
+    }
     
     .owner-terminal-box {
-      background: #05050a; border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 10px; padding: 14px; font-family: monospace; display: flex; flex-direction: column; gap: 8px;
+      background: #05050a; 
+      border: 1px solid rgba(239, 68, 68, 0.3); 
+      border-radius: 10px; 
+      padding: 14px; 
+      font-family: monospace; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 8px;
     }
-    .terminal-title { color: #f87171; font-size: 0.78rem; font-weight: 700; letter-spacing: 1px; }
-    .terminal-row { display: flex; gap: 10px; }
-    .terminal-input { background: #0a0a14; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #fff; padding: 6px 10px; flex: 1; font-size: 0.8rem; }
+    .terminal-title { 
+      color: #f87171; 
+      font-size: 0.78rem; 
+      font-weight: 700; 
+      letter-spacing: 1px; 
+    }
+    .terminal-row { 
+      display: flex; 
+      gap: 10px; 
+    }
+    .terminal-input { 
+      background: #0a0a14; 
+      border: 1px solid rgba(255,255,255,0.1); 
+      border-radius: 4px; 
+      color: #fff; 
+      padding: 6px 10px; 
+      flex: 1; 
+      font-size: 0.8rem; 
+    }
 
     .board-settings-box {
-      background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 8px;
+      background: rgba(255,255,255,0.02); 
+      border: 1px solid var(--border); 
+      border-radius: 10px; 
+      padding: 14px; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 8px;
     }
-    .settings-title { color: var(--gold); font-size: 0.85rem; font-family: 'Syne', sans-serif; font-weight: 700; display: flex; align-items: center; gap: 6px; }
-    .settings-select { background: #0d0d1b; border: 1px solid var(--border); border-radius: 6px; color: var(--text); padding: 6px 10px; font-family: 'Manrope', sans-serif; font-size: 0.8rem; cursor: pointer; }
+    .settings-title { 
+      color: var(--gold); 
+      font-size: 0.85rem; 
+      font-family: 'Syne', sans-serif; 
+      font-weight: 700; 
+      display: flex; 
+      align-items: center; 
+      gap: 6px; 
+    }
+    .settings-select { 
+      background: #0d0d1b; 
+      border: 1px solid var(--border); 
+      border-radius: 6px; 
+      color: var(--text); 
+      padding: 6px 10px; 
+      font-family: 'Manrope', sans-serif; 
+      font-size: 0.8rem; 
+      cursor: pointer; 
+    }
 
-    .suggestions-list { display: flex; flex-direction: column; gap: 14px; }
-    .sug-node { background: rgba(255, 255, 255, 0.015); border: 1px solid var(--border); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 8px; position: relative; }
+    .suggestions-list { 
+      display: flex; 
+      flex-direction: column; 
+      gap: 14px; 
+    }
+    .sug-node { 
+      background: rgba(255, 255, 255, 0.015); 
+      border: 1px solid var(--border); 
+      border-radius: 8px; 
+      padding: 16px; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 8px; 
+      position: relative; 
+    }
 
-    .sug-node.own-perspective, .reply-node.own-perspective { background: #ffffff !important; border-color: #ffffff !important; }
-    .sug-node.own-perspective .sug-body, .sug-node.own-perspective .sug-time, .reply-node.own-perspective .sug-body, .reply-node.own-perspective .sug-time, .sug-node.own-perspective .board-action-link, .reply-node.own-perspective .board-action-link, .sug-node.own-perspective .reply-toggle-btn, .reply-node.own-perspective .reply-toggle-btn { color: #111118 !important; }
+    .sug-node.own-perspective, .reply-node.own-perspective { 
+      background: #ffffff !important; 
+      border-color: #ffffff !important; 
+    }
+    .sug-node.own-perspective .sug-body, 
+    .sug-node.own-perspective .sug-time, 
+    .reply-node.own-perspective .sug-body, 
+    .reply-node.own-perspective .sug-time, 
+    .sug-node.own-perspective .board-action-link, 
+    .reply-node.own-perspective .board-action-link, 
+    .sug-node.own-perspective .reply-toggle-btn, 
+    .reply-node.own-perspective .reply-toggle-btn { 
+      color: #111118 !important; 
+    }
     
-    .sug-meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; }
+    .sug-meta { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      font-size: 0.78rem; 
+    }
     .owner-sug-text { color: #f87171 !important; font-weight: 600; }
     .staff-sug-text { color: #fb923c !important; font-weight: 600; }
     .sug-author { font-weight: 700; color: var(--gold-soft); }
     .sug-node.own-perspective .sug-author, .reply-node.own-perspective .sug-author { color: #111118 !important; font-weight: 800; }
 
     .mention-tag {
-      background: rgba(212, 175, 55, 0.15); color: var(--gold) !important; padding: 2px 6px; border-radius: 4px; font-weight: 700; border: 1px solid rgba(212, 175, 55, 0.3); font-size: 0.85rem;
+      background: rgba(212, 175, 55, 0.15); 
+      color: var(--gold) !important; 
+      padding: 2px 6px; 
+      border-radius: 4px; 
+      font-weight: 700; 
+      border: 1px solid rgba(212, 175, 55, 0.3); 
+      font-size: 0.85rem;
     }
     .sug-node.own-perspective .mention-tag, .reply-node.own-perspective .mention-tag {
-      background: rgba(17, 17, 24, 0.1); color: #111118 !important; border-color: rgba(17,17,24,0.2);
+      background: rgba(17, 17, 24, 0.1); 
+      color: #111118 !important; 
+      border-color: rgba(17,17,24,0.2);
     }
 
     .owner-sug-author { color: #f87171 !important; text-shadow: 0 0 8px rgba(248,113,113,0.3); display: inline-flex; align-items: center; gap: 5px; }
@@ -170,6 +419,31 @@
 </head>
 <body>
 
+<div class="grain" aria-hidden="true"></div>
+<div class="aurora" aria-hidden="true">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<nav class="nav">
+  <a href="../" class="nav-brand">TUW</a>
+  <div class="nav-divider"></div>
+  <div class="nav-links">
+    <a href="../">Home</a>
+    <a href="../videos/">Videos</a>
+    <a href="../games/">Games</a>
+    <a href="../suggestions/">Suggestions</a>
+    <a href="../chat/">Chat</a>
+    <a href="../updates/">Notes & Updates</a>
+    <a href="./" class="active">Live Streams</a>
+  </div>
+  <div class="nav-socials">
+    <a href="https://www.youtube.com/channel/UCi8DgxMDGJ-Qsjqfdi-uoIw" class="nav-pill nav-pill-yt" target="_blank"><i class="fa-brands fa-youtube"></i> YouTube</a>
+    <a href="https://discord.gg/vBMNDBTFn" class="nav-pill nav-pill-dc" target="_blank"><i class="fa-brands fa-discord"></i> Discord</a>
+  </div>
+</nav>
+
 <div class="wrap">
   <header class="page-header">
     <div class="chip"><span class="chip-dot" style="background:#ef4444"></span>Broadcast Studio</div>
@@ -188,6 +462,11 @@
   <div id="adminButtonContainer"></div>
   <div class="streams-container" id="streamsContainer"></div>
 </div>
+
+<footer>
+  <span class="f-brand">TheUnlockedWeb</span>
+  <span class="f-copy">© 2026 EthanUnlocked's gaming hits</span>
+</footer>
 
 <div class="admin-badge">
   <button class="admin-pill login" id="adminBtn"><i class="fa-solid fa-shield-halved"></i> Admin</button>
@@ -271,8 +550,6 @@
   let adminRole = ''; 
   let editingId = null;
   let countdownInterval = null;
-
-  // Counter badge computation metric selector
   let counterConfigMode = 'all'; 
 
   const USER_SESSION_POSTS = new Set();
@@ -298,6 +575,41 @@
       if(liveData.items) {
         liveData.items.forEach((item, i) => { STREAMS.push({ id: 'live-' + i + Date.now(), title: item.snippet.title, description: item.snippet.description, videoId: item.id.videoId, status: 'live', targetDate: '', isPremiere: false }); });
       }
+      
+      const upRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&type=video&eventType=upcoming&order=date&key=${API_KEY}`);
+      const upData = await upRes.json();
+      if(upData.items) {
+        for(let i=0; i < upData.items.length; i++) {
+          const item = upData.items[i];
+          let liveScheduledTime = '';
+          try {
+            const detailRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=liveStreamingDetails&id=${item.id.videoId}&key=${API_KEY}`);
+            const detailData = await detailRes.json();
+            if(detailData.items?.[0]?.liveStreamingDetails?.scheduledStartTime) {
+              liveScheduledTime = detailData.items[0].liveStreamingDetails.scheduledStartTime;
+            }
+          } catch(err) {}
+          STREAMS.push({ id: 'upcoming-' + i + Date.now(), title: item.snippet.title, description: item.snippet.description, videoId: item.id.videoId, status: 'upcoming', targetDate: liveScheduledTime || item.snippet.publishedAt, isPremiere: false });
+        }
+      }
+
+      const scanRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&type=video&order=date&maxResults=8&key=${API_KEY}`);
+      const scanData = await scanRes.json();
+      if(scanData.items) {
+        const videoIds = scanData.items.map(item => item.id.videoId).join(',');
+        const detailRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet,liveStreamingDetails&id=${videoIds}&key=${API_KEY}`);
+        const detailData = await detailRes.json();
+        if(detailData.items) {
+          detailData.items.forEach((video) => {
+            const lsd = video.liveStreamingDetails;
+            if(lsd && lsd.scheduledStartTime && !lsd.actualEndTime) {
+              if(!STREAMS.some(s => s.videoId === video.id)) {
+                STREAMS.push({ id: 'premiere-' + video.id, title: video.snippet.title, description: video.snippet.description, videoId: video.id, status: 'premieres', targetDate: lsd.scheduledStartTime, isPremiere: true, liveNow: new Date().getTime() >= new Date(lsd.scheduledStartTime).getTime() });
+              }
+            }
+          });
+        }
+      }
     } catch(err) {}
 
     adminManualOverrides.forEach(m => { if(!STREAMS.some(a => a.videoId === m.videoId)) STREAMS.push(m); });
@@ -318,12 +630,7 @@
   function updateSuggestionsCounterBadge() {
     const badge = document.getElementById('sugCounterCircle');
     if(!badge) return;
-
-    if (counterConfigMode === 'off') {
-      badge.style.opacity = '0';
-      badge.textContent = '0';
-      return;
-    }
+    if (counterConfigMode === 'off') { badge.style.opacity = '0'; badge.textContent = '0'; return; }
     
     badge.style.opacity = '1';
     let currentUsername = isAdmin ? ((adminRole === 'OWNER') ? 'EthanUnlocked' : 'TUW Admin') : '';
@@ -331,32 +638,18 @@
 
     BOARD_IDEAS.forEach(idea => {
       if (idea.isBanned) return;
-
-      if (counterConfigMode === 'all') {
-        count++;
-      } else if (counterConfigMode === 'personal' && currentUsername) {
-        // Mode Personal: Scan if post text explicitly mentions current authenticated user handle
-        if (idea.text.toLowerCase().includes(`@${currentUsername.toLowerCase()}`)) {
-          count++;
-        }
-      }
+      if (counterConfigMode === 'all') count++;
+      else if (counterConfigMode === 'personal' && currentUsername && idea.text.toLowerCase().includes(`@${currentUsername.toLowerCase()}`)) count++;
 
       if (idea.replies) {
         idea.replies.forEach(reply => {
-          if (counterConfigMode === 'all') {
-            count++;
-          } else if (counterConfigMode === 'personal' && currentUsername) {
-            // Check if user is explicitly mentioned in reply or if reply is an answer to a post they wrote
-            const isMentioned = reply.text.toLowerCase().includes(`@${currentUsername.toLowerCase()}`);
-            const isReplyToThem = idea.name.toLowerCase() === currentUsername.toLowerCase();
-            if (isMentioned || isReplyToThem) {
-              count++;
-            }
+          if (counterConfigMode === 'all') count++;
+          else if (counterConfigMode === 'personal' && currentUsername) {
+            if (reply.text.toLowerCase().includes(`@${currentUsername.toLowerCase()}`) || idea.name.toLowerCase() === currentUsername.toLowerCase()) count++;
           }
         });
       }
     });
-
     badge.textContent = count;
   }
 
@@ -370,7 +663,6 @@
 
     if(currentTab === 'suggestions') {
       let defaultInputValue = isAdmin ? ((adminRole === 'OWNER') ? 'EthanUnlocked' : 'TUW Admin') : '';
-      
       let ownerTerminalElement = (isAdmin && adminRole === 'OWNER') ? `
         <div class="owner-terminal-box">
           <div class="terminal-title">👑 OWNER MODERATION COMMAND SYSTEM</div>
@@ -382,7 +674,6 @@
       container.innerHTML = `
         <div class="tab-board-card">
           <p class="board-header"><i class="fa-solid fa-lightbulb"></i> Stream & Premiere Suggestions Box</p>
-          
           <div class="board-meta-controls">
             ${ownerTerminalElement}
             <div class="board-settings-box">
@@ -394,7 +685,6 @@
               </select>
             </div>
           </div>
-
           <div class="board-input-group">
             <div class="board-row-inputs">
               <input type="text" class="board-input input-name" id="globalSugName" placeholder="Your Username..." value="${defaultInputValue}" ${isAdmin ? 'disabled' : ''}>
@@ -458,13 +748,55 @@
 
     const filtered = STREAMS.filter(s => s.status === currentTab);
     if(filtered.length === 0) { container.innerHTML = `<div class="no-streams">No listings active.</div>`; return; }
-    container.innerHTML = filtered.map(s => `<div class="stream-item"><div class="stream-title">${s.title}</div></div>`).join('');
+    container.innerHTML = filtered.map((s) => {
+      const watchUrl = `https://www.youtube.com/watch?v=${s.videoId}`;
+      const thumbUrl = s.videoId ? `https://img.youtube.com/vi/${s.videoId}/maxresdefault.jpg` : '../assets/resources/fallback-thumb.jpg';
+      const hostname = window.location.hostname || 'localhost';
+      let indicatorDot = s.status === 'live' ? 'dot-red' : (s.status === 'upcoming' ? 'dot-gold' : 'dot-muted');
+      let badgeLabel = s.status === 'live' ? 'LIVE NOW' : (s.status === 'upcoming' ? 'UPCOMING' : s.status);
+      
+      if(s.isPremiere) {
+        indicatorDot = s.liveNow ? 'dot-red' : 'dot-blue';
+        badgeLabel = s.liveNow ? 'PREMIERE LIVE' : 'SCHEDULED PREMIERE';
+      }
+
+      let countdownElement = ((s.status === 'upcoming' || (s.isPremiere && !s.liveNow)) && s.targetDate) ? 
+        `<div class="countdown-box" data-target="${s.targetDate}"><span class="countdown-time">Calculating...</span></div>` : '';
+
+      let theaterWorkspaceElement = '';
+      if(s.videoId) {
+        if (s.status === 'live' || (s.isPremiere && s.liveNow)) {
+          theaterWorkspaceElement = `<div class="live-theater-workspace"><iframe class="video-player-frame" src="https://www.youtube.com/embed/${s.videoId}?autoplay=1&mute=1" allowfullscreen></iframe><iframe class="chat-embed-frame" src="https://www.youtube.com/live_chat?v=${s.videoId}&embed_domain=${hostname}"></iframe></div>`;
+        } else {
+          theaterWorkspaceElement = `<div class="live-theater-workspace no-chat"><iframe class="video-player-frame" src="https://www.youtube.com/embed/${s.videoId}" allowfullscreen></iframe></div>`;
+        }
+      }
+
+      return `
+        <div class="stream-item">
+          <div class="stream-top-row">
+            <div class="stream-thumb-wrapper">
+              <img src="${thumbUrl}" alt="Thumbnail">
+            </div>
+            <div class="stream-content">
+              <div>
+                <div class="stream-header">
+                  <div class="stream-dot ${indicatorDot}"></div>
+                  <div class="stream-title">${s.title}</div>
+                  <span class="stream-status-badge badge-${s.status}">${badgeLabel}</span>
+                  ${isAdmin ? `<div class="stream-actions"><button class="adm-btn adm-btn-edit" onclick="editStream('${s.id}')">Edit</button><button class="adm-btn adm-btn-del" onclick="deleteStream('${s.id}')">Delete</button></div>` : ''}
+                </div>
+                <p class="stream-description">${s.description}</p>
+              </div>
+              <div>${countdownElement}<div class="stream-meta"><a href="${watchUrl}" class="watch-link" target="_blank">Open on YouTube →</a></div></div>
+            </div>
+          </div>
+          ${theaterWorkspaceElement}
+        </div>`;
+    }).join('');
   }
 
-  function updateCounterSettingFilter(value) {
-    counterConfigMode = value;
-    saveSettingsState();
-  }
+  function updateCounterSettingFilter(value) { counterConfigMode = value; saveSettingsState(); }
 
   function submitGlobalSuggestion() {
     const msgInput = document.getElementById('globalSugMsg');
@@ -501,7 +833,6 @@
     const input = document.getElementById('ownerCmdInput');
     const rawCmd = input.value.trim();
     if(!rawCmd) return;
-
     const parts = rawCmd.split(' ');
     const command = parts[0].toLowerCase();
     const targetUser = parts[1];
@@ -514,7 +845,7 @@
         }
       });
       saveBoardState(); renderStreams();
-      showToast(`Command processed: Hidden posts from ${targetUser}. Email log execution simulated.`);
+      showToast(`Banned user ${targetUser}.`);
     }
     input.value = '';
   }
@@ -537,7 +868,7 @@
   }
 
   function deleteSuggestionRecord(targetId, parentId) {
-    if(!confirm('Delete this message entry?')) return;
+    if(!confirm('Delete this item?')) return;
     if(!parentId) { BOARD_IDEAS = BOARD_IDEAS.filter(x => x.id !== targetId); } 
     else { const rootMatch = BOARD_IDEAS.find(x => x.id === parentId); if(rootMatch?.replies) rootMatch.replies = rootMatch.replies.filter(y => y.id !== targetId); }
     saveBoardState(); renderStreams();
@@ -550,7 +881,7 @@
       const rootMatch = BOARD_IDEAS.find(x => x.id === parentId);
       if(rootMatch?.replies) rootMatch.replies = rootMatch.replies.filter(y => y.id !== targetId);
     }
-    saveBoardState(); renderStreams(); showToast('Post hidden. Notification email logged.');
+    saveBoardState(); renderStreams(); showToast('Post hidden.');
   }
 
   function setAdmin(val, role = '') {
@@ -569,8 +900,8 @@
 
   function handleLogin() {
     const u = document.getElementById('adminUser').value.trim(); const p = document.getElementById('adminPass').value;
-    if (u === OWNER_USER && p === OWNER_PASS) { closeModal('adminLoginModal'); setAdmin(true, 'OWNER'); showToast('Owner status verified 👑'); } 
-    else if (u === STAFF_USER && p === STAFF_PASS) { closeModal('adminLoginModal'); setAdmin(true, 'STAFF'); showToast('Staff authorized.'); } 
+    if (u === OWNER_USER && p === OWNER_PASS) { closeModal('adminLoginModal'); setAdmin(true, 'OWNER'); showToast('Welcome Owner EthanUnlocked!'); } 
+    else if (u === STAFF_USER && p === STAFF_PASS) { closeModal('adminLoginModal'); setAdmin(true, 'STAFF'); showToast('Staff login.'); } 
     else { document.getElementById('adminError').textContent = 'Invalid account.'; }
   }
 
