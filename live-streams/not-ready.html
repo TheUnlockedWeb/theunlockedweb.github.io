@@ -1,1 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maintenance needed!</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+        }
 
+        .tape {
+            width: 100%;
+            height: auto;
+            max-height: 80px;
+            object-fit: cover;
+            position: fixed;
+            left: 0;
+            z-index: 10;
+        }
+
+        .tape-top {
+            top: 0;
+        }
+
+        .tape-bottom {
+            bottom: 0;
+        }
+
+        .container {
+            padding: 100px 20px;
+            max-width: 800px;
+            z-index: 5;
+        }
+
+        .maintenance-sign {
+            width: 150px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin: 10px 0;
+            text-transform: uppercase;
+            color: #ffcc00;
+        }
+
+        .info-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+
+        .reasons-box {
+            background: #1a1a1a;
+            border: 1px dashed #444;
+            padding: 20px;
+            margin: 20px auto 30px auto;
+            min-height: 50px;
+            border-radius: 8px;
+            color: #ccc;
+            font-style: italic;
+        }
+
+        .button-group {
+            margin-top: 20px;
+        }
+
+        .btn {
+            background-color: #ffcc00;
+            color: black;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            display: inline-block;
+            margin: 10px 0;
+            min-width: 220px;
+        }
+
+        .btn:hover {
+            background-color: #e6b800;
+        }
+
+        .sub-text {
+            margin-top: 25px;
+            font-size: 1.1rem;
+            font-weight: normal;
+        }
+    </style>
+</head>
+<body>
+
+    <img src="../maintenance-images/maintenance-tape.png" alt="Maintenance Tape" class="tape tape-top">
+    
+    <div class="container">
+        <img src="../maintenance-images/maintenance-sign.png" alt="Maintenance Sign" class="maintenance-sign">
+        
+        <h1>CANNOT OPEN!</h1>
+        
+        <div class="info-text">
+            <p>This page is not finished yet! Please check back later!</p>
+            
+            <div class="button-group">
+                <p>Click this button to return to the previous page:</p>
+                <button class="btn" onclick="window.history.back()">Return to Previous Page</button>
+                
+                <p class="sub-text">Or go back to the Home Page</p>
+                <a href="https://theunlockedweb.github.io" class="btn">Go to Home Page</a>
+            </div>
+        </div>
+    </div>
+
+    <img src="../maintenance-images/maintenance-tape.png" alt="Maintenance Tape" class="tape tape-top">
+    
+</body>
+</html>
