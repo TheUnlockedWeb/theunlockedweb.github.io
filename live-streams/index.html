@@ -267,8 +267,8 @@
       display: inline-flex; align-items: center; gap: 5px;
     }
     .admin-sug-author::after {
-      content: '🛡️ STAFF'; font-size: 0.58rem; font-weight: 800; background: rgba(212,175,55,0.15);
-      padding: 1px 5px; border-radius: 3px; border: 1px solid rgba(212,175,55,0.3);
+      content: '👑 OWNER'; font-size: 0.58rem; font-weight: 800; background: rgba(239,68,68,0.15);
+      padding: 1px 5px; border-radius: 3px; border: 1px solid rgba(239,68,68,0.4); color: #ef4444;
     }
     .admin-sug-text { color: var(--gold) !important; font-weight: 500; }
 
@@ -327,7 +327,7 @@
     }
     .admin-pill.login { color: var(--muted); border-color: var(--border); background: none; }
     .admin-pill.login:hover { color: var(--sub); border-color: var(--border-h); background: rgba(255,255,255,.04); }
-    .admin-pill.active { color: var(--gold); border-color: rgba(245,158,11,.35); background: var(--gold-gl); }
+    .admin-pill.active { color: #ef4444; border-color: rgba(239,68,68,0.35); background: rgba(239,68,68,0.1); }
 
     /* Modals */
     .modal-overlay {
@@ -497,8 +497,8 @@
   const CHANNEL_ID = 'UCi8DgxMDGJ-Qsjqfdi-uoIw';
   const STORAGE_KEY = 'tuw_streams_data_v2';
   const BOARD_STORAGE_KEY = 'tuw_stream_board_ideas';
-  const ADMIN_USER = 'admin';
-  const ADMIN_PASS = 'goodpassword';
+  const ADMIN_USER = 'Ethan Ioannou';
+  const ADMIN_PASS = 'leonisGOAT';
   
   let STREAMS = [];
   let BOARD_IDEAS = [];
@@ -692,7 +692,6 @@
     const container = document.getElementById('streamsContainer');
     if (!container) return;
 
-    // RENDERING LOGIC FOR INDEPENDENT STANDALONE SUGGESTIONS TAB PANEL
     if(currentTab === 'suggestions') {
       container.innerHTML = `
         <div class="tab-board-card">
@@ -701,7 +700,7 @@
           
           <div class="board-input-group">
             <div class="board-row-inputs">
-              <input type="text" class="board-input input-name" id="globalSugName" placeholder="Your Username..." value="${isAdmin ? 'TUW Admin' : ''}" ${isAdmin ? 'disabled' : ''}>
+              <input type="text" class="board-input input-name" id="globalSugName" placeholder="Your Username..." value="${isAdmin ? 'EthanUnlocked' : ''}" ${isAdmin ? 'disabled' : ''}>
               <input type="text" class="board-input input-msg" id="globalSugMsg" placeholder="Type your stream or premiere suggestion here...">
             </div>
             <button class="board-submit-btn" onclick="submitGlobalSuggestion()">Post Idea</button>
@@ -734,7 +733,7 @@
 
                     <button class="reply-toggle-btn" onclick="toggleReplyInput(this)"><i class="fa-solid fa-reply"></i> Reply</button>
                     <div class="reply-form-sub-panel" style="display:none;">
-                      <input type="text" class="board-input reply-user-name" placeholder="Name..." style="width:120px;" value="${isAdmin ? 'TUW Admin' : ''}" ${isAdmin ? 'disabled' : ''}>
+                      <input type="text" class="board-input reply-user-name" placeholder="Name..." style="width:120px;" value="${isAdmin ? 'EthanUnlocked' : ''}" ${isAdmin ? 'disabled' : ''}>
                       <input type="text" class="board-input reply-user-msg" placeholder="Write response...">
                       <button class="board-submit-btn" style="align-self:center;" onclick="submitSubReply('${msg.id}', this)">Post</button>
                     </div>
@@ -748,7 +747,6 @@
       return;
     }
 
-    // STANDARD CARD TAB RENDERING (LIVE, PREMIERES, UPCOMING, PAST)
     const filtered = STREAMS.filter(s => s.status === currentTab);
     if(filtered.length === 0) {
       container.innerHTML = `<div class="no-streams">No active items logged under this category tab view.</div>`;
@@ -783,7 +781,6 @@
       let theaterWorkspaceElement = '';
       if(s.videoId) {
         if (s.status === 'live' || (s.isPremiere && s.liveNow)) {
-          // Wrapped inside a client-side try catch string inside iframe generation to completely prevent cross-domain blockages
           theaterWorkspaceElement = `
             <div class="live-theater-workspace">
               <iframe class="video-player-frame" 
@@ -855,7 +852,7 @@
     const nameInput = document.getElementById('globalSugName');
     if(!msgInput || !msgInput.value.trim()) return;
 
-    const authorName = isAdmin ? 'TUW Admin' : (nameInput.value.trim() || 'Anonymous');
+    const authorName = isAdmin ? 'EthanUnlocked' : (nameInput.value.trim() || 'Anonymous');
 
     const newSuggestion = {
       id: 'sug-' + Date.now() + Math.random().toString(36).substr(2, 4),
@@ -884,7 +881,7 @@
     const msgVal = wrapper.querySelector('.reply-user-msg').value.trim();
 
     if(!msgVal) return;
-    const authorName = isAdmin ? 'TUW Admin' : (nameVal || 'Anonymous');
+    const authorName = isAdmin ? 'EthanUnlocked' : (nameVal || 'Anonymous');
 
     const match = BOARD_IDEAS.find(idea => idea.id === parentId);
     if(match) {
@@ -946,7 +943,7 @@
     const btn = document.getElementById('adminBtn');
     const container = document.getElementById('adminButtonContainer');
     if (val) {
-      if(btn) { btn.className = 'admin-pill active'; btn.innerHTML = 'Admin ✓'; }
+      if(btn) { btn.className = 'admin-pill active'; btn.innerHTML = 'Owner ✓'; }
       if(container) container.innerHTML = `<button class="admin-add-btn" onclick="addStream()">+ Add Entry</button>`;
     } else {
       if(btn) { btn.className = 'admin-pill login'; btn.innerHTML = 'Admin'; }
@@ -961,7 +958,7 @@
     if (u === ADMIN_USER && p === ADMIN_PASS) {
       closeModal('adminLoginModal');
       setAdmin(true);
-      showToast('Admin authorized 🛡️');
+      showToast('Welcome back, Ethan unlocked! 🛡️');
     } else {
       const err = document.getElementById('adminError');
       if(err) err.textContent = 'Invalid credentials configurations.';
