@@ -34,27 +34,37 @@
     /* ── Stream Tabs Navigation ──────────── */
     .stream-tabs {
       display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
       gap: 10px;
       margin-bottom: 24px;
       border-bottom: 1px solid var(--border);
-      padding-bottom: 12px;
-      flex-wrap: wrap;
+      padding-bottom: 14px;
+      overflow-x: auto;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none; /* Hide standard scrollbar across firefox templates */
       animation: fadeUp .6s .18s cubic-bezier(.22,1,.36,1) both;
+    }
+    .stream-tabs::-webkit-scrollbar {
+      display: none; /* Hide scrollbars safely across webkit core distributions */
     }
     .tab-btn {
       background: rgba(255, 255, 255, 0.02);
       border: 1px solid var(--border);
       color: var(--muted);
-      padding: 10px 20px;
+      padding: 10px 18px;
       border-radius: 8px;
       font-family: 'Syne', sans-serif;
       font-weight: 700;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       cursor: pointer;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 8px;
       position: relative;
+      flex-shrink: 0;
       transition: all 0.2s ease;
     }
     .tab-btn:hover {
@@ -69,7 +79,7 @@
       text-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
     }
 
-    /* Tab Indicator Pulse Alerts */
+    /* Tab Pulse Tracker Glow Layout */
     .tab-pulse-indicator {
       display: none;
       width: 8px;
@@ -83,7 +93,7 @@
       animation: pulse-glow 1.5s infinite;
     }
 
-    /* ── Streams Container ────────────────── */
+    /* ── Streams Container Layout Grid ───── */
     .streams-container {
       display: flex;
       flex-direction: column;
@@ -115,7 +125,7 @@
       .stream-top-row { flex-direction: column; gap: 16px; }
     }
 
-    /* Thumbnail Wrapper */
+    /* Thumbnail Node Wrapper styles */
     .stream-thumb-wrapper {
       position: relative;
       width: 280px;
@@ -183,7 +193,7 @@
     .badge-upcoming { background: rgba(245,158,11,.13); color: var(--gold); border: 1px solid rgba(245,158,11,.3); }
     .badge-completed { background: rgba(255,255,255,.05); color: var(--muted); border: 1px solid var(--border); }
 
-    /* ── Live / Archive Theater Embed Workspace ────── */
+    /* ── Theater Embedding Container Workspace ── */
     .live-theater-workspace {
       display: grid;
       grid-template-columns: 2fr 1fr;
@@ -211,7 +221,7 @@
       .chat-embed-frame { border-left: none; border-top: 1px solid var(--border); height: 400px; }
     }
 
-    /* ── Standalone Tab Suggestions Layout ────────── */
+    /* ── Standalone Suggestions Tab ──────────────── */
     .tab-board-card {
       background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 28px;
     }
@@ -261,7 +271,7 @@
       border-radius: 6px; padding: 10px 12px; font-size: 0.85rem;
     }
 
-    /* Administrative Text Highlight Configurations */
+    /* Administrative Highlights */
     .admin-sug-author {
       color: var(--gold) !important; text-shadow: 0 0 8px rgba(212,175,55,0.3);
       display: inline-flex; align-items: center; gap: 5px;
@@ -280,7 +290,7 @@
     .reply-toggle-btn:hover { color: var(--gold); }
     .reply-form-sub-panel { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
 
-    /* Countdown Modules */
+    /* Countdown Matrix Modules */
     .countdown-box {
       background: rgba(212, 175, 55, 0.04);
       border: 1px dashed rgba(212, 175, 55, 0.2);
@@ -297,7 +307,7 @@
     }
     .watch-link:hover { text-shadow: 0 0 8px rgba(212,175,55,0.4); color: #fff; }
 
-    /* Controls UI */
+    /* Controls Layout Setup */
     .adm-btn {
       font-size: .68rem; font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
       padding: 3px 8px; border-radius: 6px; border: 1px solid; cursor: pointer;
@@ -312,12 +322,12 @@
     .admin-add-btn {
       display: inline-flex; align-items: center; gap: 9px;
       font-family: 'Manrope', sans-serif; font-size: .87rem; font-weight: 600;
-      padding: 13px 26px; border-radius: 12px; border: 1px solid;
+      padding: 11px 22px; border-radius: 10px; border: 1px solid;
       transition: transform .22s cubic-bezier(.22,1,.36,1), box-shadow .22s, background .18s;
       cursor: pointer; background: var(--gold); color: #000; border-color: var(--gold);
-      margin-bottom: 28px;
+      margin-top: 4px; margin-bottom: 24px;
     }
-    .admin-add-btn:hover { transform: translateY(-3px); }
+    .admin-add-btn:hover { transform: translateY(-2px); }
 
     .admin-badge { position: fixed; top: calc(var(--nav-h, 58px) + 10px); right: 14px; z-index: 20; }
     .admin-pill {
@@ -329,7 +339,7 @@
     .admin-pill.login:hover { color: var(--sub); border-color: var(--border-h); background: rgba(255,255,255,.04); }
     .admin-pill.active { color: #ef4444; border-color: rgba(239,68,68,0.35); background: rgba(239,68,68,0.1); }
 
-    /* Modals */
+    /* Modals CSS mapping properties */
     .modal-overlay {
       position: fixed; inset: 0; z-index: 100;
       background: rgba(0,0,0,.82); backdrop-filter: blur(8px);
@@ -415,14 +425,14 @@
     <button class="tab-btn" id="tabBtnPremieres" onclick="switchTab('premieres')">
       <i class="fa-solid fa-film"></i> Premieres
     </button>
+    <button class="tab-btn" id="tabBtnSuggestions" onclick="switchTab('suggestions')">
+      <i class="fa-solid fa-lightbulb"></i> Stream & Premiere Suggestions
+    </button>
     <button class="tab-btn" id="tabBtnUpcoming" onclick="switchTab('upcoming')">
       <i class="fa-solid fa-calendar-days"></i> Upcoming Scheduled
     </button>
     <button class="tab-btn" id="tabBtnPast" onclick="switchTab('past')">
       <i class="fa-solid fa-clock-rotate-left"></i> Past Streams
-    </button>
-    <button class="tab-btn" id="tabBtnSuggestions" onclick="switchTab('suggestions')">
-      <i class="fa-solid fa-lightbulb"></i> Stream & Premiere Suggestions
     </button>
   </div>
 
@@ -692,6 +702,7 @@
     const container = document.getElementById('streamsContainer');
     if (!container) return;
 
+    // RENDERING LOGIC FOR INDEPENDENT STANDALONE SUGGESTIONS TAB PANEL
     if(currentTab === 'suggestions') {
       container.innerHTML = `
         <div class="tab-board-card">
@@ -870,6 +881,7 @@
     showToast('Suggestion added to board!');
   }
 
+  // Handle nested comment toggling loops safely without layout shifts
   function toggleReplyInput(btn) {
     const panel = btn.nextElementSibling;
     panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
@@ -958,7 +970,7 @@
     if (u === ADMIN_USER && p === ADMIN_PASS) {
       closeModal('adminLoginModal');
       setAdmin(true);
-      showToast('Welcome back, Ethan unlocked! 🛡️');
+      showToast('Welcome back, Ethan Unlocked! 🛡️');
     } else {
       const err = document.getElementById('adminError');
       if(err) err.textContent = 'Invalid credentials configurations.';
