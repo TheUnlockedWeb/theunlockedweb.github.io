@@ -339,4 +339,454 @@
 
   <div class="stream-tabs">
     <button class="tab-btn active" id="tabBtnLive" onclick="switchTab('live')">
-      <i class="fa-solid fa-circle-radial
+      <i class="fa-solid fa-circle-radial"></i> Live Now
+      <span class="tab-pulse-indicator" id="livePulseAlert"></span>
+    </button>
+    <button class="tab-btn" id="tabBtnUpcoming" onclick="switchTab('upcoming')"><i class="fa-solid fa-calendar-days"></i> Upcoming Scheduled</button>
+    <button class="tab-btn" id="tabBtnPast" onclick="switchTab('past')"><i class="fa-solid fa-clock-rotate-left"></i> Past Streams</button>
+  </div>
+
+  <div id="adminButtonContainer"></div>
+  <div class="streams-container" id="streamsContainer"></div>
+</div>
+
+<footer>
+  <span class="f-brand">TheUnlockedWeb</span>
+  <span class="f-copy">© 2026 EthanUnlocked's gaming hits</span>
+  <div class="f-links">
+    <a href="https://github.com/TheUnlockedWeb/theunlockedweb.github.io" target="_blank">
+      <i class="fa-brands fa-github"></i> Source
+    </a>
+  </div>
+</footer>
+
+<div class="admin-badge">
+  <button class="admin-pill login" id="adminBtn">
+    <i class="fa-solid fa-shield-halved"></i> Admin
+  </button>
+</div>
+
+<div class="modal-overlay" id="adminLoginModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('adminLoginModal')">×</button>
+    <h3><i class="fa-solid fa-shield-halved" style="color:var(--gold);margin-right:8px"></i>Admin Login</h3>
+    <label>Username</label>
+    <input type="text" id="adminUser" autocomplete="off">
+    <label>Password</label>
+    <input type="password" id="adminPass" autocomplete="off">
+    <div class="modal-error" id="adminError" style="font-size:.78rem;color:#f87171;margin-top:10px;min-height:18px;"></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal('adminLoginModal')">Cancel</button>
+      <button class="btn-confirm" id="adminLoginBtn">Login</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="streamModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('streamModal')">×</button>
+    <h3><i class="fa-solid fa-video" style="color:var(--gold);margin-right:8px"></i><span id="modalTitle">Add Stream Event</span></h3>
+    <label>Stream Title</label>
+    <input type="text" id="streamTitle" maxlength="100" placeholder="Playing Custom Maps with Viewers!">
+    <label>Description</label>
+    <textarea id="streamDescription" rows="3" maxlength="400" placeholder="Provide context or description highlights..."></textarea>
+    <label>YouTube Video ID</label>
+    <input type="text" id="streamVideoId" placeholder="e.g., dQw4w9WgXcQ (11 characters from link)">
+    <label>Status Tier</label>
+    <select id="streamStatus">
+      <option value="live">🔴 Live Now</option>
+      <option value="upcoming">⏳ Upcoming Event</option>
+      <option value="past">🎬 Past Broadcast Vault</option>
+    </select>
+    <label>Schedule Target Date/Time (For Countdowns)</label>
+    <input type="datetime-local" id="streamTargetDate">
+    
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal('streamModal')">Cancel</button>
+      <button class="btn-confirm" id="streamSaveBtn">Save Broadcast</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // 1. System Configurations & Security Variables
+  const API_KEY = 'AIzaSyAYdcohjswp3jcgWZgDFTwYiZsMwSeLrwY';
+  const CHANNEL_ID = 'UCi8DgxMDGJ-Qsjqfdi-uoIw';
+  const STORAGE_KEY = 'tuw_streams_data_v2';
+  const ADMIN_USER = 'admin';
+  const ADMIN_PASS = 'goodpassword';
+  
+  let STREAMS = [];
+  let currentTab = 'live';
+  let isAdmin = false;
+  let editingId = null;
+  let countdownInterval = null;
+
+  // Local backups or manually logged past VOD items
+  const INITIAL_PAST_STREAMS = [
+    { id: 301, title: 'Geometry Dash Complete Custom Run Archive', description: 'Early high score level attempts logged from the community discord maps sheet.', videoId: 'dQw4w9WgXcQ', status: 'past', targetDate: '' }
+  ];
+
+  // 2. Storage & Dynamic Fetch API Pipeline
+  async function loadAllStreamsPipeline() {
+    let localSaved = [];
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      localSaved = stored ? JSON.parse(stored) : INITIAL_PAST_STREAMS;
+    } catch(e) { 
+      localSaved = INITIAL_PAST_STREAMS; 
+    }
+
+    // Filter out historical past entries saved by admin to merge safely with live API calls
+    const adminPastStreams = localSaved.filter(s => s.status === 'past');
+    const adminManualOverrides = localSaved.filter(s => s.status !== 'past');
+
+    STREAMS = [...adminPastStreams];
+
+    // If API key is still default template format, fallback to local storage
+    if(!API_KEY || API_KEY.includes('PASTE_YOUR_')) {
+      STREAMS = [...adminManualOverrides, ...adminPastStreams];
+      if(STREAMS.length === 0) {
+        STREAMS = [
+          { id: 1, title: 'Demo Active Stream Slot', description: 'Log into Admin Panel or add your Google API key to activate production real-time updates.', videoId: 'dQw4w9WgXcQ', status: 'live', targetDate: '' }
+        ];
+      }
+      evaluateLiveStatusDot();
+      renderStreams();
+      return;
+    }
+
+    try {
+      // Fetch active stream event details
+      const liveRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&type=video&eventType=live&key=${API_KEY}`);
+      const liveData = await liveRes.json();
+      
+      if(liveData.items && liveData.items.length > 0) {
+        liveData.items.forEach((item, i) => {
+          STREAMS.push({
+            id: 'live-' + i + Date.now(),
+            title: item.snippet.title,
+            description: item.snippet.description,
+            videoId: item.id.videoId,
+            status: 'live',
+            targetDate: ''
+          });
+        });
+      }
+
+      // Fetch upcoming scheduled broadcast slots
+      const upRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&type=video&eventType=upcoming&order=date&key=${API_KEY}`);
+      const upData = await upRes.json();
+
+      if(upData.items && upData.items.length > 0) {
+        for(let i=0; i < upData.items.length; i++) {
+          const item = upData.items[i];
+          const vId = item.id.videoId;
+          
+          // Request secondary target detail endpoints to acquire real countdown dates safely
+          let liveScheduledTime = '';
+          try {
+            const detailRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=liveStreamingDetails&id=${vId}&key=${API_KEY}`);
+            const detailData = await detailRes.json();
+            if(detailData.items && detailData.items[0]?.liveStreamingDetails?.scheduledStartTime) {
+              liveScheduledTime = detailData.items[0].liveStreamingDetails.scheduledStartTime;
+            }
+          } catch(err) { console.error("Video timestamp analysis error:", err); }
+
+          STREAMS.push({
+            id: 'upcoming-' + i + Date.now(),
+            title: item.snippet.title,
+            description: item.snippet.description,
+            videoId: vId,
+            status: 'upcoming',
+            targetDate: liveScheduledTime || item.snippet.publishedAt
+          });
+        }
+      }
+    } catch(err) {
+      console.error("YouTube Live Data Node request drop:", err);
+      showToast("API Sync Fault. Review developer logs console layout.");
+    }
+
+    // Merge manual administrative mock blocks that are currently overrides inside local session data
+    adminManualOverrides.forEach(manualItem => {
+       const alreadyExists = STREAMS.some(apiItem => apiItem.videoId === manualItem.videoId);
+       if(!alreadyExists) STREAMS.push(manualItem);
+    });
+
+    evaluateLiveStatusDot();
+    renderStreams();
+  }
+
+  function saveLocalState() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(STREAMS));
+    evaluateLiveStatusDot();
+  }
+
+  function evaluateLiveStatusDot() {
+    const pulseDot = document.getElementById('livePulseAlert');
+    if (!pulseDot) return;
+    const isCurrentlyLive = STREAMS.some(s => s.status === 'live');
+    pulseDot.style.display = isCurrentlyLive ? 'block' : 'none';
+  }
+
+  function openModal(id) { document.getElementById(id).classList.add('open'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    if (toast) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+  }
+
+  function switchTab(tabName) {
+    currentTab = tabName;
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.classList.remove('active');
+      if(btn.id.toLowerCase().includes(tabName)) btn.classList.add('active');
+    });
+    renderStreams();
+  }
+
+  // 3. Document Stream DOM Generator Node Layout
+  function renderStreams() {
+    const container = document.getElementById('streamsContainer');
+    if (!container) return;
+
+    const filtered = STREAMS.filter(s => s.status === currentTab);
+
+    if(filtered.length === 0) {
+      container.innerHTML = `<div class="no-streams">No active stream slots logged under this category context.</div>`;
+      return;
+    }
+
+    container.innerHTML = filtered.map((s) => {
+      const watchUrl = `https://www.youtube.com/watch?v=${s.videoId}`;
+      const thumbUrl = s.videoId ? `https://img.youtube.com/vi/${s.videoId}/maxresdefault.jpg` : '../assets/resources/fallback-thumb.jpg';
+      const hostname = window.location.hostname || 'localhost';
+      
+      let badgeClass = `badge-${s.status}`;
+      let indicatorDot = s.status === 'live' ? 'dot-red' : (s.status === 'upcoming' ? 'dot-gold' : 'dot-muted');
+      
+      let countdownElement = '';
+      if(s.status === 'upcoming' && s.targetDate) {
+        countdownElement = `
+          <div class="countdown-box" data-target="${s.targetDate}">
+            <span class="countdown-label"><i class="fa-regular fa-hourglass-start"></i> Starts In:</span>
+            <span class="countdown-time">Calculating...</span>
+          </div>
+        `;
+      }
+
+      // Live Theater Embed Workspace for Active Live streams
+      let theaterWorkspaceElement = '';
+      if(s.status === 'live' && s.videoId) {
+        theaterWorkspaceElement = `
+          <div class="live-theater-workspace">
+            <iframe class="video-player-frame" 
+                    src="https://www.youtube.com/embed/${s.videoId}?autoplay=1&mute=1" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+            </iframe>
+            <iframe class="chat-embed-frame" 
+                    src="https://www.youtube.com/live_chat?v=${s.videoId}&embed_domain=${hostname}">
+            </iframe>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="stream-item">
+          <div class="stream-top-row">
+            <div class="stream-thumb-wrapper">
+              ${s.status === 'live' ? '<span class="live-indicator-tag">LIVE</span>' : ''}
+              <img src="${thumbUrl}" alt="Thumbnail" onerror="this.src='https://img.youtube.com/vi/${s.videoId}/hqdefault.jpg'">
+            </div>
+            <div class="stream-content">
+              <div>
+                <div class="stream-header">
+                  <div class="stream-dot ${indicatorDot}"></div>
+                  <div class="stream-title">${s.title}</div>
+                  <span class="stream-status-badge ${badgeClass}">${s.status === 'live' ? 'LIVE NOW' : s.status}</span>
+                  ${isAdmin ? `
+                  <div class="stream-actions">
+                    <button class="adm-btn adm-btn-edit" onclick="editStream('${s.id}')"><i class="fa-solid fa-pen"></i></button>
+                    <button class="adm-btn adm-btn-del" onclick="deleteStream('${s.id}')"><i class="fa-solid fa-trash"></i></button>
+                  </div>` : ''}
+                </div>
+                <p class="stream-description">${s.description}</p>
+              </div>
+              
+              <div>
+                ${countdownElement}
+                <div class="stream-meta">
+                  <a href="${watchUrl}" class="watch-link" target="_blank">
+                    <i class="fa-brands fa-youtube"></i> Open directly on YouTube →
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          ${theaterWorkspaceElement}
+        </div>
+      `;
+    }).join('');
+
+    if(currentTab === 'upcoming') startCountdownEngine();
+  }
+
+  // 4. Countdown Timer Engine 
+  function startCountdownEngine() {
+    if(countdownInterval) clearInterval(countdownInterval);
+
+    const updateClocks = () => {
+      const boxes = document.querySelectorAll('.countdown-box');
+      boxes.forEach(box => {
+        const targetStr = box.getAttribute('data-target');
+        if(!targetStr) return;
+
+        const target = new Date(targetStr).getTime();
+        const now = new Date().getTime();
+        const diff = target - now;
+        const timeDisplay = box.querySelector('.countdown-time');
+
+        if(diff <= 0) {
+          timeDisplay.textContent = "Broadcast Pending Go-Live!";
+          timeDisplay.style.color = "var(--gold)";
+          return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        let parts = [];
+        if(days > 0) parts.push(`${days}d`);
+        if(hours > 0 || days > 0) parts.push(`${hours}h`);
+        parts.push(`${minutes}m`);
+        parts.push(`${seconds}s`);
+
+        timeDisplay.textContent = parts.join(' ');
+      });
+    };
+
+    updateClocks();
+    countdownInterval = setInterval(updateClocks, 1000);
+  }
+
+  // 5. Admin Panel Logic Controls
+  function setAdmin(val) {
+    isAdmin = val;
+    const btn = document.getElementById('adminBtn');
+    const container = document.getElementById('adminButtonContainer');
+    if (val) {
+      if(btn) { btn.className = 'admin-pill active'; btn.innerHTML = 'Admin ✓'; }
+      if(container) container.innerHTML = `<button class="admin-add-btn" onclick="addStream()">+ Add Stream Entry</button>`;
+    } else {
+      if(btn) { btn.className = 'admin-pill login'; btn.innerHTML = 'Admin'; }
+      if(container) container.innerHTML = '';
+    }
+    renderStreams();
+  }
+
+  function handleLogin() {
+    const u = document.getElementById('adminUser').value.trim();
+    const p = document.getElementById('adminPass').value;
+    if (u === ADMIN_USER && p === ADMIN_PASS) {
+      closeModal('adminLoginModal');
+      setAdmin(true);
+      showToast('Admin studio authorization complete 🛡️');
+    } else {
+      const err = document.getElementById('adminError');
+      if(err) err.textContent = 'Invalid credentials configuration.';
+    }
+  }
+
+  function addStream() {
+    editingId = null;
+    document.getElementById('modalTitle').textContent = 'Add Stream Entry';
+    document.getElementById('streamTitle').value = '';
+    document.getElementById('streamDescription').value = '';
+    document.getElementById('streamVideoId').value = '';
+    document.getElementById('streamStatus').value = currentTab;
+    document.getElementById('streamTargetDate').value = '';
+    openModal('streamModal');
+  }
+
+  function editStream(id) {
+    const target = STREAMS.find(s => s.id === id || s.id == id);
+    if (!target) return;
+    editingId = id;
+    document.getElementById('modalTitle').textContent = 'Edit Stream Entry';
+    document.getElementById('streamTitle').value = target.title;
+    document.getElementById('streamDescription').value = target.description;
+    document.getElementById('streamVideoId').value = target.videoId;
+    document.getElementById('streamStatus').value = target.status;
+    
+    // Standardize ISO timestamps for HTML input values
+    if(target.targetDate && target.targetDate.includes('Z')) {
+       document.getElementById('streamTargetDate').value = new Date(target.targetDate).toISOString().slice(0, 16);
+    } else {
+       document.getElementById('streamTargetDate').value = target.targetDate || '';
+    }
+    openModal('streamModal');
+  }
+
+  function deleteStream(id) {
+    if (confirm('Drop tracking target identifier asset completely? 🗑️')) {
+      STREAMS = STREAMS.filter(s => s.id !== id && s.id == id);
+      saveLocalState();
+      renderStreams();
+      showToast('Stream instance dropped successfully.');
+    }
+  }
+
+  // 6. Global Bootstrap Initialization Hook
+  window.onload = () => {
+    loadAllStreamsPipeline();
+
+    const pill = document.getElementById('adminBtn');
+    if(pill) pill.onclick = () => isAdmin ? setAdmin(false) : openModal('adminLoginModal');
+    
+    const loginConfirm = document.getElementById('adminLoginBtn');
+    if(loginConfirm) loginConfirm.onclick = handleLogin;
+
+    const streamSaveBtn = document.getElementById('streamSaveBtn');
+    if(streamSaveBtn) {
+      streamSaveBtn.onclick = () => {
+        const title = document.getElementById('streamTitle').value.trim();
+        const desc = document.getElementById('streamDescription').value.trim();
+        const vId = document.getElementById('streamVideoId').value.trim();
+        const status = document.getElementById('streamStatus').value;
+        const targetDate = document.getElementById('streamTargetDate').value;
+
+        if(!title || !vId) {
+          showToast('Data Error: Configuration titles and video metrics are mandatory fields.');
+          return;
+        }
+
+        if(editingId === null) {
+          STREAMS.push({ id: Date.now(), title, description: desc, videoId: vId, status, targetDate });
+        } else {
+          const match = STREAMS.find(x => x.id === editingId || x.id == editingId);
+          if(match) {
+            match.title = title; match.description = desc; match.videoId = vId; match.status = status; match.targetDate = targetDate;
+          }
+        }
+
+        saveLocalState();
+        closeModal('streamModal');
+        renderStreams();
+        showToast('Local database pipeline synchronized! 💾');
+      };
+    }
+  };
+</script>
+</body>
+</html>
