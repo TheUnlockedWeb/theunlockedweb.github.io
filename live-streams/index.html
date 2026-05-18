@@ -13,28 +13,21 @@
     /* ── Page header ─────────────────────── */
     .page-header {
       padding: 52px 0 30px;
-      display: flex; 
-      flex-direction: column;
-      align-items: flex-start; 
-      gap: 12px;
+      display: flex; flex-direction: column;
+      align-items: flex-start; gap: 12px;
     }
     .page-title {
-      font-family: 'Syne', sans-serif; 
-      font-weight: 800;
+      font-family: 'Syne', sans-serif; font-weight: 800;
       font-size: clamp(2rem, 7vw, 3.8rem);
-      line-height: 1; 
-      letter-spacing: -0.03em;
+      line-height: 1; letter-spacing: -0.03em;
       background: linear-gradient(140deg, #fff 0%, #f5f3ff 20%, var(--gold) 48%, var(--gold-soft) 68%, #fff 88%);
       background-size: 200% auto;
-      -webkit-background-clip: text; 
-      background-clip: text;
+      -webkit-background-clip: text; background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: shimmer 7s .4s linear infinite, fadeUp .7s cubic-bezier(.22,1,.36,1) both;
     }
     .page-sub {
-      font-size: .88rem; 
-      color: var(--sub); 
-      font-weight: 500;
+      font-size: .88rem; color: var(--sub); font-weight: 500;
       animation: fadeUp .6s .15s cubic-bezier(.22,1,.36,1) both;
     }
 
@@ -54,331 +47,91 @@
       scrollbar-width: none;
       animation: fadeUp .6s .18s cubic-bezier(.22,1,.36,1) both;
     }
-    .stream-tabs::-webkit-scrollbar { 
-      display: none; 
-    }
+    .stream-tabs::-webkit-scrollbar { display: none; }
     .tab-btn {
-      background: rgba(255, 255, 255, 0.02); 
-      border: 1px solid var(--border); 
-      color: var(--muted);
-      padding: 10px 18px; 
-      border-radius: 8px; 
-      font-family: 'Syne', sans-serif; 
-      font-weight: 700;
-      font-size: 0.82rem; 
-      cursor: pointer; 
-      display: inline-flex; 
-      align-items: center; 
-      gap: 8px;
-      position: relative; 
-      flex-shrink: 0; 
-      transition: all 0.2s ease;
+      background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border); color: var(--muted);
+      padding: 10px 18px; border-radius: 8px; font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 0.82rem; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+      position: relative; flex-shrink: 0; transition: all 0.2s ease;
     }
-    .tab-btn:hover { 
-      color: var(--text); 
-      background: rgba(255, 255, 255, 0.05); 
-      border-color: var(--border-h); 
-    }
-    .tab-btn.active { 
-      background: rgba(212, 175, 55, 0.1); 
-      border-color: var(--gold); 
-      color: var(--gold); 
-      text-shadow: 0 0 10px var(--gold-soft); 
-    }
+    .tab-btn:hover { color: var(--text); background: rgba(255, 255, 255, 0.05); border-color: var(--border-h); }
+    .tab-btn.active { background: rgba(212, 175, 55, 0.1); border-color: var(--gold); color: var(--gold); text-shadow: 0 0 10px var(--gold-soft); }
 
     .tab-pulse-indicator {
-      display: none; 
-      width: 8px; 
-      height: 8px; 
-      background: #ef4444; 
-      border-radius: 50%; 
-      position: absolute; 
-      top: 6px; 
-      right: 6px; 
-      box-shadow: 0 0 8px #ef4444; 
-      animation: pulse-glow 1.5s infinite;
+      display: none; width: 8px; height: 8px; background: #ef4444; border-radius: 50%; position: absolute; top: 6px; right: 6px; box-shadow: 0 0 8px #ef4444; animation: pulse-glow 1.5s infinite;
     }
 
     .tab-counter-badge {
-      display: inline-flex; 
-      align-items: center; 
-      justify-content: center; 
-      background: var(--gold); 
-      color: #000;
-      font-size: 0.68rem; 
-      font-family: monospace; 
-      font-weight: 800; 
-      min-width: 18px; 
-      height: 18px; 
-      border-radius: 50%; 
-      padding: 0 4px; 
-      margin-left: 2px;
+      display: inline-flex; align-items: center; justify-content: center; background: var(--gold); color: #000;
+      font-size: 0.68rem; font-family: monospace; font-weight: 800; min-width: 18px; height: 18px; border-radius: 50%; padding: 0 4px; margin-left: 2px;
       transition: opacity 0.2s;
     }
 
     /* ── Streams Container Layout Grid ───── */
-    .streams-container { 
-      display: flex; 
-      flex-direction: column; 
-      gap: 20px; 
-      animation: fadeUp .6s .2s cubic-bezier(.22,1,.36,1) both; 
-    }
-    .stream-item { 
-      background: var(--card); 
-      border: 1px solid var(--border); 
-      border-radius: var(--r); 
-      padding: 24px; 
-      display: flex; 
-      flex-direction: column; 
-      gap: 20px; 
-    }
-    .stream-top-row { 
-      display: flex; 
-      gap: 24px; 
-    }
-    @media (max-width: 768px) { 
-      .stream-top-row { flex-direction: column; gap: 16px; } 
-    }
+    .streams-container { display: flex; flex-direction: column; gap: 20px; animation: fadeUp .6s .2s cubic-bezier(.22,1,.36,1) both; }
+    .stream-item { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+    .stream-top-row { display: flex; gap: 24px; }
+    @media (max-width: 768px) { .stream-top-row { flex-direction: column; gap: 16px; } }
 
-    .stream-thumb-wrapper { 
-      position: relative; 
-      width: 280px; 
-      aspect-ratio: 16/9; 
-      border-radius: 10px; 
-      overflow: hidden; 
-      border: 1px solid var(--border); 
-      background: #000; 
-      flex-shrink: 0; 
-    }
-    .stream-thumb-wrapper img { 
-      width: 100%; 
-      height: 100%; 
-      object-fit: cover; 
-    }
-    .stream-content { 
-      flex: 1; 
-      display: flex; 
-      flex-direction: column; 
-      justify-content: space-between; 
-    }
-    .stream-header { 
-      display: flex; 
-      align-items: center; 
-      gap: 14px; 
-      margin-bottom: 8px; 
-      flex-wrap: wrap; 
-    }
-    .stream-title { 
-      font-family: 'Syne', sans-serif; 
-      font-weight: 700; 
-      font-size: 1.2rem; 
-      color: var(--text); 
-      flex: 1; 
-    }
-    .stream-status-badge { 
-      display: inline-block; 
-      font-size: 0.65rem; 
-      font-weight: 700; 
-      letter-spacing: 1.5px; 
-      text-transform: uppercase; 
-      padding: 4px 10px; 
-      border-radius: 6px; 
-      white-space: nowrap; 
-    }
+    .stream-thumb-wrapper { position: relative; width: 280px; aspect-ratio: 16/9; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); background: #000; flex-shrink: 0; }
+    .stream-thumb-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+    .stream-content { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .stream-header { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; flex-wrap: wrap; }
+    .stream-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.2rem; color: var(--text); flex: 1; }
+    .stream-status-badge { display: inline-block; font-size: 0.65rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 10px; border-radius: 6px; white-space: nowrap; }
 
     /* ── Theater Embedding Container Workspace ── */
-    .live-theater-workspace { 
-      display: grid; 
-      grid-template-columns: 2fr 1fr; 
-      gap: 14px; 
-      margin-top: 10px; 
-      border-radius: 12px; 
-      overflow: hidden; 
-      border: 1px solid var(--border); 
-      background: #06060c; 
-    }
-    .live-theater-workspace.no-chat { 
-      grid-template-columns: 1fr; 
-    }
-    .video-player-frame { 
-      width: 100%; 
-      aspect-ratio: 16/9; 
-      background: #000; 
-      border: none; 
-      display: block; 
-    }
-    .chat-embed-frame { 
-      width: 100%; 
-      height: 100%; 
-      min-height: 360px; 
-      background: #0a0a14; 
-      border: none; 
-      display: block; 
-      border-left: 1px solid var(--border); 
-    }
+    .live-theater-workspace { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-top: 10px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: #06060c; }
+    .live-theater-workspace.no-chat { grid-template-columns: 1fr; }
+    .video-player-frame { width: 100%; aspect-ratio: 16/9; background: #000; border: none; display: block; }
+    .chat-embed-frame { width: 100%; height: 100%; min-height: 360px; background: #0a0a14; border: none; display: block; border-left: 1px solid var(--border); }
 
     /* ── Suggestions Board Styles ──────────────── */
-    .tab-board-card { 
-      background: var(--card); 
-      border: 1px solid var(--border); 
-      border-radius: var(--r); 
-      padding: 28px; 
-    }
-    .board-input-group { 
-      display: flex; 
-      flex-direction: column; 
-      gap: 10px; 
-      margin-bottom: 24px; 
-      background: rgba(255,255,255,0.01); 
-      border: 1px solid var(--border); 
-      border-radius: 10px; 
-      padding: 16px; 
-    }
-    .board-row-inputs { 
-      display: flex; 
-      gap: 10px; 
-      flex-wrap: wrap; 
-    }
-    .board-input { 
-      background: #0d0d1b; 
-      border: 1px solid var(--border); 
-      border-radius: 6px; 
-      color: var(--text); 
-      padding: 10px 14px; 
-      font-family: 'Manrope', sans-serif; 
-      font-size: 0.85rem; 
-    }
-    .board-input:focus { 
-      outline: none; 
-      border-color: var(--gold); 
-    }
+    .tab-board-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 28px; }
+    .board-input-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; background: rgba(255,255,255,0.01); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+    .board-row-inputs { display: flex; gap: 10px; flex-wrap: wrap; }
+    .board-input { background: #0d0d1b; border: 1px solid var(--border); border-radius: 6px; color: var(--text); padding: 10px 14px; font-family: 'Manrope', sans-serif; font-size: 0.85rem; }
+    .board-input:focus { outline: none; border-color: var(--gold); }
     .input-name { width: 200px; }
     .input-msg { flex: 1; min-width: 260px; }
     
-    .board-meta-controls { 
-      display: grid; 
-      grid-template-columns: 1fr 1fr; 
-      gap: 16px; 
-      margin-bottom: 20px; 
-    }
-    @media (max-width: 768px) { 
-      .board-meta-controls { grid-template-columns: 1fr; } 
-    }
+    .board-meta-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+    @media (max-width: 768px) { .board-meta-controls { grid-template-columns: 1fr; } }
     
     .owner-terminal-box {
-      background: #05050a; 
-      border: 1px solid rgba(239, 68, 68, 0.3); 
-      border-radius: 10px; 
-      padding: 14px; 
-      font-family: monospace; 
-      display: flex; 
-      flex-direction: column; 
-      gap: 8px;
+      background: #05050a; border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 10px; padding: 14px; font-family: monospace; display: flex; flex-direction: column; gap: 8px;
     }
-    .terminal-title { 
-      color: #f87171; 
-      font-size: 0.78rem; 
-      font-weight: 700; 
-      letter-spacing: 1px; 
-    }
-    .terminal-row { 
-      display: flex; 
-      gap: 10px; 
-    }
-    .terminal-input { 
-      background: #0a0a14; 
-      border: 1px solid rgba(255,255,255,0.1); 
-      border-radius: 4px; 
-      color: #fff; 
-      padding: 6px 10px; 
-      flex: 1; 
-      font-size: 0.8rem; 
-    }
+    .terminal-title { color: #f87171; font-size: 0.78rem; font-weight: 700; letter-spacing: 1px; }
+    .terminal-row { display: flex; gap: 10px; }
+    .terminal-input { background: #0a0a14; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #fff; padding: 6px 10px; flex: 1; font-size: 0.8rem; }
 
     .board-settings-box {
-      background: rgba(255,255,255,0.02); 
-      border: 1px solid var(--border); 
-      border-radius: 10px; 
-      padding: 14px; 
-      display: flex; 
-      flex-direction: column; 
-      gap: 8px;
+      background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 8px;
     }
-    .settings-title { 
-      color: var(--gold); 
-      font-size: 0.85rem; 
-      font-family: 'Syne', sans-serif; 
-      font-weight: 700; 
-      display: flex; 
-      align-items: center; 
-      gap: 6px; 
-    }
-    .settings-select { 
-      background: #0d0d1b; 
-      border: 1px solid var(--border); 
-      border-radius: 6px; 
-      color: var(--text); 
-      padding: 6px 10px; 
-      font-family: 'Manrope', sans-serif; 
-      font-size: 0.8rem; 
-      cursor: pointer; 
-    }
+    .settings-title { color: var(--gold); font-size: 0.85rem; font-family: 'Syne', sans-serif; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+    .settings-select { background: #0d0d1b; border: 1px solid var(--border); border-radius: 6px; color: var(--text); padding: 6px 10px; font-family: 'Manrope', sans-serif; font-size: 0.8rem; cursor: pointer; }
 
-    .suggestions-list { 
-      display: flex; 
-      flex-direction: column; 
-      gap: 14px; 
+    /* Scrollable board canvas with threshold triggers */
+    .suggestions-scroll-container {
+      max-height: 700px; overflow-y: auto; padding-right: 6px; scrollbar-width: thin;
     }
-    .sug-node { 
-      background: rgba(255, 255, 255, 0.015); 
-      border: 1px solid var(--border); 
-      border-radius: 8px; 
-      padding: 16px; 
-      display: flex; 
-      flex-direction: column; 
-      gap: 8px; 
-      position: relative; 
-    }
+    .suggestions-list { display: flex; flex-direction: column; gap: 14px; }
+    .sug-node { background: rgba(255, 255, 255, 0.015); border: 1px solid var(--border); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 8px; position: relative; }
 
-    .sug-node.own-perspective, .reply-node.own-perspective { 
-      background: #ffffff !important; 
-      border-color: #ffffff !important; 
-    }
-    .sug-node.own-perspective .sug-body, 
-    .sug-node.own-perspective .sug-time, 
-    .reply-node.own-perspective .sug-body, 
-    .reply-node.own-perspective .sug-time, 
-    .sug-node.own-perspective .board-action-link, 
-    .reply-node.own-perspective .board-action-link, 
-    .sug-node.own-perspective .reply-toggle-btn, 
-    .reply-node.own-perspective .reply-toggle-btn { 
-      color: #111118 !important; 
-    }
+    .sug-node.own-perspective, .reply-node.own-perspective { background: #ffffff !important; border-color: #ffffff !important; }
+    .sug-node.own-perspective .sug-body, .sug-node.own-perspective .sug-time, .reply-node.own-perspective .sug-body, .reply-node.own-perspective .sug-time, .sug-node.own-perspective .board-action-link, .reply-node.own-perspective .board-action-link, .sug-node.own-perspective .reply-toggle-btn, .reply-node.own-perspective .reply-toggle-btn { color: #111118 !important; }
     
-    .sug-meta { 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      font-size: 0.78rem; 
-    }
+    .sug-meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; }
     .owner-sug-text { color: #f87171 !important; font-weight: 600; }
     .staff-sug-text { color: #fb923c !important; font-weight: 600; }
     .sug-author { font-weight: 700; color: var(--gold-soft); }
     .sug-node.own-perspective .sug-author, .reply-node.own-perspective .sug-author { color: #111118 !important; font-weight: 800; }
 
     .mention-tag {
-      background: rgba(212, 175, 55, 0.15); 
-      color: var(--gold) !important; 
-      padding: 2px 6px; 
-      border-radius: 4px; 
-      font-weight: 700; 
-      border: 1px solid rgba(212, 175, 55, 0.3); 
-      font-size: 0.85rem;
+      background: rgba(212, 175, 55, 0.15); color: var(--gold) !important; padding: 2px 6px; border-radius: 4px; font-weight: 700; border: 1px solid rgba(212, 175, 55, 0.3); font-size: 0.85rem;
     }
     .sug-node.own-perspective .mention-tag, .reply-node.own-perspective .mention-tag {
-      background: rgba(17, 17, 24, 0.1); 
-      color: #111118 !important; 
-      border-color: rgba(17,17,24,0.2);
+      background: rgba(17, 17, 24, 0.1); color: #111118 !important; border-color: rgba(17,17,24,0.2);
     }
 
     .owner-sug-author { color: #f87171 !important; text-shadow: 0 0 8px rgba(248,113,113,0.3); display: inline-flex; align-items: center; gap: 5px; }
@@ -390,6 +143,7 @@
     .sug-time { color: var(--muted); font-size: 0.72rem; }
     .sug-body { font-size: 0.92rem; color: var(--text); line-height: 1.4; word-break: break-word; }
     
+    /* Apple Arrow Loop Reply Layout Mapping Rules */
     .replies-box { margin-top: 8px; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; position: relative; }
     .reply-node { background: rgba(255, 255, 255, 0.008); border: 1px solid rgba(255,255,255,0.02); border-radius: 8px; padding: 10px 14px; font-size: 0.85rem; position: relative; display: flex; flex-direction: column; gap: 4px; }
     .reply-node::before { content: "\f3e5"; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; left: -18px; top: 12px; font-size: 0.72rem; color: var(--border-h); transform: scaleX(-1); }
@@ -403,6 +157,22 @@
     .reply-toggle-btn { background: none; border: none; color: var(--muted); font-family: 'Manrope', sans-serif; font-size: 0.75rem; font-weight: 600; cursor: pointer; padding: 0; align-self: flex-start; display: inline-flex; align-items: center; gap: 4px; transition: color 0.15s; }
     .reply-toggle-btn:hover { color: var(--gold); }
     .reply-form-sub-panel { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+
+    /* Show/Hide Replies Accordion */
+    .disclosure-replies-btn {
+      background: none; border: none; color: var(--gold); font-family: 'Manrope', sans-serif; font-size: 0.75rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding: 4px 0; margin-top: 2px;
+    }
+    .disclosure-replies-btn i { transition: transform 0.2s ease; }
+    .disclosure-replies-btn.open i { transform: rotate(180deg); }
+
+    /* Read More Pagination Blocks */
+    .read-more-wrapper {
+      display: flex; justify-content: center; margin-top: 14px; padding: 4px 0;
+    }
+    .read-more-btn {
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 6px; color: var(--sub); font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.78rem; padding: 8px 24px; cursor: pointer; transition: all 0.2s;
+    }
+    .read-more-btn:hover { background: rgba(212,175,55,0.1); border-color: var(--gold); color: var(--gold); }
 
     .admin-add-btn { display: inline-flex; align-items: center; gap: 9px; font-family: 'Manrope', sans-serif; font-size: .87rem; font-weight: 600; padding: 11px 22px; border-radius: 10px; border: 1px solid; cursor: pointer; background: var(--gold); color: #000; border-color: var(--gold); margin-top: 4px; margin-bottom: 24px; }
     .admin-badge { position: fixed; top: calc(var(--nav-h, 58px) + 10px); right: 14px; z-index: 20; }
@@ -552,6 +322,17 @@
   let countdownInterval = null;
   let counterConfigMode = 'all'; 
 
+  // Notification engine variables
+  let unreadActivityCount = 0;
+  let hasScrolledToBottomToClear = false;
+
+  // Pagination bounds thresholds
+  let visibleSuggestionsCount = 5;
+  let visibleRepliesTrackers = {}; 
+
+  // Expanded explicit memory tracking arrays for replies visibility state maps
+  let openRepliesThreadStateMap = {};
+
   const USER_SESSION_POSTS = new Set();
 
   async function loadAllStreamsPipeline() {
@@ -563,7 +344,7 @@
     try { const boardStored = localStorage.getItem(BOARD_STORAGE_KEY); BOARD_IDEAS = boardStored ? JSON.parse(boardStored) : []; } catch(e) { BOARD_IDEAS = []; }
     try { const settingsStored = localStorage.getItem(SETTINGS_STORAGE_KEY); counterConfigMode = settingsStored || 'all'; } catch(e) { counterConfigMode = 'all'; }
 
-    updateSuggestionsCounterBadge();
+    computeInitialUnreadMetatags();
 
     if(!API_KEY || API_KEY.includes('PASTE_YOUR_')) {
       STREAMS = [...adminManualOverrides, ...STREAMS]; evaluateLiveStatusDot(); renderStreams(); return;
@@ -575,41 +356,6 @@
       if(liveData.items) {
         liveData.items.forEach((item, i) => { STREAMS.push({ id: 'live-' + i + Date.now(), title: item.snippet.title, description: item.snippet.description, videoId: item.id.videoId, status: 'live', targetDate: '', isPremiere: false }); });
       }
-      
-      const upRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&type=video&eventType=upcoming&order=date&key=${API_KEY}`);
-      const upData = await upRes.json();
-      if(upData.items) {
-        for(let i=0; i < upData.items.length; i++) {
-          const item = upData.items[i];
-          let liveScheduledTime = '';
-          try {
-            const detailRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=liveStreamingDetails&id=${item.id.videoId}&key=${API_KEY}`);
-            const detailData = await detailRes.json();
-            if(detailData.items?.[0]?.liveStreamingDetails?.scheduledStartTime) {
-              liveScheduledTime = detailData.items[0].liveStreamingDetails.scheduledStartTime;
-            }
-          } catch(err) {}
-          STREAMS.push({ id: 'upcoming-' + i + Date.now(), title: item.snippet.title, description: item.snippet.description, videoId: item.id.videoId, status: 'upcoming', targetDate: liveScheduledTime || item.snippet.publishedAt, isPremiere: false });
-        }
-      }
-
-      const scanRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&type=video&order=date&maxResults=8&key=${API_KEY}`);
-      const scanData = await scanRes.json();
-      if(scanData.items) {
-        const videoIds = scanData.items.map(item => item.id.videoId).join(',');
-        const detailRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet,liveStreamingDetails&id=${videoIds}&key=${API_KEY}`);
-        const detailData = await detailRes.json();
-        if(detailData.items) {
-          detailData.items.forEach((video) => {
-            const lsd = video.liveStreamingDetails;
-            if(lsd && lsd.scheduledStartTime && !lsd.actualEndTime) {
-              if(!STREAMS.some(s => s.videoId === video.id)) {
-                STREAMS.push({ id: 'premiere-' + video.id, title: video.snippet.title, description: video.snippet.description, videoId: video.id, status: 'premieres', targetDate: lsd.scheduledStartTime, isPremiere: true, liveNow: new Date().getTime() >= new Date(lsd.scheduledStartTime).getTime() });
-              }
-            }
-          });
-        }
-      }
     } catch(err) {}
 
     adminManualOverrides.forEach(m => { if(!STREAMS.some(a => a.videoId === m.videoId)) STREAMS.push(m); });
@@ -618,7 +364,16 @@
   }
 
   function saveLocalState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(STREAMS)); evaluateLiveStatusDot(); }
-  function saveBoardState() { localStorage.setItem(BOARD_STORAGE_KEY, JSON.stringify(BOARD_IDEAS)); updateSuggestionsCounterBadge(); }
+  
+  function saveBoardState() { 
+    localStorage.setItem(BOARD_STORAGE_KEY, JSON.stringify(BOARD_IDEAS)); 
+    if (!hasScrolledToBottomToClear) {
+      computeInitialUnreadMetatags();
+    } else {
+      updateSuggestionsCounterBadge();
+    }
+  }
+  
   function saveSettingsState() { localStorage.setItem(SETTINGS_STORAGE_KEY, counterConfigMode); updateSuggestionsCounterBadge(); }
 
   function canModifySuggestionRecord(itemRole, itemId) {
@@ -627,12 +382,7 @@
     return USER_SESSION_POSTS.has(itemId);
   }
 
-  function updateSuggestionsCounterBadge() {
-    const badge = document.getElementById('sugCounterCircle');
-    if(!badge) return;
-    if (counterConfigMode === 'off') { badge.style.opacity = '0'; badge.textContent = '0'; return; }
-    
-    badge.style.opacity = '1';
+  function computeInitialUnreadMetatags() {
     let currentUsername = isAdmin ? ((adminRole === 'OWNER') ? 'EthanUnlocked' : 'TUW Admin') : '';
     let count = 0;
 
@@ -650,11 +400,49 @@
         });
       }
     });
-    badge.textContent = count;
+    unreadActivityCount = count;
+    updateSuggestionsCounterBadge();
+  }
+
+  function updateSuggestionsCounterBadge() {
+    const badge = document.getElementById('sugCounterCircle');
+    if(!badge) return;
+    if (counterConfigMode === 'off' || hasScrolledToBottomToClear) { badge.style.opacity = '0'; badge.textContent = '0'; return; }
+    badge.style.opacity = '1';
+    badge.textContent = unreadActivityCount;
+  }
+
+  // Interceptor target tracking scrolling offsets loop logic
+  function handleSuggestionsScrollMonitoring(element) {
+    if (currentTab !== 'suggestions' || hasScrolledToBottomToClear) return;
+    
+    // Check if user reached trailing border limits of scroll panel container layout
+    const thresholdReached = (element.scrollHeight - element.scrollTop - element.clientHeight) <= 3;
+    if (thresholdReached) {
+      hasScrolledToBottomToClear = true;
+      unreadActivityCount = 0;
+      updateSuggestionsCounterBadge();
+      showToast("Notifications marked as read.");
+    }
   }
 
   function parseMentionHighlights(text) {
     return text.replace(/@(\w+(\s+\w+)?)/g, '<span class="mention-tag">@$1</span>');
+  }
+
+  function toggleRepliesDisclosureTree(ideaId) {
+    openRepliesThreadStateMap[ideaId] = !openRepliesThreadStateMap[ideaId];
+    renderStreams();
+  }
+
+  function increaseSuggestionsPageBound() {
+    visibleSuggestionsCount += 5;
+    renderStreams();
+  }
+
+  function increaseRepliesPageBound(ideaId) {
+    visibleRepliesTrackers[ideaId] = (visibleRepliesTrackers[ideaId] || 5) + 5;
+    renderStreams();
   }
 
   function renderStreams() {
@@ -670,6 +458,81 @@
             <input type="text" class="terminal-input" id="ownerCmdInput" placeholder="Type /ban <username> and press Enter..." onkeydown="handleOwnerTerminalExecution(event)">
           </div>
         </div>` : '';
+
+      const validatedActiveIdeas = BOARD_IDEAS.filter(msg => !msg.isBanned);
+      const paginatedIdeasList = validatedActiveIdeas.slice(0, visibleSuggestionsCount);
+
+      let suggestionsListHTML = paginatedIdeasList.map(msg => {
+        let authorClass = msg.role === 'OWNER' ? 'owner-sug-author' : (msg.role === 'STAFF' ? 'staff-sug-author' : '');
+        let textClass = msg.role === 'OWNER' ? 'owner-sug-text' : (msg.role === 'STAFF' ? 'staff-sug-text' : '');
+        let perspectiveClass = USER_SESSION_POSTS.has(msg.id) ? 'own-perspective' : '';
+
+        const replyArray = msg.replies || [];
+        const isThreadExpanded = !!openRepliesThreadStateMap[msg.id];
+        
+        // Pagination logic calculations for replies elements
+        const currentReplyLimit = visibleRepliesTrackers[msg.id] || 5;
+        const paginatedRepliesList = replyArray.slice(0, currentReplyLimit);
+
+        let repliesContainerHTML = '';
+        if(replyArray.length > 0) {
+          repliesContainerHTML = `
+            <button class="disclosure-replies-btn ${isThreadExpanded ? 'open' : ''}" onclick="toggleRepliesDisclosureTree('${msg.id}')">
+              <i class="fa-solid fa-chevron-down"></i> ${isThreadExpanded ? 'Hide' : 'Show'} Replies (${replyArray.length})
+            </button>
+            
+            <div class="replies-box" style="display: ${isThreadExpanded ? 'flex' : 'none'};">
+              ${paginatedRepliesList.map(rep => `
+                <div class="reply-node ${USER_SESSION_POSTS.has(rep.id) ? 'own-perspective' : ''}">
+                  <div class="sug-meta">
+                    <span class="sug-author ${rep.role === 'OWNER' ? 'owner-sug-author' : (rep.role === 'STAFF' ? 'staff-sug-author' : '')}">${rep.name}</span>
+                    <span class="sug-time">${rep.time}</span>
+                  </div>
+                  <p class="sug-body ${rep.role === 'OWNER' ? 'owner-sug-text' : (rep.role === 'STAFF' ? 'staff-sug-text' : '')}">${parseMentionHighlights(rep.text)}</p>
+                  <div class="sug-controls">
+                    ${canModifySuggestionRecord(rep.role, rep.id) ? `
+                      <button class="board-action-link" onclick="openIdeaEditModal('${rep.id}', '${msg.id}', '${rep.text.replace(/'/g, "\\'")}')">Edit</button>
+                      <button class="board-action-link delete-link" onclick="deleteSuggestionRecord('${rep.id}', '${msg.id}')">Delete</button>
+                    ` : ''}
+                    ${(isAdmin && adminRole === 'OWNER') ? `<button class="board-action-link delete-link" style="color:#ef4444;" onclick="banSuggestionRecord('${rep.id}', '${msg.id}')">Owner-Ban</button>` : ''}
+                  </div>
+                </div>
+              `).join('')}
+              
+              ${replyArray.length > currentReplyLimit ? `
+                <div class="read-more-wrapper">
+                  <button class="read-more-btn" onclick="increaseRepliesPageBound('${msg.id}')">Read More Replies</button>
+                </div>
+              ` : ''}
+            </div>
+          `;
+        }
+
+        return `
+          <div class="sug-node ${perspectiveClass}">
+            <div class="sug-meta">
+              <span class="sug-author ${authorClass}">${msg.name}</span>
+              <span class="sug-time">${msg.time}</span>
+            </div>
+            <p class="sug-body ${textClass}">${parseMentionHighlights(msg.text)}</p>
+            <div class="sug-controls">
+              ${canModifySuggestionRecord(msg.role, msg.id) ? `
+                <button class="board-action-link" onclick="openIdeaEditModal('${msg.id}', null, '${msg.text.replace(/'/g, "\\'")}')">Edit</button>
+                <button class="board-action-link delete-link" onclick="deleteSuggestionRecord('${msg.id}', null)">Delete</button>
+              ` : ''}
+              ${(isAdmin && adminRole === 'OWNER') ? `<button class="board-action-link delete-link" style="color:#ef4444;" onclick="banSuggestionRecord('${msg.id}', null)">Owner-Ban</button>` : ''}
+            </div>
+            
+            ${repliesContainerHTML}
+
+            <button class="reply-toggle-btn" onclick="toggleReplyInput(this)"><i class="fa-solid fa-reply"></i> Reply</button>
+            <div class="reply-form-sub-panel" style="display:none;">
+              <input type="text" class="board-input reply-user-name" value="${defaultInputValue}" ${isAdmin ? 'disabled' : ''} style="width:120px;">
+              <input type="text" class="board-input reply-user-msg" placeholder="Write response...">
+              <button class="board-submit-btn" onclick="submitSubReply('${msg.id}', this)">Post</button>
+            </div>
+          </div>`;
+      }).join('');
 
       container.innerHTML = `
         <div class="tab-board-card">
@@ -692,55 +555,17 @@
             </div>
             <button class="board-submit-btn" onclick="submitGlobalSuggestion()">Post Idea</button>
           </div>
-          <div class="suggestions-list">
-            ${BOARD_IDEAS.filter(msg => !msg.isBanned).length === 0 ? '<div class="no-streams">No suggestions found.</div>' : 
-              BOARD_IDEAS.map(msg => {
-                if (msg.isBanned) return '';
-                let authorClass = msg.role === 'OWNER' ? 'owner-sug-author' : (msg.role === 'STAFF' ? 'staff-sug-author' : '');
-                let textClass = msg.role === 'OWNER' ? 'owner-sug-text' : (msg.role === 'STAFF' ? 'staff-sug-text' : '');
-                let perspectiveClass = USER_SESSION_POSTS.has(msg.id) ? 'own-perspective' : '';
-
-                return `
-                  <div class="sug-node ${perspectiveClass}">
-                    <div class="sug-meta">
-                      <span class="sug-author ${authorClass}">${msg.name}</span>
-                      <span class="sug-time">${msg.time}</span>
-                    </div>
-                    <p class="sug-body ${textClass}">${parseMentionHighlights(msg.text)}</p>
-                    <div class="sug-controls">
-                      ${canModifySuggestionRecord(msg.role, msg.id) ? `
-                        <button class="board-action-link" onclick="openIdeaEditModal('${msg.id}', null, '${msg.text.replace(/'/g, "\\'")}')">Edit</button>
-                        <button class="board-action-link delete-link" onclick="deleteSuggestionRecord('${msg.id}', null)">Delete</button>
-                      ` : ''}
-                      ${(isAdmin && adminRole === 'OWNER') ? `<button class="board-action-link delete-link" style="color:#ef4444;" onclick="banSuggestionRecord('${msg.id}', null)">Owner-Ban</button>` : ''}
-                    </div>
-                    <div class="replies-box">
-                      ${(msg.replies || []).map(rep => `
-                        <div class="reply-node ${USER_SESSION_POSTS.has(rep.id) ? 'own-perspective' : ''}">
-                          <div class="sug-meta">
-                            <span class="sug-author ${rep.role === 'OWNER' ? 'owner-sug-author' : (rep.role === 'STAFF' ? 'staff-sug-author' : '')}">${rep.name}</span>
-                            <span class="sug-time">${rep.time}</span>
-                          </div>
-                          <p class="sug-body ${rep.role === 'OWNER' ? 'owner-sug-text' : (rep.role === 'STAFF' ? 'staff-sug-text' : '')}">${parseMentionHighlights(rep.text)}</p>
-                          <div class="sug-controls">
-                            ${canModifySuggestionRecord(rep.role, rep.id) ? `
-                              <button class="board-action-link" onclick="openIdeaEditModal('${rep.id}', '${msg.id}', '${rep.text.replace(/'/g, "\\'")}')">Edit</button>
-                              <button class="board-action-link delete-link" onclick="deleteSuggestionRecord('${rep.id}', '${msg.id}')">Delete</button>
-                            ` : ''}
-                            ${(isAdmin && adminRole === 'OWNER') ? `<button class="board-action-link delete-link" style="color:#ef4444;" onclick="banSuggestionRecord('${rep.id}', '${msg.id}')">Owner-Ban</button>` : ''}
-                          </div>
-                        </div>
-                      `).join('')}
-                    </div>
-                    <button class="reply-toggle-btn" onclick="toggleReplyInput(this)"><i class="fa-solid fa-reply"></i> Reply</button>
-                    <div class="reply-form-sub-panel" style="display:none;">
-                      <input type="text" class="board-input reply-user-name" value="${defaultInputValue}" ${isAdmin ? 'disabled' : ''} style="width:120px;">
-                      <input type="text" class="board-input reply-user-msg" placeholder="Write response...">
-                      <button class="board-submit-btn" onclick="submitSubReply('${msg.id}', this)">Post</button>
-                    </div>
-                  </div>`;
-              }).join('')
-            }
+          
+          <div class="suggestions-scroll-container" onscroll="handleSuggestionsScrollMonitoring(this)">
+            <div class="suggestions-list">
+              ${validatedActiveIdeas.length === 0 ? '<div class="no-streams">No suggestions found.</div>' : suggestionsListHTML}
+            </div>
+            
+            ${validatedActiveIdeas.length > visibleSuggestionsCount ? `
+              <div class="read-more-wrapper">
+                <button class="read-more-btn" onclick="increaseSuggestionsPageBound()">Read More Suggestions</button>
+              </div>
+            ` : ''}
           </div>
         </div>`;
       return;
@@ -808,6 +633,10 @@
 
     BOARD_IDEAS.unshift({ id: uniqueId, name: authorName, text: msgInput.value.trim(), role: isAdmin ? adminRole : 'USER', time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), replies: [], isBanned: false });
     USER_SESSION_POSTS.add(uniqueId);
+    
+    // Toggle read reset state flag on manual post creations
+    hasScrolledToBottomToClear = false;
+    
     saveBoardState(); msgInput.value = ''; renderStreams();
   }
 
@@ -824,6 +653,11 @@
       if(!match.replies) match.replies = [];
       match.replies.push({ id: uniqueReplyId, name: authorName, text: msgVal, role: isAdmin ? adminRole : 'USER', time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) });
       USER_SESSION_POSTS.add(uniqueReplyId);
+      
+      // Auto expand on sub replies to show content immediately
+      openRepliesThreadStateMap[parentId] = true;
+      hasScrolledToBottomToClear = false;
+
       saveBoardState(); renderStreams();
     }
   }
@@ -879,7 +713,9 @@
       const match = BOARD_IDEAS.find(x => x.id === targetId); if(match) match.isBanned = true;
     } else {
       const rootMatch = BOARD_IDEAS.find(x => x.id === parentId);
-      if(rootMatch?.replies) rootMatch.replies = rootMatch.replies.filter(y => y.id !== targetId);
+      if(rootMatch?.replies) {
+        rootMatch.replies = rootMatch.replies.filter(y => y.id !== targetId);
+      }
     }
     saveBoardState(); renderStreams(); showToast('Post hidden.');
   }
@@ -900,8 +736,8 @@
 
   function handleLogin() {
     const u = document.getElementById('adminUser').value.trim(); const p = document.getElementById('adminPass').value;
-    if (u === OWNER_USER && p === OWNER_PASS) { closeModal('adminLoginModal'); setAdmin(true, 'OWNER'); showToast('Welcome Owner EthanUnlocked!'); } 
-    else if (u === STAFF_USER && p === STAFF_PASS) { closeModal('adminLoginModal'); setAdmin(true, 'STAFF'); showToast('Staff login.'); } 
+    if (u === OWNER_USER && p === OWNER_PASS) { closeModal('adminLoginModal'); setAdmin(true, 'OWNER'); showToast('Welcome back, Ethan Unlocked! 🛡️'); } 
+    else if (u === STAFF_USER && p === STAFF_PASS) { closeModal('adminLoginModal'); setAdmin(true, 'STAFF'); showToast('Staff access granted.'); } 
     else { document.getElementById('adminError').textContent = 'Invalid account.'; }
   }
 
