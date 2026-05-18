@@ -47,385 +47,128 @@
       scrollbar-width: none;
       animation: fadeUp .6s .18s cubic-bezier(.22,1,.36,1) both;
     }
-    .stream-tabs::-webkit-scrollbar {
-      display: none;
-    }
+    .stream-tabs::-webkit-scrollbar { display: none; }
     .tab-btn {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid var(--border);
-      color: var(--muted);
-      padding: 10px 18px;
-      border-radius: 8px;
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 0.82rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      position: relative;
-      flex-shrink: 0;
-      transition: all 0.2s ease;
+      background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border); color: var(--muted);
+      padding: 10px 18px; border-radius: 8px; font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 0.82rem; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+      position: relative; flex-shrink: 0; transition: all 0.2s ease;
     }
-    .tab-btn:hover {
-      color: var(--text);
-      background: rgba(255, 255, 255, 0.05);
-      border-color: var(--border-h);
-    }
-    .tab-btn.active {
-      background: rgba(212, 175, 55, 0.1);
-      border-color: var(--gold);
-      color: var(--gold);
-      text-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
-    }
+    .tab-btn:hover { color: var(--text); background: rgba(255, 255, 255, 0.05); border-color: var(--border-h); }
+    .tab-btn.active { background: rgba(212, 175, 55, 0.1); border-color: var(--gold); color: var(--gold); text-shadow: 0 0 10px var(--gold-soft); }
 
     .tab-pulse-indicator {
-      display: none;
-      width: 8px;
-      height: 8px;
-      background: #ef4444;
-      border-radius: 50%;
-      position: absolute;
-      top: 6px;
-      right: 6px;
-      box-shadow: 0 0 8px #ef4444;
-      animation: pulse-glow 1.5s infinite;
+      display: none; width: 8px; height: 8px; background: #ef4444; border-radius: 50%; position: absolute; top: 6px; right: 6px; box-shadow: 0 0 8px #ef4444; animation: pulse-glow 1.5s infinite;
+    }
+
+    /* Suggestions Counter Badge */
+    .tab-counter-badge {
+      display: inline-flex; align-items: center; justify-content: center; background: var(--gold); color: #000;
+      font-size: 0.68rem; font-family: monospace; font-weight: 800; min-width: 18px; height: 18px; border-radius: 50%; padding: 0 4px; margin-left: 2px;
+      transition: opacity 0.2s;
     }
 
     /* ── Streams Container Layout Grid ───── */
-    .streams-container {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      animation: fadeUp .6s .2s cubic-bezier(.22,1,.36,1) both;
-    }
+    .streams-container { display: flex; flex-direction: column; gap: 20px; animation: fadeUp .6s .2s cubic-bezier(.22,1,.36,1) both; }
+    .stream-item { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+    .stream-top-row { display: flex; gap: 24px; }
+    @media (max-width: 768px) { .stream-top-row { flex-direction: column; gap: 16px; } }
 
-    .stream-item {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      transition: border-color .22s, background .22s, transform .22s cubic-bezier(.22,1,.36,1), box-shadow .22s;
-    }
-    .stream-item:hover {
-      border-color: var(--border-h);
-      background: var(--card-h);
-      box-shadow: 0 12px 32px rgba(0,0,0,.35);
-    }
-
-    .stream-top-row {
-      display: flex;
-      gap: 24px;
-    }
-    @media (max-width: 768px) {
-      .stream-top-row { flex-direction: column; gap: 16px; }
-    }
-
-    .stream-thumb-wrapper {
-      position: relative;
-      width: 280px;
-      aspect-ratio: 16/9;
-      border-radius: 10px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      background: #000;
-      flex-shrink: 0;
-    }
-    @media (max-width: 768px) {
-      .stream-thumb-wrapper { width: 100%; }
-    }
-    .stream-thumb-wrapper img {
-      width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;
-    }
-    .stream-item:hover .stream-thumb-wrapper img {
-      transform: scale(1.03);
-    }
-    .live-indicator-tag {
-      position: absolute; top: 10px; left: 10px;
-      background: #ef4444; color: #fff; font-size: 0.65rem; font-weight: 800;
-      padding: 3px 8px; border-radius: 4px; letter-spacing: 1px;
-      text-transform: uppercase; animation: pulse-glow 1.5s infinite;
-    }
-    .live-indicator-tag.premiere-tag {
-      background: #3b82f6;
-    }
-
-    .stream-content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .stream-header {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 8px;
-      flex-wrap: wrap;
-    }
-
-    .stream-dot {
-      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
-    }
-    .dot-red { background: #ef4444; box-shadow: 0 0 10px #ef4444; animation: pulse-glow 1.5s infinite; }
-    .dot-blue { background: #3b82f6; box-shadow: 0 0 10px #3b82f6; }
-    .dot-gold { background: var(--gold); box-shadow: 0 0 10px var(--gold); }
-    .dot-muted { background: var(--muted); }
-
-    .stream-title {
-      font-family: 'Syne', sans-serif; font-weight: 700;
-      font-size: 1.2rem; color: var(--text); flex: 1;
-    }
-
-    .stream-status-badge {
-      display: inline-block; font-size: 0.65rem; font-weight: 700;
-      letter-spacing: 1.5px; text-transform: uppercase;
-      padding: 4px 10px; border-radius: 6px; white-space: nowrap;
-    }
-    .badge-live { background: rgba(239,68,68,.13); color: #ef4444; border: 1px solid rgba(239,68,68,.3); }
-    .badge-premieres { background: rgba(59,130,246,.13); color: #3b82f6; border: 1px solid rgba(59,130,246,.3); }
-    .badge-upcoming { background: rgba(245,158,11,.13); color: var(--gold); border: 1px solid rgba(245,158,11,.3); }
-    .badge-completed { background: rgba(255,255,255,.05); color: var(--muted); border: 1px solid var(--border); }
+    .stream-thumb-wrapper { position: relative; width: 280px; aspect-ratio: 16/9; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); background: #000; flex-shrink: 0; }
+    .stream-thumb-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+    .stream-content { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .stream-header { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; flex-wrap: wrap; }
+    .stream-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.2rem; color: var(--text); flex: 1; }
+    .stream-status-badge { display: inline-block; font-size: 0.65rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 10px; border-radius: 6px; white-space: nowrap; }
 
     /* ── Theater Embedding Container Workspace ── */
-    .live-theater-workspace {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 14px;
-      margin-top: 10px;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      background: #06060c;
-    }
-    .live-theater-workspace.no-chat {
-      grid-template-columns: 1fr;
-    }
-    @media (max-width: 900px) {
-      .live-theater-workspace { grid-template-columns: 1fr; }
-    }
-    .video-player-frame {
-      width: 100%; aspect-ratio: 16/9; background: #000; border: none; display: block;
-    }
-    .chat-embed-frame {
-      width: 100%; height: 100%; min-height: 360px; background: #0a0a14; border: none; display: block;
-      border-left: 1px solid var(--border);
-    }
-    @media (max-width: 900px) {
-      .chat-embed-frame { border-left: none; border-top: 1px solid var(--border); height: 400px; }
-    }
+    .live-theater-workspace { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-top: 10px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: #06060c; }
+    .live-theater-workspace.no-chat { grid-template-columns: 1fr; }
+    .video-player-frame { width: 100%; aspect-ratio: 16/9; background: #000; border: none; display: block; }
+    .chat-embed-frame { width: 100%; height: 100%; min-height: 360px; background: #0a0a14; border: none; display: block; border-left: 1px solid var(--border); }
 
-    /* ── Standalone Suggestions Tab ──────────────── */
-    .tab-board-card {
-      background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 28px;
-    }
-    .board-header {
-      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem;
-      color: var(--text); margin-bottom: 6px; display: flex; align-items: center; gap: 10px;
-    }
-    .board-header i { color: var(--gold); }
-    .board-sub-label { font-size: 0.82rem; color: var(--sub); margin-bottom: 20px; }
-    
-    .board-input-group {
-      display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px;
-      background: rgba(255,255,255,0.01); border: 1px solid var(--border); border-radius: 10px; padding: 16px;
-    }
+    /* ── Suggestions Board Styles ──────────────── */
+    .tab-board-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 28px; }
+    .board-input-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; background: rgba(255,255,255,0.01); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
     .board-row-inputs { display: flex; gap: 10px; flex-wrap: wrap; }
-    .board-input {
-      background: #0d0d1b; border: 1px solid var(--border); border-radius: 6px;
-      color: var(--text); padding: 10px 14px; font-family: 'Manrope', sans-serif; font-size: 0.85rem;
-    }
+    .board-input { background: #0d0d1b; border: 1px solid var(--border); border-radius: 6px; color: var(--text); padding: 10px 14px; font-family: 'Manrope', sans-serif; font-size: 0.85rem; }
     .board-input:focus { outline: none; border-color: var(--gold); }
     .input-name { width: 200px; }
     .input-msg { flex: 1; min-width: 260px; }
     
-    .board-submit-btn {
-      align-self: flex-end; padding: 8px 20px; border-radius: 6px; border: none;
-      background: rgba(212, 175, 55, 0.15); color: var(--gold); font-family: 'Syne', sans-serif;
-      font-weight: 700; font-size: 0.8rem; text-transform: uppercase; cursor: pointer; transition: all 0.15s;
+    /* Board Settings & Terminal Section */
+    .board-meta-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+    @media (max-width: 768px) { .board-meta-controls { grid-template-columns: 1fr; } }
+    
+    .owner-terminal-box {
+      background: #05050a; border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 10px; padding: 14px; font-family: monospace; display: flex; flex-direction: column; gap: 8px;
     }
-    .board-submit-btn:hover { background: var(--gold); color: #000; }
+    .terminal-title { color: #f87171; font-size: 0.78rem; font-weight: 700; letter-spacing: 1px; }
+    .terminal-row { display: flex; gap: 10px; }
+    .terminal-input { background: #0a0a14; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #fff; padding: 6px 10px; flex: 1; font-size: 0.8rem; }
+
+    .board-settings-box {
+      background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 8px;
+    }
+    .settings-title { color: var(--gold); font-size: 0.85rem; font-family: 'Syne', sans-serif; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+    .settings-select { background: #0d0d1b; border: 1px solid var(--border); border-radius: 6px; color: var(--text); padding: 6px 10px; font-family: 'Manrope', sans-serif; font-size: 0.8rem; cursor: pointer; }
 
     .suggestions-list { display: flex; flex-direction: column; gap: 14px; }
-    .sug-node {
-      background: rgba(255, 255, 255, 0.015); border: 1px solid var(--border);
-      border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 8px;
-    }
+    .sug-node { background: rgba(255, 255, 255, 0.015); border: 1px solid var(--border); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 8px; position: relative; }
+
+    .sug-node.own-perspective, .reply-node.own-perspective { background: #ffffff !important; border-color: #ffffff !important; }
+    .sug-node.own-perspective .sug-body, .sug-node.own-perspective .sug-time, .reply-node.own-perspective .sug-body, .reply-node.own-perspective .sug-time, .sug-node.own-perspective .board-action-link, .reply-node.own-perspective .board-action-link, .sug-node.own-perspective .reply-toggle-btn, .reply-node.own-perspective .reply-toggle-btn { color: #111118 !important; }
+    
     .sug-meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; }
+    .owner-sug-text { color: #f87171 !important; font-weight: 600; }
+    .staff-sug-text { color: #fb923c !important; font-weight: 600; }
     .sug-author { font-weight: 700; color: var(--gold-soft); }
+    .sug-node.own-perspective .sug-author, .reply-node.own-perspective .sug-author { color: #111118 !important; font-weight: 800; }
+
+    .mention-tag {
+      background: rgba(212, 175, 55, 0.15); color: var(--gold) !important; padding: 2px 6px; border-radius: 4px; font-weight: 700; border: 1px solid rgba(212, 175, 55, 0.3); font-size: 0.85rem;
+    }
+    .sug-node.own-perspective .mention-tag, .reply-node.own-perspective .mention-tag {
+      background: rgba(17, 17, 24, 0.1); color: #111118 !important; border-color: rgba(17,17,24,0.2);
+    }
+
+    .owner-sug-author { color: #f87171 !important; text-shadow: 0 0 8px rgba(248,113,113,0.3); display: inline-flex; align-items: center; gap: 5px; }
+    .owner-sug-author::after { content: '👑 OWNER'; font-size: 0.58rem; font-weight: 800; background: rgba(248,113,113,0.15); padding: 1px 5px; border-radius: 3px; border: 1px solid rgba(248,113,113,0.4); color: #f87171; }
+    
+    .staff-sug-author { color: #fb923c !important; text-shadow: 0 0 8px rgba(251,146,60,0.3); display: inline-flex; align-items: center; gap: 5px; }
+    .staff-sug-author::after { content: '🛡️ STAFF'; font-size: 0.58rem; font-weight: 800; background: rgba(251,146,60,0.15); padding: 1px 5px; border-radius: 3px; border: 1px solid rgba(251,146,60,0.3); color: #fb923c; }
+    
     .sug-time { color: var(--muted); font-size: 0.72rem; }
     .sug-body { font-size: 0.92rem; color: var(--text); line-height: 1.4; word-break: break-word; }
     
-    .replies-box {
-      margin-top: 8px; padding-left: 16px; border-left: 1px solid var(--border);
-      display: flex; flex-direction: column; gap: 8px;
-    }
-    .reply-node {
-      background: rgba(255, 255, 255, 0.008); border: 1px solid rgba(255,255,255,0.02);
-      border-radius: 6px; padding: 10px 12px; font-size: 0.85rem;
-    }
+    .replies-box { margin-top: 8px; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; position: relative; }
+    .reply-node { background: rgba(255, 255, 255, 0.008); border: 1px solid rgba(255,255,255,0.02); border-radius: 8px; padding: 10px 14px; font-size: 0.85rem; position: relative; display: flex; flex-direction: column; gap: 4px; }
+    .reply-node::before { content: "\f3e5"; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; left: -18px; top: 12px; font-size: 0.72rem; color: var(--border-h); transform: scaleX(-1); }
+    .reply-node.own-perspective::before { color: #ffffff !important; }
 
-    /* Administrative Highlights */
-    .owner-sug-author {
-      color: var(--gold) !important; text-shadow: 0 0 8px rgba(212,175,55,0.3);
-      display: inline-flex; align-items: center; gap: 5px;
-    }
-    .owner-sug-author::after {
-      content: '👑 OWNER'; font-size: 0.58rem; font-weight: 800; background: rgba(239,68,68,0.15);
-      padding: 1px 5px; border-radius: 3px; border: 1px solid rgba(239,68,68,0.4); color: #ef4444;
-    }
-    
-    .staff-sug-author {
-      color: var(--gold) !important; text-shadow: 0 0 8px rgba(212,175,55,0.3);
-      display: inline-flex; align-items: center; gap: 5px;
-    }
-    .staff-sug-author::after {
-      content: '🛡️ STAFF'; font-size: 0.58rem; font-weight: 800; background: rgba(212,175,55,0.15);
-      padding: 1px 5px; border-radius: 3px; border: 1px solid rgba(212,175,55,0.3); color: var(--gold);
-    }
-    
-    .admin-sug-text { color: var(--gold) !important; font-weight: 500; }
-
-    /* Action Controls within Board System */
     .sug-controls { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
-    .board-action-link {
-      background: none; border: none; font-family: 'Manrope', sans-serif; font-size: 0.7rem;
-      font-weight: 600; cursor: pointer; color: var(--muted); padding: 0; transition: color 0.15s;
-    }
+    .board-action-link { background: none; border: none; font-family: 'Manrope', sans-serif; font-size: 0.72rem; font-weight: 600; cursor: pointer; color: var(--muted); padding: 0; transition: color 0.15s; }
     .board-action-link:hover { color: var(--text); }
     .board-action-link.delete-link:hover { color: #f87171; }
 
-    .reply-toggle-btn {
-      background: none; border: none; color: var(--muted); font-family: 'Manrope', sans-serif;
-      font-size: 0.75rem; font-weight: 600; cursor: pointer; padding: 0; align-self: flex-start;
-      display: inline-flex; align-items: center; gap: 4px; transition: color 0.15s;
-    }
+    .reply-toggle-btn { background: none; border: none; color: var(--muted); font-family: 'Manrope', sans-serif; font-size: 0.75rem; font-weight: 600; cursor: pointer; padding: 0; align-self: flex-start; display: inline-flex; align-items: center; gap: 4px; transition: color 0.15s; }
     .reply-toggle-btn:hover { color: var(--gold); }
     .reply-form-sub-panel { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
 
-    /* Countdown Modules */
-    .countdown-box {
-      background: rgba(212, 175, 55, 0.04);
-      border: 1px dashed rgba(212, 175, 55, 0.2);
-      border-radius: 8px; padding: 10px 14px; margin-bottom: 12px;
-      display: inline-flex; align-items: center; gap: 10px;
-    }
-    .countdown-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--gold); letter-spacing: 0.5px;}
-    .countdown-time { font-family: monospace; font-size: 0.95rem; color: #fff; font-weight: 600; }
-
-    .stream-meta { display: flex; align-items: center; gap: 16px; font-size: 0.8rem; color: var(--muted); }
-    .watch-link {
-      color: var(--gold); font-weight: 700; text-decoration: none;
-      display: inline-flex; align-items: center; gap: 6px; transition: 0.2s;
-    }
-    .watch-link:hover { text-shadow: 0 0 8px rgba(212,175,55,0.4); color: #fff; }
-
-    /* Controls Layout Setup */
-    .adm-btn {
-      font-size: .68rem; font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
-      padding: 3px 8px; border-radius: 6px; border: 1px solid; cursor: pointer;
-      font-family: 'Manrope', sans-serif; transition: background .14s, transform .14s;
-    }
-    .adm-btn:hover { transform: scale(1.04); }
-    .adm-btn-edit { background: rgba(245,158,11,.1); border-color: rgba(245,158,11,.3); color: var(--gold); }
-    .adm-btn-edit:hover { background: rgba(245,158,11,.2); }
-    .adm-btn-del { background: rgba(248,113,113,.12); border-color: rgba(248,113,113,.3); color: #f87171; }
-    .adm-btn-del:hover { background: rgba(248,113,113,.22); }
-
-    .admin-add-btn {
-      display: inline-flex; align-items: center; gap: 9px;
-      font-family: 'Manrope', sans-serif; font-size: .87rem; font-weight: 600;
-      padding: 11px 22px; border-radius: 10px; border: 1px solid;
-      transition: transform .22s cubic-bezier(.22,1,.36,1), box-shadow .22s, background .18s;
-      cursor: pointer; background: var(--gold); color: #000; border-color: var(--gold);
-      margin-top: 4px; margin-bottom: 24px;
-    }
-    .admin-add-btn:hover { transform: translateY(-2px); }
-
+    .admin-add-btn { display: inline-flex; align-items: center; gap: 9px; font-family: 'Manrope', sans-serif; font-size: .87rem; font-weight: 600; padding: 11px 22px; border-radius: 10px; border: 1px solid; cursor: pointer; background: var(--gold); color: #000; border-color: var(--gold); margin-top: 4px; margin-bottom: 24px; }
     .admin-badge { position: fixed; top: calc(var(--nav-h, 58px) + 10px); right: 14px; z-index: 20; }
-    .admin-pill {
-      font-size: .7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
-      padding: 5px 12px; border-radius: 99px; font-family: 'Manrope', sans-serif;
-      border: 1px solid; cursor: pointer; transition: all .15s;
-    }
+    .admin-pill { font-size: .7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 5px 12px; border-radius: 99px; font-family: 'Manrope', sans-serif; border: 1px solid; cursor: pointer; transition: all .15s; }
     .admin-pill.login { color: var(--muted); border-color: var(--border); background: none; }
     .admin-pill.login:hover { color: var(--sub); border-color: var(--border-h); background: rgba(255,255,255,.04); }
-    .admin-pill.active-owner { color: #ef4444; border-color: rgba(239,68,68,0.35); background: rgba(239,68,68,0.1); }
-    .admin-pill.active-staff { color: var(--gold); border-color: rgba(245,158,11,0.35); background: rgba(245,158,11,0.1); }
+    .admin-pill.active-owner { color: #f87171; border-color: rgba(248,113,113,0.35); background: rgba(248,113,113,0.1); }
+    .admin-pill.active-staff { color: #fb923c; border-color: rgba(251,146,60,0.35); background: rgba(251,146,60,0.1); }
 
-    .modal-overlay {
-      position: fixed; inset: 0; z-index: 100;
-      background: rgba(0,0,0,.82); backdrop-filter: blur(8px);
-      display: none; align-items: center; justify-content: center;
-    }
+    .modal-overlay { position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,.82); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; }
     .modal-overlay.open { display: flex; }
-    .modal {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: 16px; padding: 28px; width: 94%; max-width: 500px;
-      position: relative; max-height: 90vh; overflow-y: auto;
-    }
-    .modal h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; color: var(--text); margin-bottom: 18px; }
-    .modal-close { position: absolute; top: 14px; right: 16px; background: none; border: none; color: var(--muted); font-size: 1.4rem; cursor: pointer; }
-    .modal label { display: block; font-size: .72rem; font-weight: 600; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; margin-top: 14px; margin-bottom: 6px; }
-    .modal input, .modal textarea, .modal select { width: 100%; background: #0d0d1b; border: 1px solid var(--border); border-radius: 8px; color: var(--text); padding: 9px 12px; font-family: 'Manrope', sans-serif; font-size: .88rem; }
-    .modal-btns { display: flex; gap: 10px; margin-top: 18px; }
-    .modal-btns button { flex: 1; padding: 10px; border-radius: 8px; border: none; font-family: 'Syne', sans-serif; font-weight: 700; cursor: pointer; }
-    .btn-confirm { background: var(--gold); color: #000; }
-    .btn-cancel { background: rgba(255,255,255,.07); color: var(--sub); }
-
-    .toast {
-      position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(10px);
-      background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 18px;
-      font-size: .82rem; font-weight: 500; color: var(--text); font-family: 'Manrope', sans-serif;
-      z-index: 30; opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s;
-    }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-    .no-streams {
-      padding: 40px; text-align: center; color: var(--muted); border: 1px dashed var(--border); border-radius: var(--r); font-size: 0.9rem;
-    }
-
-    @keyframes pulse-glow {
-      0% { opacity: 0.4; transform: scale(0.96); box-shadow: 0 0 4px rgba(239, 68, 68, 0.4); }
-      50% { opacity: 1; transform: scale(1.04); box-shadow: 0 0 14px rgba(239, 68, 68, 0.8); }
-      100% { opacity: 0.4; transform: scale(0.96); box-shadow: 0 0 4px rgba(239, 68, 68, 0.4); }
-    }
+    .modal { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; width: 94%; max-width: 500px; position: relative; max-height: 90vh; overflow-y: auto; }
   </style>
 </head>
 <body>
-
-<div class="grain" aria-hidden="true"></div>
-<div class="aurora" aria-hidden="true">
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
-</div>
-
-<nav class="nav">
-  <a href="../" class="nav-brand">TUW</a>
-  <div class="nav-divider"></div>
-  <div class="nav-links">
-    <a href="../">Home</a>
-    <a href="../videos/">Videos</a>
-    <a href="../games/">Games</a>
-    <a href="../suggestions/">Suggestions</a>
-    <a href="../chat/">Chat</a>
-    <a href="../updates/">Notes & Updates</a>
-    <a href="./" class="active">Live Streams</a>
-  </div>
-  <div class="nav-socials">
-    <a href="https://www.youtube.com/channel/UCi8DgxMDGJ-Qsjqfdi-uoIw" class="nav-pill nav-pill-yt" target="_blank">
-      <i class="fa-brands fa-youtube"></i> YouTube
-    </a>
-    <a href="https://discord.gg/vBMNDBTFn" class="nav-pill nav-pill-dc" target="_blank">
-      <i class="fa-brands fa-discord"></i> Discord
-    </a>
-  </div>
-</nav>
 
 <div class="wrap">
   <header class="page-header">
@@ -435,52 +178,29 @@
   </header>
 
   <div class="stream-tabs">
-    <button class="tab-btn active" id="tabBtnLive" onclick="switchTab('live')">
-      <i class="fa-solid fa-circle-radial"></i> Live Now
-      <span class="tab-pulse-indicator" id="livePulseAlert"></span>
-    </button>
-    <button class="tab-btn" id="tabBtnPremieres" onclick="switchTab('premieres')">
-      <i class="fa-solid fa-film"></i> Premieres
-    </button>
-    <button class="tab-btn" id="tabBtnSuggestions" onclick="switchTab('suggestions')">
-      <i class="fa-solid fa-lightbulb"></i> Stream & Premiere Suggestions
-    </button>
-    <button class="tab-btn" id="tabBtnUpcoming" onclick="switchTab('upcoming')">
-      <i class="fa-solid fa-calendar-days"></i> Upcoming Scheduled
-    </button>
-    <button class="tab-btn" id="tabBtnPast" onclick="switchTab('past')">
-      <i class="fa-solid fa-clock-rotate-left"></i> Past Streams
-    </button>
+    <button class="tab-btn active" id="tabBtnLive" onclick="switchTab('live')"><i class="fa-solid fa-circle-radial"></i> Live Now <span class="tab-pulse-indicator" id="livePulseAlert"></span></button>
+    <button class="tab-btn" id="tabBtnPremieres" onclick="switchTab('premieres')"><i class="fa-solid fa-film"></i> Premieres</button>
+    <button class="tab-btn" id="tabBtnSuggestions" onclick="switchTab('suggestions')"><i class="fa-solid fa-lightbulb"></i> Stream & Premiere Suggestions <span class="tab-counter-badge" id="sugCounterCircle">0</span></button>
+    <button class="tab-btn" id="tabBtnUpcoming" onclick="switchTab('upcoming')"><i class="fa-solid fa-calendar-days"></i> Upcoming Scheduled</button>
+    <button class="tab-btn" id="tabBtnPast" onclick="switchTab('past')"><i class="fa-solid fa-clock-rotate-left"></i> Past Streams</button>
   </div>
 
   <div id="adminButtonContainer"></div>
   <div class="streams-container" id="streamsContainer"></div>
 </div>
 
-<footer>
-  <span class="f-brand">TheUnlockedWeb</span>
-  <span class="f-copy">© 2026 EthanUnlocked's gaming hits</span>
-  <div class="f-links">
-    <a href="https://github.com/TheUnlockedWeb/theunlockedweb.github.io" target="_blank">
-      <i class="fa-brands fa-github"></i> Source
-    </a>
-  </div>
-</footer>
-
 <div class="admin-badge">
-  <button class="admin-pill login" id="adminBtn">
-    <i class="fa-solid fa-shield-halved"></i> Admin
-  </button>
+  <button class="admin-pill login" id="adminBtn"><i class="fa-solid fa-shield-halved"></i> Admin</button>
 </div>
 
 <div class="modal-overlay" id="adminLoginModal">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('adminLoginModal')">×</button>
-    <h3><i class="fa-solid fa-shield-halved" style="color:var(--gold);margin-right:8px"></i>Admin Login</h3>
+    <h3>Admin Login</h3>
     <label>Username</label>
-    <input type="text" id="adminUser" autocomplete="off" placeholder="Username...">
+    <input type="text" id="adminUser" autocomplete="off">
     <label>Password</label>
-    <input type="password" id="adminPass" autocomplete="off" placeholder="Password...">
+    <input type="password" id="adminPass" autocomplete="off">
     <div class="modal-error" id="adminError" style="font-size:.78rem;color:#f87171;margin-top:10px;min-height:18px;"></div>
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeModal('adminLoginModal')">Cancel</button>
@@ -492,13 +212,13 @@
 <div class="modal-overlay" id="streamModal">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('streamModal')">×</button>
-    <h3><i class="fa-solid fa-video" style="color:var(--gold);margin-right:8px"></i><span id="modalTitle">Add Stream Event</span></h3>
+    <h3><span id="modalTitle">Add Stream Event</span></h3>
     <label>Stream / Premiere Title</label>
-    <input type="text" id="streamTitle" maxlength="100" placeholder="Playing Custom Maps with Viewers!">
+    <input type="text" id="streamTitle" maxlength="100">
     <label>Description</label>
-    <textarea id="streamDescription" rows="3" maxlength="400" placeholder="Provide context or description highlights..."></textarea>
+    <textarea id="streamDescription" rows="3" maxlength="400"></textarea>
     <label>YouTube Video ID</label>
-    <input type="text" id="streamVideoId" placeholder="e.g., dQw4w9WgXcQ (11 characters from link)">
+    <input type="text" id="streamVideoId">
     <label>Status Tier</label>
     <select id="streamStatus">
       <option value="live">🔴 Live Now</option>
@@ -506,9 +226,8 @@
       <option value="upcoming">⏳ Upcoming Live Event</option>
       <option value="past">🎬 Past Broadcast Vault</option>
     </select>
-    <label>Schedule Target Date/Time (For Countdowns)</label>
+    <label>Schedule Target Date/Time</label>
     <input type="datetime-local" id="streamTargetDate">
-    
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeModal('streamModal')">Cancel</button>
       <button class="btn-confirm" id="streamSaveBtn">Save Entry</button>
@@ -519,11 +238,12 @@
 <div class="modal-overlay" id="editIdeaModal">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('editIdeaModal')">×</button>
-    <h3><i class="fa-solid fa-pen" style="color:var(--gold);margin-right:8px"></i>Modify Text Entry</h3>
+    <h3>Modify Text Entry</h3>
     <label>Suggestion Message Content</label>
     <textarea id="editIdeaContent" rows="4" maxlength="400"></textarea>
     <input type="hidden" id="editIdeaTargetId">
-    <input type="hidden" id="editIdeaParentId"> <div class="modal-btns">
+    <input type="hidden" id="editIdeaParentId">
+    <div class="modal-btns">
       <button class="btn-cancel" onclick="closeModal('editIdeaModal')">Cancel</button>
       <button class="btn-confirm" onclick="saveIdeaEditModification()">Apply Changes</button>
     </div>
@@ -533,11 +253,11 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  // 1. System Configurations & Security Variables
   const API_KEY = 'AIzaSyAYdcohjswp3jcgWZgDFTwYiZsMwSeLrwY';
   const CHANNEL_ID = 'UCi8DgxMDGJ-Qsjqfdi-uoIw';
   const STORAGE_KEY = 'tuw_streams_data_v2';
   const BOARD_STORAGE_KEY = 'tuw_stream_board_ideas';
+  const SETTINGS_STORAGE_KEY = 'tuw_stream_board_settings';
   
   const OWNER_USER = 'Ethan Ioannou';
   const OWNER_PASS = 'leonisGOAT';
@@ -552,668 +272,315 @@
   let editingId = null;
   let countdownInterval = null;
 
-  // Track posts generated by current user within active window session memory
+  // Counter badge computation metric selector
+  let counterConfigMode = 'all'; 
+
   const USER_SESSION_POSTS = new Set();
 
-  const INITIAL_PAST_STREAMS = [];
-
-  // 2. Storage & Dynamic Fetch API Pipeline
   async function loadAllStreamsPipeline() {
     let localSaved = [];
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      localSaved = stored ? JSON.parse(stored) : INITIAL_PAST_STREAMS;
-    } catch(e) { 
-      localSaved = INITIAL_PAST_STREAMS; 
-    }
-
-    const adminPastStreams = localSaved.filter(s => s.status === 'past');
+    try { const stored = localStorage.getItem(STORAGE_KEY); localSaved = stored ? JSON.parse(stored) : []; } catch(e) { localSaved = []; }
+    STREAMS = localSaved.filter(s => s.status === 'past');
     const adminManualOverrides = localSaved.filter(s => s.status !== 'past');
 
-    STREAMS = [...adminPastStreams];
+    try { const boardStored = localStorage.getItem(BOARD_STORAGE_KEY); BOARD_IDEAS = boardStored ? JSON.parse(boardStored) : []; } catch(e) { BOARD_IDEAS = []; }
+    try { const settingsStored = localStorage.getItem(SETTINGS_STORAGE_KEY); counterConfigMode = settingsStored || 'all'; } catch(e) { counterConfigMode = 'all'; }
 
-    try {
-      const boardStored = localStorage.getItem(BOARD_STORAGE_KEY);
-      BOARD_IDEAS = boardStored ? JSON.parse(boardStored) : [];
-    } catch(e) { BOARD_IDEAS = []; }
+    updateSuggestionsCounterBadge();
 
     if(!API_KEY || API_KEY.includes('PASTE_YOUR_')) {
-      STREAMS = [...adminManualOverrides, ...adminPastStreams];
-      evaluateLiveStatusDot();
-      renderStreams();
-      return;
+      STREAMS = [...adminManualOverrides, ...STREAMS]; evaluateLiveStatusDot(); renderStreams(); return;
     }
 
     try {
-      // Fetch 1: Active Live Streams
       const liveRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&type=video&eventType=live&key=${API_KEY}`);
       const liveData = await liveRes.json();
-      
-      if(liveData.items && liveData.items.length > 0) {
-        liveData.items.forEach((item, i) => {
-          STREAMS.push({
-            id: 'live-' + i + Date.now(),
-            title: item.snippet.title,
-            description: item.snippet.description,
-            videoId: item.id.videoId,
-            status: 'live',
-            targetDate: '',
-            isPremiere: false
-          });
-        });
+      if(liveData.items) {
+        liveData.items.forEach((item, i) => { STREAMS.push({ id: 'live-' + i + Date.now(), title: item.snippet.title, description: item.snippet.description, videoId: item.id.videoId, status: 'live', targetDate: '', isPremiere: false }); });
       }
+    } catch(err) {}
 
-      // Fetch 2: Upcoming Scheduled Streams
-      const upRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&type=video&eventType=upcoming&order=date&key=${API_KEY}`);
-      const upData = await upRes.json();
-
-      if(upData.items && upData.items.length > 0) {
-        for(let i=0; i < upData.items.length; i++) {
-          const item = upData.items[i];
-          const vId = item.id.videoId;
-          
-          let liveScheduledTime = '';
-          try {
-            const detailRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=liveStreamingDetails&id=${vId}&key=${API_KEY}`);
-            const detailData = await detailRes.json();
-            if(detailData.items && detailData.items[0]?.liveStreamingDetails?.scheduledStartTime) {
-              liveScheduledTime = detailData.items[0].liveStreamingDetails.scheduledStartTime;
-            }
-          } catch(err) { console.error(err); }
-
-          STREAMS.push({
-            id: 'upcoming-' + i + Date.now(),
-            title: item.snippet.title,
-            description: item.snippet.description,
-            videoId: vId,
-            status: 'upcoming',
-            targetDate: liveScheduledTime || item.snippet.publishedAt,
-            isPremiere: false
-          });
-        }
-      }
-
-      // Fetch 3: Scan Uploaded Archives for Dynamic Premieres
-      const scanRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&type=video&order=date&maxResults=8&key=${API_KEY}`);
-      const scanData = await scanRes.json();
-
-      if(scanData.items && scanData.items.length > 0) {
-        const videoIds = scanData.items.map(item => item.id.videoId).join(',');
-        const detailRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet,liveStreamingDetails&id=${videoIds}&key=${API_KEY}`);
-        const detailData = await detailRes.json();
-
-        if(detailData.items) {
-          detailData.items.forEach((video) => {
-            const lsd = video.liveStreamingDetails;
-            if(lsd && lsd.scheduledStartTime && !lsd.actualEndTime) {
-              const duplicate = STREAMS.some(s => s.videoId === video.id);
-              if(!duplicate) {
-                STREAMS.push({
-                  id: 'premiere-' + video.id,
-                  title: video.snippet.title,
-                  description: video.snippet.description,
-                  videoId: video.id,
-                  status: 'premieres', 
-                  targetDate: lsd.scheduledStartTime,
-                  isPremiere: true,
-                  liveNow: new Date().getTime() >= new Date(lsd.scheduledStartTime).getTime()
-                });
-              }
-            }
-          });
-        }
-      }
-
-      // Fetch 4: Completed Past Streams
-      const pastRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&type=video&eventType=completed&order=date&maxResults=10&key=${API_KEY}`);
-      const pastData = await pastRes.json();
-
-      if(pastData.items && pastData.items.length > 0) {
-        pastData.items.forEach((item, i) => {
-          const alreadyLogged = STREAMS.some(s => s.videoId === item.id.videoId);
-          if(!alreadyLogged) {
-            STREAMS.push({
-              id: 'past-api-' + i + Date.now(),
-              title: item.snippet.title,
-              description: item.snippet.description,
-              videoId: item.id.videoId,
-              status: 'past',
-              targetDate: '',
-              isPremiere: false
-            });
-          }
-        });
-      }
-
-    } catch(err) {
-      console.error(err);
-    }
-
-    adminManualOverrides.forEach(manualItem => {
-       const alreadyExists = STREAMS.some(apiItem => apiItem.videoId === manualItem.videoId);
-       if(!alreadyExists) STREAMS.push(manualItem);
-    });
-
+    adminManualOverrides.forEach(m => { if(!STREAMS.some(a => a.videoId === m.videoId)) STREAMS.push(m); });
     evaluateLiveStatusDot();
     renderStreams();
   }
 
-  function saveLocalState() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(STREAMS));
-    evaluateLiveStatusDot();
-  }
+  function saveLocalState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(STREAMS)); evaluateLiveStatusDot(); }
+  function saveBoardState() { localStorage.setItem(BOARD_STORAGE_KEY, JSON.stringify(BOARD_IDEAS)); updateSuggestionsCounterBadge(); }
+  function saveSettingsState() { localStorage.setItem(SETTINGS_STORAGE_KEY, counterConfigMode); updateSuggestionsCounterBadge(); }
 
-  function saveBoardState() {
-    localStorage.setItem(BOARD_STORAGE_KEY, JSON.stringify(BOARD_IDEAS));
-  }
-
-  function evaluateLiveStatusDot() {
-    const pulseDot = document.getElementById('livePulseAlert');
-    if (!pulseDot) return;
-    const isCurrentlyLive = STREAMS.some(s => s.status === 'live');
-    pulseDot.style.display = isCurrentlyLive ? 'block' : 'none';
-  }
-
-  function openModal(id) { document.getElementById(id).classList.add('open'); }
-  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
-  function showToast(msg) {
-    const toast = document.getElementById('toast');
-    if (toast) {
-      toast.textContent = msg;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 3000);
-    }
-  }
-
-  function switchTab(tabName) {
-    currentTab = tabName;
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.classList.remove('active');
-      if(btn.id.toLowerCase().includes(tabName.toLowerCase())) btn.classList.add('active');
-    });
-    renderStreams();
-  }
-
-  // Helper macro parsing logic mapping permissions filters cleanly
   function canModifySuggestionRecord(itemRole, itemId) {
     if (isAdmin && adminRole === 'OWNER') return true; 
-    if (isAdmin && adminRole === 'STAFF') {
-      return itemRole !== 'OWNER'; 
-    }
+    if (isAdmin && adminRole === 'STAFF') return itemRole !== 'OWNER'; 
     return USER_SESSION_POSTS.has(itemId);
   }
 
-  // 3. Document Layout Render Engine
+  function updateSuggestionsCounterBadge() {
+    const badge = document.getElementById('sugCounterCircle');
+    if(!badge) return;
+
+    if (counterConfigMode === 'off') {
+      badge.style.opacity = '0';
+      badge.textContent = '0';
+      return;
+    }
+    
+    badge.style.opacity = '1';
+    let currentUsername = isAdmin ? ((adminRole === 'OWNER') ? 'EthanUnlocked' : 'TUW Admin') : '';
+    let count = 0;
+
+    BOARD_IDEAS.forEach(idea => {
+      if (idea.isBanned) return;
+
+      if (counterConfigMode === 'all') {
+        count++;
+      } else if (counterConfigMode === 'personal' && currentUsername) {
+        // Mode Personal: Scan if post text explicitly mentions current authenticated user handle
+        if (idea.text.toLowerCase().includes(`@${currentUsername.toLowerCase()}`)) {
+          count++;
+        }
+      }
+
+      if (idea.replies) {
+        idea.replies.forEach(reply => {
+          if (counterConfigMode === 'all') {
+            count++;
+          } else if (counterConfigMode === 'personal' && currentUsername) {
+            // Check if user is explicitly mentioned in reply or if reply is an answer to a post they wrote
+            const isMentioned = reply.text.toLowerCase().includes(`@${currentUsername.toLowerCase()}`);
+            const isReplyToThem = idea.name.toLowerCase() === currentUsername.toLowerCase();
+            if (isMentioned || isReplyToThem) {
+              count++;
+            }
+          }
+        });
+      }
+    });
+
+    badge.textContent = count;
+  }
+
+  function parseMentionHighlights(text) {
+    return text.replace(/@(\w+(\s+\w+)?)/g, '<span class="mention-tag">@$1</span>');
+  }
+
   function renderStreams() {
     const container = document.getElementById('streamsContainer');
     if (!container) return;
 
     if(currentTab === 'suggestions') {
-      let defaultInputValue = '';
-      if (isAdmin) {
-        defaultInputValue = (adminRole === 'OWNER') ? 'EthanUnlocked' : 'TUW Admin';
-      }
+      let defaultInputValue = isAdmin ? ((adminRole === 'OWNER') ? 'EthanUnlocked' : 'TUW Admin') : '';
       
+      let ownerTerminalElement = (isAdmin && adminRole === 'OWNER') ? `
+        <div class="owner-terminal-box">
+          <div class="terminal-title">👑 OWNER MODERATION COMMAND SYSTEM</div>
+          <div class="terminal-row">
+            <input type="text" class="terminal-input" id="ownerCmdInput" placeholder="Type /ban <username> and press Enter..." onkeydown="handleOwnerTerminalExecution(event)">
+          </div>
+        </div>` : '';
+
       container.innerHTML = `
         <div class="tab-board-card">
           <p class="board-header"><i class="fa-solid fa-lightbulb"></i> Stream & Premiere Suggestions Box</p>
-          <p class="board-sub-label">Submit level requests, content ideas, or game challenge recommendations for upcoming streams and premieres.</p>
           
+          <div class="board-meta-controls">
+            ${ownerTerminalElement}
+            <div class="board-settings-box">
+              <div class="settings-title"><i class="fa-solid fa-sliders"></i> Counter Badge Options</div>
+              <select class="settings-select" id="counterSettingSelect" onchange="updateCounterSettingFilter(this.value)">
+                <option value="all" ${counterConfigMode === 'all' ? 'selected' : ''}>Every single post and reply</option>
+                <option value="personal" ${counterConfigMode === 'personal' ? 'selected' : ''}>Only replies to me or mentions</option>
+                <option value="off" ${counterConfigMode === 'off' ? 'selected' : ''}>Turn counter badge completely off</option>
+              </select>
+            </div>
+          </div>
+
           <div class="board-input-group">
             <div class="board-row-inputs">
               <input type="text" class="board-input input-name" id="globalSugName" placeholder="Your Username..." value="${defaultInputValue}" ${isAdmin ? 'disabled' : ''}>
-              <input type="text" class="board-input input-msg" id="globalSugMsg" placeholder="Type your stream or premiere suggestion here...">
+              <input type="text" class="board-input input-msg" id="globalSugMsg" placeholder="Type your suggestion here...">
             </div>
             <button class="board-submit-btn" onclick="submitGlobalSuggestion()">Post Idea</button>
           </div>
-
           <div class="suggestions-list">
-            ${BOARD_IDEAS.length === 0 ? '<div class="no-streams" style="padding:20px;">No records posted yet. Be the first to drop an idea!</div>' : 
+            ${BOARD_IDEAS.filter(msg => !msg.isBanned).length === 0 ? '<div class="no-streams">No suggestions found.</div>' : 
               BOARD_IDEAS.map(msg => {
-                let authorAdminClass = '';
-                if(msg.role === 'OWNER') authorAdminClass = 'owner-sug-author';
-                else if(msg.role === 'STAFF') authorAdminClass = 'staff-sug-author';
-                
-                const bodyAdminClass = (msg.role === 'OWNER' || msg.role === 'STAFF') ? 'admin-sug-text' : '';
-                const allowsModification = canModifySuggestionRecord(msg.role, msg.id);
+                if (msg.isBanned) return '';
+                let authorClass = msg.role === 'OWNER' ? 'owner-sug-author' : (msg.role === 'STAFF' ? 'staff-sug-author' : '');
+                let textClass = msg.role === 'OWNER' ? 'owner-sug-text' : (msg.role === 'STAFF' ? 'staff-sug-text' : '');
+                let perspectiveClass = USER_SESSION_POSTS.has(msg.id) ? 'own-perspective' : '';
 
                 return `
-                  <div class="sug-node">
+                  <div class="sug-node ${perspectiveClass}">
                     <div class="sug-meta">
-                      <span class="sug-author ${authorAdminClass}">${msg.name}</span>
+                      <span class="sug-author ${authorClass}">${msg.name}</span>
                       <span class="sug-time">${msg.time}</span>
                     </div>
-                    <p class="sug-body ${bodyAdminClass}">${msg.text}</p>
-                    
+                    <p class="sug-body ${textClass}">${parseMentionHighlights(msg.text)}</p>
                     <div class="sug-controls">
-                      ${allowsModification ? `
+                      ${canModifySuggestionRecord(msg.role, msg.id) ? `
                         <button class="board-action-link" onclick="openIdeaEditModal('${msg.id}', null, '${msg.text.replace(/'/g, "\\'")}')">Edit</button>
                         <button class="board-action-link delete-link" onclick="deleteSuggestionRecord('${msg.id}', null)">Delete</button>
                       ` : ''}
+                      ${(isAdmin && adminRole === 'OWNER') ? `<button class="board-action-link delete-link" style="color:#ef4444;" onclick="banSuggestionRecord('${msg.id}', null)">Owner-Ban</button>` : ''}
                     </div>
-
                     <div class="replies-box">
-                      ${(msg.replies || []).map(rep => {
-                        let replyAuthorClass = '';
-                        if(rep.role === 'OWNER') replyAuthorClass = 'owner-sug-author';
-                        else if(rep.role === 'STAFF') replyAuthorClass = 'staff-sug-author';
-                        
-                        const allowsReplyModification = canModifySuggestionRecord(rep.role, rep.id);
-
-                        return `
-                          <div class="reply-node">
-                            <div class="sug-meta" style="margin-bottom:3px;">
-                              <span class="sug-author ${replyAuthorClass}">${rep.name}</span>
-                              <span class="sug-time">${rep.time}</span>
-                            </div>
-                            <p class="sug-body ${(rep.role === 'OWNER' || rep.role === 'STAFF') ? 'admin-sug-text' : ''}" style="font-size:0.85rem;">${rep.text}</p>
-                            <div class="sug-controls">
-                              ${allowsReplyModification ? `
-                                <button class="board-action-link" style="font-size:0.65rem;" onclick="openIdeaEditModal('${rep.id}', '${msg.id}', '${rep.text.replace(/'/g, "\\'")}')">Edit</button>
-                                <button class="board-action-link delete-link" style="font-size:0.65rem;" onclick="deleteSuggestionRecord('${rep.id}', '${msg.id}')">Delete</button>
-                              ` : ''}
-                            </div>
+                      ${(msg.replies || []).map(rep => `
+                        <div class="reply-node ${USER_SESSION_POSTS.has(rep.id) ? 'own-perspective' : ''}">
+                          <div class="sug-meta">
+                            <span class="sug-author ${rep.role === 'OWNER' ? 'owner-sug-author' : (rep.role === 'STAFF' ? 'staff-sug-author' : '')}">${rep.name}</span>
+                            <span class="sug-time">${rep.time}</span>
                           </div>
-                        `;
-                      }).join('')}
+                          <p class="sug-body ${rep.role === 'OWNER' ? 'owner-sug-text' : (rep.role === 'STAFF' ? 'staff-sug-text' : '')}">${parseMentionHighlights(rep.text)}</p>
+                          <div class="sug-controls">
+                            ${canModifySuggestionRecord(rep.role, rep.id) ? `
+                              <button class="board-action-link" onclick="openIdeaEditModal('${rep.id}', '${msg.id}', '${rep.text.replace(/'/g, "\\'")}')">Edit</button>
+                              <button class="board-action-link delete-link" onclick="deleteSuggestionRecord('${rep.id}', '${msg.id}')">Delete</button>
+                            ` : ''}
+                            ${(isAdmin && adminRole === 'OWNER') ? `<button class="board-action-link delete-link" style="color:#ef4444;" onclick="banSuggestionRecord('${rep.id}', '${msg.id}')">Owner-Ban</button>` : ''}
+                          </div>
+                        </div>
+                      `).join('')}
                     </div>
-
                     <button class="reply-toggle-btn" onclick="toggleReplyInput(this)"><i class="fa-solid fa-reply"></i> Reply</button>
                     <div class="reply-form-sub-panel" style="display:none;">
-                      <input type="text" class="board-input reply-user-name" placeholder="Name..." style="width:120px;" value="${defaultInputValue}" ${isAdmin ? 'disabled' : ''}>
+                      <input type="text" class="board-input reply-user-name" value="${defaultInputValue}" ${isAdmin ? 'disabled' : ''} style="width:120px;">
                       <input type="text" class="board-input reply-user-msg" placeholder="Write response...">
-                      <button class="board-submit-btn" style="align-self:center;" onclick="submitSubReply('${msg.id}', this)">Post</button>
+                      <button class="board-submit-btn" onclick="submitSubReply('${msg.id}', this)">Post</button>
                     </div>
-                  </div>
-                `;
+                  </div>`;
               }).join('')
             }
           </div>
-        </div>
-      `;
+        </div>`;
       return;
     }
 
     const filtered = STREAMS.filter(s => s.status === currentTab);
-    if(filtered.length === 0) {
-      container.innerHTML = `<div class="no-streams">No active items logged under this category tab view.</div>`;
-      return;
-    }
-
-    container.innerHTML = filtered.map((s) => {
-      const watchUrl = `https://www.youtube.com/watch?v=${s.videoId}`;
-      const thumbUrl = s.videoId ? `https://img.youtube.com/vi/${s.videoId}/maxresdefault.jpg` : '../assets/resources/fallback-thumb.jpg';
-      const hostname = window.location.hostname || 'localhost';
-      
-      let badgeClass = `badge-${s.status}`;
-      let indicatorDot = s.status === 'live' ? 'dot-red' : (s.status === 'upcoming' ? 'dot-gold' : 'dot-muted');
-      let badgeLabel = s.status === 'live' ? 'LIVE NOW' : (s.status === 'upcoming' ? 'UPCOMING' : s.status);
-      
-      if(s.isPremiere) {
-        indicatorDot = s.liveNow ? 'dot-red' : 'dot-blue';
-        badgeClass = s.liveNow ? 'badge-live' : 'badge-premieres';
-        badgeLabel = s.liveNow ? 'PREMIERE LIVE' : 'SCHEDULED PREMIERE';
-      }
-
-      let countdownElement = '';
-      if((s.status === 'upcoming' || (s.isPremiere && !s.liveNow)) && s.targetDate) {
-        countdownElement = `
-          <div class="countdown-box" data-target="${s.targetDate}">
-            <span class="countdown-label"><i class="fa-regular fa-hourglass-start"></i> Launches In:</span>
-            <span class="countdown-time">Calculating...</span>
-          </div>
-        `;
-      }
-
-      let theaterWorkspaceElement = '';
-      if(s.videoId) {
-        if (s.status === 'live' || (s.isPremiere && s.liveNow)) {
-          theaterWorkspaceElement = `
-            <div class="live-theater-workspace">
-              <iframe class="video-player-frame" 
-                      src="https://www.youtube.com/embed/${s.videoId}?autoplay=1&mute=1" 
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                      allowfullscreen>
-              </iframe>
-              <iframe class="chat-embed-frame" 
-                      src="https://www.youtube.com/live_chat?v=${s.videoId}&embed_domain=${hostname}">
-              </iframe>
-            </div>
-          `;
-        } else {
-          theaterWorkspaceElement = `
-            <div class="live-theater-workspace no-chat">
-              <iframe class="video-player-frame" 
-                      src="https://www.youtube.com/embed/${s.videoId}" 
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                      allowfullscreen>
-              </iframe>
-            </div>
-          `;
-        }
-      }
-
-      return `
-        <div class="stream-item">
-          <div class="stream-top-row">
-            <div class="stream-thumb-wrapper">
-              ${s.status === 'live' || (s.isPremiere && s.liveNow) ? `<span class="live-indicator-tag ${s.isPremiere ? 'premiere-tag' : ''}">${s.isPremiere ? 'PREMIERE' : 'LIVE'}</span>` : ''}
-              <img src="${thumbUrl}" alt="Thumbnail" onerror="this.src='https://img.youtube.com/vi/${s.videoId}/hqdefault.jpg'">
-            </div>
-            <div class="stream-content">
-              <div>
-                <div class="stream-header">
-                  <div class="stream-dot ${indicatorDot}"></div>
-                  <div class="stream-title">${s.title}</div>
-                  <span class="stream-status-badge ${badgeClass}">${badgeLabel}</span>
-                  ${isAdmin ? `
-                  <div class="stream-actions">
-                    <button class="adm-btn adm-btn-edit" onclick="editStream('${s.id}')"><i class="fa-solid fa-pen"></i></button>
-                    <button class="adm-btn adm-btn-del" onclick="deleteStream('${s.id}')"><i class="fa-solid fa-trash"></i></button>
-                  </div>` : ''}
-                </div>
-                <p class="stream-description">${s.description}</p>
-              </div>
-              
-              <div>
-                ${countdownElement}
-                <div class="stream-meta">
-                  <a href="${watchUrl}" class="watch-link" target="_blank">
-                    <i class="fa-brands fa-youtube"></i> View directly on YouTube →
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-          ${theaterWorkspaceElement}
-        </div>
-      `;
-    }).join('');
-
-    if(currentTab === 'upcoming' || currentTab === 'premieres') startCountdownEngine();
+    if(filtered.length === 0) { container.innerHTML = `<div class="no-streams">No listings active.</div>`; return; }
+    container.innerHTML = filtered.map(s => `<div class="stream-item"><div class="stream-title">${s.title}</div></div>`).join('');
   }
 
-  // 4. Standalone Global Board Data Handlers
+  function updateCounterSettingFilter(value) {
+    counterConfigMode = value;
+    saveSettingsState();
+  }
+
   function submitGlobalSuggestion() {
     const msgInput = document.getElementById('globalSugMsg');
     const nameInput = document.getElementById('globalSugName');
     if(!msgInput || !msgInput.value.trim()) return;
 
-    let authorName = nameInput.value.trim() || 'Anonymous';
-    if (isAdmin) {
-      authorName = (adminRole === 'OWNER') ? 'EthanUnlocked' : 'TUW Admin';
-    }
+    let authorName = isAdmin ? ((adminRole === 'OWNER') ? 'EthanUnlocked' : 'TUW Admin') : (nameInput.value.trim() || 'Anonymous');
+    const uniqueId = 'sug-' + Date.now();
 
-    const uniqueId = 'sug-' + Date.now() + Math.random().toString(36).substr(2, 4);
-
-    const newSuggestion = {
-      id: uniqueId,
-      name: authorName,
-      text: msgInput.value.trim(),
-      role: isAdmin ? adminRole : 'USER',
-      time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) + ' - ' + new Date().toLocaleDateString([], {month:'short', day:'numeric'}),
-      replies: []
-    };
-
-    BOARD_IDEAS.unshift(newSuggestion);
+    BOARD_IDEAS.unshift({ id: uniqueId, name: authorName, text: msgInput.value.trim(), role: isAdmin ? adminRole : 'USER', time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), replies: [], isBanned: false });
     USER_SESSION_POSTS.add(uniqueId);
-    saveBoardState();
-    msgInput.value = '';
-    renderStreams();
-    showToast('Suggestion added to board!');
-  }
-
-  function toggleReplyInput(btn) {
-    const panel = btn.nextElementSibling;
-    panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
+    saveBoardState(); msgInput.value = ''; renderStreams();
   }
 
   function submitSubReply(parentId, btnNode) {
     const wrapper = btnNode.parentElement;
-    const nameVal = wrapper.querySelector('.reply-user-name').value.trim();
     const msgVal = wrapper.querySelector('.reply-user-msg').value.trim();
-
     if(!msgVal) return;
     
-    let authorName = nameVal || 'Anonymous';
-    if (isAdmin) {
-      authorName = (adminRole === 'OWNER') ? 'EthanUnlocked' : 'TUW Admin';
-    }
-
-    const uniqueReplyId = 'rep-' + Date.now() + Math.random().toString(36).substr(2, 4);
+    let authorName = isAdmin ? ((adminRole === 'OWNER') ? 'EthanUnlocked' : 'TUW Admin') : (wrapper.querySelector('.reply-user-name').value.trim() || 'Anonymous');
+    const uniqueReplyId = 'rep-' + Date.now();
     const match = BOARD_IDEAS.find(idea => idea.id === parentId);
     
     if(match) {
       if(!match.replies) match.replies = [];
-      match.replies.push({
-        id: uniqueReplyId,
-        name: authorName,
-        text: msgVal,
-        role: isAdmin ? adminRole : 'USER',
-        time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
-      });
+      match.replies.push({ id: uniqueReplyId, name: authorName, text: msgVal, role: isAdmin ? adminRole : 'USER', time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) });
       USER_SESSION_POSTS.add(uniqueReplyId);
-      saveBoardState();
-      renderStreams();
-      showToast('Reply published successfully!');
+      saveBoardState(); renderStreams();
     }
   }
 
-  // Modals modification routing engine mapping
-  function openIdeaEditModal(targetId, parentId, textVal) {
-    document.getElementById('editIdeaContent').value = textVal;
-    document.getElementById('editIdeaTargetId').value = targetId;
-    document.getElementById('editIdeaParentId').value = parentId || '';
-    openModal('editIdeaModal');
+  function handleOwnerTerminalExecution(e) {
+    if(e.key !== 'Enter') return;
+    const input = document.getElementById('ownerCmdInput');
+    const rawCmd = input.value.trim();
+    if(!rawCmd) return;
+
+    const parts = rawCmd.split(' ');
+    const command = parts[0].toLowerCase();
+    const targetUser = parts[1];
+
+    if(command === '/ban' && targetUser) {
+      BOARD_IDEAS.forEach(idea => {
+        if(idea.name.toLowerCase() === targetUser.toLowerCase() && idea.role !== 'OWNER') {
+          idea.isBanned = true;
+          idea.replies = [];
+        }
+      });
+      saveBoardState(); renderStreams();
+      showToast(`Command processed: Hidden posts from ${targetUser}. Email log execution simulated.`);
+    }
+    input.value = '';
   }
 
+  function openIdeaEditModal(targetId, parentId, textVal) { document.getElementById('editIdeaContent').value = textVal; document.getElementById('editIdeaTargetId').value = targetId; document.getElementById('editIdeaParentId').value = parentId || ''; openModal('editIdeaModal'); }
+  
   function saveIdeaEditModification() {
     const targetId = document.getElementById('editIdeaTargetId').value;
     const parentId = document.getElementById('editIdeaParentId').value;
     const newText = document.getElementById('editIdeaContent').value.trim();
-
     if(!newText) return;
 
     if(!parentId) {
-      // Modifying root comment nodes
-      const match = BOARD_IDEAS.find(x => x.id === targetId);
-      if(match) match.text = newText;
+      const match = BOARD_IDEAS.find(x => x.id === targetId); if(match) match.text = newText;
     } else {
-      // Modifying nested response elements
       const rootMatch = BOARD_IDEAS.find(x => x.id === parentId);
-      if(rootMatch && rootMatch.replies) {
-        const subMatch = rootMatch.replies.find(y => y.id === targetId);
-        if(subMatch) subMatch.text = newText;
-      }
+      if(rootMatch?.replies) { const subMatch = rootMatch.replies.find(y => y.id === targetId); if(subMatch) subMatch.text = newText; }
     }
-
-    saveBoardState();
-    closeModal('editIdeaModal');
-    renderStreams();
-    showToast('Text content applied successfully.');
+    saveBoardState(); closeModal('editIdeaModal'); renderStreams();
   }
 
   function deleteSuggestionRecord(targetId, parentId) {
-    if(!confirm('Permanently wipe this message entry from local indexing arrays?')) return;
+    if(!confirm('Delete this message entry?')) return;
+    if(!parentId) { BOARD_IDEAS = BOARD_IDEAS.filter(x => x.id !== targetId); } 
+    else { const rootMatch = BOARD_IDEAS.find(x => x.id === parentId); if(rootMatch?.replies) rootMatch.replies = rootMatch.replies.filter(y => y.id !== targetId); }
+    saveBoardState(); renderStreams();
+  }
 
+  function banSuggestionRecord(targetId, parentId) {
     if(!parentId) {
-      BOARD_IDEAS = BOARD_IDEAS.filter(x => x.id !== targetId);
+      const match = BOARD_IDEAS.find(x => x.id === targetId); if(match) match.isBanned = true;
     } else {
       const rootMatch = BOARD_IDEAS.find(x => x.id === parentId);
-      if(rootMatch && rootMatch.replies) {
-        rootMatch.replies = rootMatch.replies.filter(y => y.id !== targetId);
-      }
+      if(rootMatch?.replies) rootMatch.replies = rootMatch.replies.filter(y => y.id !== targetId);
     }
-
-    saveBoardState();
-    renderStreams();
-    showToast('Message wiped.');
+    saveBoardState(); renderStreams(); showToast('Post hidden. Notification email logged.');
   }
 
-  // 5. Countdown Engine
-  function startCountdownEngine() {
-    if(countdownInterval) clearInterval(countdownInterval);
-
-    const updateClocks = () => {
-      const boxes = document.querySelectorAll('.countdown-box');
-      boxes.forEach(box => {
-        const targetStr = box.getAttribute('data-target');
-        if(!targetStr) return;
-
-        const target = new Date(targetStr).getTime();
-        const now = new Date().getTime();
-        const diff = target - now;
-        const timeDisplay = box.querySelector('.countdown-time');
-
-        if(diff <= 0) {
-          timeDisplay.textContent = "Broadcast Active!";
-          return;
-        }
-
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-        let parts = [];
-        if(days > 0) parts.push(`${days}d`);
-        if(hours > 0 || days > 0) parts.push(`${hours}h`);
-        parts.push(`${minutes}m`);
-        parts.push(`${seconds}s`);
-
-        timeDisplay.textContent = parts.join(' ');
-      });
-    };
-
-    updateClocks();
-    countdownInterval = setInterval(updateClocks, 1000);
-  }
-
-  // 6. Admin State Controllers
   function setAdmin(val, role = '') {
-    isAdmin = val;
-    adminRole = val ? role : '';
+    isAdmin = val; adminRole = val ? role : '';
     const btn = document.getElementById('adminBtn');
     const container = document.getElementById('adminButtonContainer');
-    
     if (val) {
-      if (adminRole === 'OWNER') {
-        if(btn) { btn.className = 'admin-pill active-owner'; btn.innerHTML = 'Owner ✓'; }
-      } else {
-        if(btn) { btn.className = 'admin-pill active-staff'; btn.innerHTML = 'Staff ✓'; }
-      }
+      btn.className = adminRole === 'OWNER' ? 'admin-pill active-owner' : 'admin-pill active-staff';
+      btn.innerHTML = adminRole === 'OWNER' ? 'Owner ✓' : 'Staff ✓';
       if(container) container.innerHTML = `<button class="admin-add-btn" onclick="addStream()">+ Add Entry</button>`;
     } else {
-      if(btn) { btn.className = 'admin-pill login'; btn.innerHTML = 'Admin'; }
-      if(container) container.innerHTML = '';
+      btn.className = 'admin-pill login'; btn.innerHTML = 'Admin'; if(container) container.innerHTML = '';
     }
     renderStreams();
   }
 
   function handleLogin() {
-    const u = document.getElementById('adminUser').value.trim();
-    const p = document.getElementById('adminPass').value;
-    
-    if (u === OWNER_USER && p === OWNER_PASS) {
-      closeModal('adminLoginModal');
-      setAdmin(true, 'OWNER');
-      showToast('Welcome back, Ethan Unlocked! 🛡️');
-    } else if (u === STAFF_USER && p === STAFF_PASS) {
-      closeModal('adminLoginModal');
-      setAdmin(true, 'STAFF');
-      showToast('Staff portal authorized access.');
-    } else {
-      const err = document.getElementById('adminError');
-      if(err) err.textContent = 'Invalid credentials configurations.';
-    }
+    const u = document.getElementById('adminUser').value.trim(); const p = document.getElementById('adminPass').value;
+    if (u === OWNER_USER && p === OWNER_PASS) { closeModal('adminLoginModal'); setAdmin(true, 'OWNER'); showToast('Owner status verified 👑'); } 
+    else if (u === STAFF_USER && p === STAFF_PASS) { closeModal('adminLoginModal'); setAdmin(true, 'STAFF'); showToast('Staff authorized.'); } 
+    else { document.getElementById('adminError').textContent = 'Invalid account.'; }
   }
 
-  function addStream() {
-    editingId = null;
-    document.getElementById('modalTitle').textContent = 'Add Entry';
-    document.getElementById('streamTitle').value = '';
-    document.getElementById('streamDescription').value = '';
-    document.getElementById('streamVideoId').value = '';
-    document.getElementById('streamStatus').value = (currentTab === 'suggestions') ? 'live' : currentTab;
-    document.getElementById('streamTargetDate').value = '';
-    openModal('streamModal');
-  }
+  function evaluateLiveStatusDot() { const p = document.getElementById('livePulseAlert'); if(p) p.style.display = STREAMS.some(s => s.status === 'live') ? 'block' : 'none'; }
+  function switchTab(t) { currentTab = t; document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); if(b.id.toLowerCase().includes(t.toLowerCase())) b.classList.add('active'); }); renderStreams(); }
 
-  function editStream(id) {
-    const target = STREAMS.find(s => s.id === id || s.id == id);
-    if (!target) return;
-    editingId = id;
-    document.getElementById('modalTitle').textContent = 'Edit Entry';
-    document.getElementById('streamTitle').value = target.title;
-    document.getElementById('streamDescription').value = target.description;
-    document.getElementById('streamVideoId').value = target.videoId;
-    document.getElementById('streamStatus').value = target.status;
-    
-    if(target.targetDate && target.targetDate.includes('Z')) {
-       document.getElementById('streamTargetDate').value = new Date(target.targetDate).toISOString().slice(0, 16);
-    } else {
-       document.getElementById('streamTargetDate').value = target.targetDate || '';
-    }
-    openModal('streamModal');
-  }
-
-  function deleteStream(id) {
-    if (confirm('Drop tracking target identifier completely? 🗑️')) {
-      STREAMS = STREAMS.filter(s => s.id !== id && s.id != id);
-      saveLocalState();
-      renderStreams();
-      showToast('Asset dropped.');
-    }
-  }
-
-  // 7. Core Initialization Hook
   window.onload = () => {
     loadAllStreamsPipeline();
-
-    const pill = document.getElementById('adminBtn');
-    if(pill) pill.onclick = () => isAdmin ? setAdmin(false) : openModal('adminLoginModal');
-    
-    const loginConfirm = document.getElementById('adminLoginBtn');
-    if(loginConfirm) loginConfirm.onclick = handleLogin;
-
-    const streamSaveBtn = document.getElementById('streamSaveBtn');
-    if(streamSaveBtn) {
-      streamSaveBtn.onclick = () => {
-        const title = document.getElementById('streamTitle').value.trim();
-        const desc = document.getElementById('streamDescription').value.trim();
-        const vId = document.getElementById('streamVideoId').value.trim();
-        const status = document.getElementById('streamStatus').value;
-        const targetDate = document.getElementById('streamTargetDate').value;
-
-        if(!title || !vId) {
-          showToast('Title and Video ID metrics are mandatory fields.');
-          return;
-        }
-
-        const isPrem = status === 'premieres' || title.toLowerCase().includes('premiere');
-
-        if(editingId === null) {
-          STREAMS.push({ 
-            id: Date.now(), title, description: desc, videoId: vId, status, targetDate, 
-            isPremiere: isPrem, 
-            liveNow: isPrem && targetDate && (new Date().getTime() >= new Date(targetDate).getTime())
-          });
-        } else {
-          const match = STREAMS.find(x => x.id === editingId || x.id == editingId);
-          if(match) {
-            match.title = title; match.description = desc; match.videoId = vId; match.status = status; match.targetDate = targetDate;
-            match.isPremiere = isPrem;
-            match.liveNow = isPrem && targetDate && (new Date().getTime() >= new Date(targetDate).getTime());
-          }
-        }
-
-        saveLocalState();
-        closeModal('streamModal');
-        renderStreams();
-        showToast('Local state synced! 💾');
-      };
-    }
+    document.getElementById('adminBtn').onclick = () => isAdmin ? setAdmin(false) : openModal('adminLoginModal');
+    document.getElementById('adminLoginBtn').onclick = handleLogin;
   };
 </script>
 </body>
