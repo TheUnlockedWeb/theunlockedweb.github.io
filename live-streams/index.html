@@ -177,12 +177,6 @@
     .badge-upcoming { background: rgba(245,158,11,.13); color: var(--gold); border: 1px solid rgba(245,158,11,.3); }
     .badge-completed { background: rgba(255,255,255,.05); color: var(--muted); border: 1px solid var(--border); }
 
-    .stream-actions { display: flex; gap: 8px; }
-
-    .stream-description {
-      font-size: 0.92rem; color: var(--sub); line-height: 1.5; margin-bottom: 12px;
-    }
-
     /* ── Live / Archive Theater Embed Workspace ────── */
     .live-theater-workspace {
       display: grid;
@@ -194,7 +188,6 @@
       border: 1px solid var(--border);
       background: #06060c;
     }
-    /* Past Streams layout fallback when chat is omitted */
     .live-theater-workspace.no-chat {
       grid-template-columns: 1fr;
     }
@@ -398,8 +391,8 @@
     <input type="text" id="streamVideoId" placeholder="e.g., dQw4w9WgXcQ (11 characters from link)">
     <label>Status Tier</label>
     <select id="streamStatus">
-      <option value="live">🔴 Live Now</option>
-      <option value="upcoming">⏳ Upcoming Event</option>
+      <option value="live">🔴 Live Now / Premiere Active</option>
+      <option value="upcoming">⏳ Upcoming Event / Scheduled Premiere</option>
       <option value="past">🎬 Past Broadcast Vault</option>
     </select>
     <label>Schedule Target Date/Time (For Countdowns)</label>
@@ -458,7 +451,7 @@
     }
 
     try {
-      // Fetch 1: Active Live Streams
+      // Fetch 1: Traditional Active Live Streams
       const liveRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&type=video&eventType=live&key=${API_KEY}`);
       const liveData = await liveRes.json();
       
@@ -470,12 +463,13 @@
             description: item.snippet.description,
             videoId: item.id.videoId,
             status: 'live',
-            targetDate: ''
+            targetDate: '',
+            isPremiere: false
           });
         });
       }
 
-      // Fetch 2: Upcoming Scheduled Streams
+      // Fetch 2: Upcoming Live Streams AND Upcoming scheduled Premieres
       const upRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&type=video&eventType=upcoming&order=date&key=${API_KEY}`);
       const upData = await upRes.json();
 
@@ -499,12 +493,68 @@
             description: item.snippet.description,
             videoId: vId,
             status: 'upcoming',
-            targetDate: liveScheduledTime || item.snippet.publishedAt
+            targetDate: liveScheduledTime || item.snippet.publishedAt,
+            isPremiere: false // Handled natively by YouTube's upcoming search endpoint mapping
           });
         }
       }
 
-      // Fetch 3: Completed Past Stream VOD Logs
+      // Fetch 3: Scan all channel public uploads to detect running Premieres (AIRING NOW)
+      const scanRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&type=video&order=date&maxResults=5&key=${API_KEY}`);
+      const scanData = await scanRes.json();
+
+      if(scanData.items && scanData.items.length > 0) {
+        const videoIds = scanData.items.map(item => item.id.videoId).join(',');
+        
+        // Deep verification check across active broadcast metadata structures
+        const detailRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet,liveStreamingDetails&id=${videoIds}&key=${API_KEY}`);
+        const detailData = await detailRes.json();
+
+        if(detailData.items) {
+          detailData.items.forEach((video) => {
+            const lsd = video.liveStreamingDetails;
+            // A Premiere is running LIVE if it has live details, a scheduled start time, but NO actual concurrent view count metric
+            if(lsd && lsd.scheduledStartTime && !lsd.actualEndTime) {
+              const rightNow = new Date().getTime();
+              const startTime = new Date(lsd.scheduledStartTime).getTime();
+              
+              const cleanTitle = `[PREMIERE] ${video.snippet.title}`;
+
+              // Determine if it belongs in Live Now vs Upcoming Scheduled
+              if(rightNow >= startTime) {
+                // Ensure duplicate entries do not clash if already caught by default stream engines
+                const duplicate = STREAMS.some(s => s.videoId === video.id);
+                if(!duplicate) {
+                  STREAMS.push({
+                    id: 'premiere-live-' + video.id,
+                    title: cleanTitle,
+                    description: video.snippet.description,
+                    videoId: video.id,
+                    status: 'live',
+                    targetDate: '',
+                    isPremiere: true
+                  });
+                }
+              } else {
+                const duplicate = STREAMS.some(s => s.videoId === video.id);
+                if(!duplicate) {
+                  STREAMS.push({
+                    id: 'premiere-up-' + video.id,
+                    title: cleanTitle,
+                    description: video.snippet.description,
+                    videoId: video.id,
+                    status: 'upcoming',
+                    targetDate: lsd.scheduledStartTime,
+                    isPremiere: true
+                  });
+                }
+              }
+            }
+          });
+        }
+      }
+
+      // Fetch 4: Completed Past Broadcast / Premiere Records
       const pastRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&type=video&eventType=completed&order=date&maxResults=10&key=${API_KEY}`);
       const pastData = await pastRes.json();
 
@@ -518,7 +568,8 @@
               description: item.snippet.description,
               videoId: item.id.videoId,
               status: 'past',
-              targetDate: ''
+              targetDate: '',
+              isPremiere: false
             });
           }
         });
@@ -553,25 +604,7 @@
   function openModal(id) { document.getElementById(id).classList.add('open'); }
   function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
-  function showToast(msg) {
-    const toast = document.getElementById('toast');
-    if (toast) {
-      toast.textContent = msg;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 3000);
-    }
-  }
-
-  function switchTab(tabName) {
-    currentTab = tabName;
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.classList.remove('active');
-      if(btn.id.toLowerCase().includes(tabName)) btn.classList.add('active');
-    });
-    renderStreams();
-  }
-
-  // 3. Document Stream DOM Generator Node Layout
+  // 3. Render Engine Component Layout
   function renderStreams() {
     const container = document.getElementById('streamsContainer');
     if (!container) return;
@@ -579,7 +612,7 @@
     const filtered = STREAMS.filter(s => s.status === currentTab);
 
     if(filtered.length === 0) {
-      container.innerHTML = `<div class="no-streams">No active stream slots logged under this category context.</div>`;
+      container.innerHTML = `<div class="no-streams">No active items located inside this studio tab view.</div>`;
       return;
     }
 
@@ -591,21 +624,24 @@
       let badgeClass = `badge-${s.status}`;
       let indicatorDot = s.status === 'live' ? 'dot-red' : (s.status === 'upcoming' ? 'dot-gold' : 'dot-muted');
       
+      let badgeLabel = s.status === 'live' ? 'LIVE NOW' : s.status;
+      if(s.isPremiere) {
+        badgeLabel = s.status === 'live' ? 'PREMIERE LIVE' : 'PREMIERE UPCOMING';
+      }
+
       let countdownElement = '';
       if(s.status === 'upcoming' && s.targetDate) {
         countdownElement = `
           <div class="countdown-box" data-target="${s.targetDate}">
-            <span class="countdown-label"><i class="fa-regular fa-hourglass-start"></i> Starts In:</span>
+            <span class="countdown-label"><i class="fa-regular fa-hourglass-start"></i> ${s.isPremiere ? 'Premiere' : 'Stream'} Starts In:</span>
             <span class="countdown-time">Calculating...</span>
           </div>
         `;
       }
 
-      // Dynamic Video Theater Workspace Embed for ALL Categories
       let theaterWorkspaceElement = '';
       if(s.videoId) {
         if (s.status === 'live') {
-          // Live Tab: Split view containing the player + active running live chat frame
           theaterWorkspaceElement = `
             <div class="live-theater-workspace">
               <iframe class="video-player-frame" 
@@ -619,7 +655,6 @@
             </div>
           `;
         } else {
-          // Upcoming and Past Tab: Embeds a full-width video player (removes live chat space since chat is historical or locked)
           theaterWorkspaceElement = `
             <div class="live-theater-workspace no-chat">
               <iframe class="video-player-frame" 
@@ -636,7 +671,7 @@
         <div class="stream-item">
           <div class="stream-top-row">
             <div class="stream-thumb-wrapper">
-              ${s.status === 'live' ? '<span class="live-indicator-tag">LIVE</span>' : ''}
+              ${s.status === 'live' ? `<span class="live-indicator-tag">${s.isPremiere ? 'PREMIERE' : 'LIVE'}</span>` : ''}
               <img src="${thumbUrl}" alt="Thumbnail" onerror="this.src='https://img.youtube.com/vi/${s.videoId}/hqdefault.jpg'">
             </div>
             <div class="stream-content">
@@ -644,7 +679,7 @@
                 <div class="stream-header">
                   <div class="stream-dot ${indicatorDot}"></div>
                   <div class="stream-title">${s.title}</div>
-                  <span class="stream-status-badge ${badgeClass}">${s.status === 'live' ? 'LIVE NOW' : s.status}</span>
+                  <span class="stream-status-badge ${badgeClass}">${badgeLabel}</span>
                   ${isAdmin ? `
                   <div class="stream-actions">
                     <button class="adm-btn adm-btn-edit" onclick="editStream('${s.id}')"><i class="fa-solid fa-pen"></i></button>
@@ -658,7 +693,7 @@
                 ${countdownElement}
                 <div class="stream-meta">
                   <a href="${watchUrl}" class="watch-link" target="_blank">
-                    <i class="fa-brands fa-youtube"></i> Open directly on YouTube →
+                    <i class="fa-brands fa-youtube"></i> View layout on YouTube Channel portal →
                   </a>
                 </div>
               </div>
@@ -672,7 +707,7 @@
     if(currentTab === 'upcoming') startCountdownEngine();
   }
 
-  // 4. Countdown Timer Engine 
+  // 4. Countdown Engine Layout Processing Loop
   function startCountdownEngine() {
     if(countdownInterval) clearInterval(countdownInterval);
 
@@ -688,7 +723,7 @@
         const timeDisplay = box.querySelector('.countdown-time');
 
         if(diff <= 0) {
-          timeDisplay.textContent = "Broadcast Pending Go-Live!";
+          timeDisplay.textContent = "Broadcast Running/Pending Refresh!";
           timeDisplay.style.color = "var(--gold)";
           return;
         }
@@ -712,7 +747,7 @@
     countdownInterval = setInterval(updateClocks, 1000);
   }
 
-  // 5. Admin Panel Logic Controls
+  // 5. Admin Panel Security Control Accessors
   function setAdmin(val) {
     isAdmin = val;
     const btn = document.getElementById('adminBtn');
@@ -778,6 +813,24 @@
     }
   }
 
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    if (toast) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+  }
+
+  function switchTab(tabName) {
+    currentTab = tabName;
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.classList.remove('active');
+      if(btn.id.toLowerCase().includes(tabName)) btn.classList.add('active');
+    });
+    renderStreams();
+  }
+
   // 6. Global Bootstrap Initialization Hook
   window.onload = () => {
     loadAllStreamsPipeline();
@@ -803,11 +856,12 @@
         }
 
         if(editingId === null) {
-          STREAMS.push({ id: Date.now(), title, description: desc, videoId: vId, status, targetDate });
+          STREAMS.push({ id: Date.now(), title, description: desc, videoId: vId, status, targetDate, isPremiere: title.toLowerCase().includes('premiere') });
         } else {
           const match = STREAMS.find(x => x.id === editingId || x.id == editingId);
           if(match) {
             match.title = title; match.description = desc; match.videoId = vId; match.status = status; match.targetDate = targetDate;
+            match.isPremiere = title.toLowerCase().includes('premiere');
           }
         }
 
