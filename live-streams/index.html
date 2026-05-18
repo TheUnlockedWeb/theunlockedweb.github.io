@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Live Streams — TheUnlockedWeb</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2 family=Syne:wght@700;800&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="../assets/style.css">
   <link rel="icon" href="../assets/resources/favicon.ico">
@@ -812,58 +812,28 @@
     }
 
     const filtered = STREAMS.filter(s => s.status === currentTab);
-    if(filtered.length === 0) { container.innerHTML = `<div class="no-streams">No items located under the current tab context parameters.</div>`; return; }
-    
+    if(filtered.length === 0) { container.innerHTML = `<div class="no-streams">No active listings loaded.</div>`; return; }
     container.innerHTML = filtered.map((s) => {
       const watchUrl = `https://www.youtube.com/watch?v=${s.videoId}`;
       const thumbUrl = s.videoId ? `https://img.youtube.com/vi/${s.videoId}/maxresdefault.jpg` : '../assets/resources/fallback-thumb.jpg';
       const hostname = window.location.hostname || 'localhost';
-      
-      let badgeClass = `badge-${s.status}`;
       let indicatorDot = s.status === 'live' ? 'dot-red' : (s.status === 'upcoming' ? 'dot-gold' : 'dot-muted');
       let badgeLabel = s.status === 'live' ? 'LIVE NOW' : (s.status === 'upcoming' ? 'UPCOMING' : s.status);
       
       if(s.isPremiere) {
         indicatorDot = s.liveNow ? 'dot-red' : 'dot-blue';
-        badgeClass = s.liveNow ? 'badge-live' : 'badge-premieres';
         badgeLabel = s.liveNow ? 'PREMIERE LIVE' : 'SCHEDULED PREMIERE';
       }
 
-      let countdownElement = '';
-      if((s.status === 'upcoming' || (s.isPremiere && !s.liveNow)) && s.targetDate) {
-        countdownElement = `
-          <div class="countdown-box" data-target="${s.targetDate}">
-            <span class="countdown-label"><i class="fa-regular fa-hourglass-start"></i> Launches In:</span>
-            <span class="countdown-time">Calculating...</span>
-          </div>
-        `;
-      }
+      let countdownElement = ((s.status === 'upcoming' || (s.isPremiere && !s.liveNow)) && s.targetDate) ? 
+        `<div class="countdown-box" data-target="${s.targetDate}"><span class="countdown-time">Calculating...</span></div>` : '';
 
       let theaterWorkspaceElement = '';
       if(s.videoId) {
         if (s.status === 'live' || (s.isPremiere && s.liveNow)) {
-          theaterWorkspaceElement = `
-            <div class="live-theater-workspace">
-              <iframe class="video-player-frame" 
-                      src="https://www.youtube.com/embed/${s.videoId}?autoplay=1&mute=1" 
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                      allowfullscreen>
-              </iframe>
-              <iframe class="chat-embed-frame" 
-                      src="https://www.youtube.com/live_chat?v=${s.videoId}&embed_domain=${hostname}">
-              </iframe>
-            </div>
-          `;
+          theaterWorkspaceElement = `<div class="live-theater-workspace"><iframe class="video-player-frame" src="https://www.youtube.com/embed/${s.videoId}?autoplay=1&mute=1" allowfullscreen></iframe><iframe class="chat-embed-frame" src="https://www.youtube.com/live_chat?v=${s.videoId}&embed_domain=${hostname}"></iframe></div>`;
         } else {
-          theaterWorkspaceElement = `
-            <div class="live-theater-workspace no-chat">
-              <iframe class="video-player-frame" 
-                      src="https://www.youtube.com/embed/${s.videoId}" 
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                      allowfullscreen>
-              </iframe>
-            </div>
-          `;
+          theaterWorkspaceElement = `<div class="live-theater-workspace no-chat"><iframe class="video-player-frame" src="https://www.youtube.com/embed/${s.videoId}" allowfullscreen></iframe></div>`;
         }
       }
 
@@ -871,40 +841,24 @@
         <div class="stream-item">
           <div class="stream-top-row">
             <div class="stream-thumb-wrapper">
-              ${s.status === 'live' || (s.isPremiere && s.liveNow) ? `<span class="live-indicator-tag ${s.isPremiere ? 'premiere-tag' : ''}">${s.isPremiere ? 'PREMIERE' : 'LIVE'}</span>` : ''}
-              <img src="${thumbUrl}" alt="Thumbnail" onerror="this.src='https://img.youtube.com/vi/${s.videoId}/hqdefault.jpg'">
+              <img src="${thumbUrl}" alt="Thumbnail">
             </div>
             <div class="stream-content">
               <div>
                 <div class="stream-header">
                   <div class="stream-dot ${indicatorDot}"></div>
                   <div class="stream-title">${s.title}</div>
-                  <span class="stream-status-badge ${badgeClass}">${badgeLabel}</span>
-                  ${isAdmin ? `
-                  <div class="stream-actions">
-                    <button class="adm-btn adm-btn-edit" onclick="editStream('${s.id}')"><i class="fa-solid fa-pen"></i></button>
-                    <button class="adm-btn adm-btn-del" onclick="deleteStream('${s.id}')"><i class="fa-solid fa-trash"></i></button>
-                  </div>` : ''}
+                  <span class="stream-status-badge badge-${s.status}">${badgeLabel}</span>
+                  ${isAdmin ? `<div class="stream-actions"><button class="adm-btn adm-btn-edit" onclick="editStream('${s.id}')">Edit</button><button class="adm-btn adm-btn-del" onclick="deleteStream('${s.id}')">Delete</button></div>` : ''}
                 </div>
                 <p class="stream-description">${s.description}</p>
               </div>
-              
-              <div>
-                ${countdownElement}
-                <div class="stream-meta">
-                  <a href="${watchUrl}" class="watch-link" target="_blank">
-                    <i class="fa-brands fa-youtube"></i> View directly on YouTube →
-                  </a>
-                </div>
-              </div>
+              <div>${countdownElement}<div class="stream-meta"><a href="${watchUrl}" class="watch-link" target="_blank">Open on YouTube →</a></div></div>
             </div>
           </div>
           ${theaterWorkspaceElement}
-        </div>
-      `;
+        </div>`;
     }).join('');
-
-    if(currentTab === 'upcoming' || currentTab === 'premieres') startCountdownEngine();
   }
 
   function withAppleLayoutEngine(repliesList, parentId) {
@@ -930,8 +884,6 @@
       `;
     }).join('');
   }
-
-  function updateCounterSettingFilter(value) { counterConfigMode = value; saveSettingsState(); }
 
   function submitGlobalSuggestion() {
     const msgInput = document.getElementById('globalSugMsg');
@@ -1015,34 +967,14 @@
     saveBoardState(); renderStreams();
   }
 
-  // Owner explicit banning overrides mapping systems
   function banSuggestionRecord(targetId, parentId) {
     if(!parentId) {
       const match = BOARD_IDEAS.find(x => x.id === targetId); if(match) match.isBanned = true;
     } else {
       const rootMatch = BOARD_IDEAS.find(x => x.id === parentId);
-      if(rootMatch?.replies) {
-        rootMatch.replies = rootMatch.replies.filter(y => y.id !== targetId);
-      }
+      if(rootMatch?.replies) rootMatch.replies = rootMatch.replies.filter(y => y.id !== targetId);
     }
     saveBoardState(); renderStreams(); showToast('Post hidden.');
-  }
-
-  function startCountdownEngine() {
-    if(countdownInterval) clearInterval(countdownInterval);
-    const updateClocks = () => {
-      document.querySelectorAll('.countdown-box').forEach(box => {
-        const targetStr = box.getAttribute('data-target');
-        if(!targetStr) return;
-        const diff = new Date(targetStr).getTime() - new Date().getTime();
-        const timeDisplay = box.querySelector('.countdown-time');
-        if(diff <= 0) { timeDisplay.textContent = "Broadcast Active!"; return; }
-        const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const secs = Math.floor((diff % (1000 * 60)) / 1000);
-        timeDisplay.textContent = `${Math.floor(diff / (1000 * 60 * 60 * 24))}d ${Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))}h ${mins}m ${secs}s`;
-      });
-    };
-    updateClocks(); countdownInterval = setInterval(updateClocks, 1000);
   }
 
   function setAdmin(val, role = '') {
@@ -1072,6 +1004,8 @@
   window.onload = () => {
     loadAllStreamsPipeline();
     document.getElementById('adminBtn').onclick = () => isAdmin ? setAdmin(false) : openModal('adminLoginModal');
+    
+    // RESTORED LOGIN EVENT ASSIGNMENT:
     document.getElementById('adminLoginBtn').onclick = handleLogin;
     
     document.getElementById('streamSaveBtn').onclick = () => {
