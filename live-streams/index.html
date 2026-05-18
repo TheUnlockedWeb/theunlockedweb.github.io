@@ -424,10 +424,8 @@
   let editingId = null;
   let countdownInterval = null;
 
-  // Local backups or manually logged past VOD items
-  const INITIAL_PAST_STREAMS = [
-    { id: 301, title: 'Geometry Dash Complete Custom Run Archive', description: 'Early high score level attempts logged from the community discord maps sheet.', videoId: 'dQw4w9WgXcQ', status: 'past', targetDate: '' }
-  ];
+  // Local backups or manually logged past VOD items (Rick Astley placeholder removed!)
+  const INITIAL_PAST_STREAMS = [];
 
   // 2. Storage & Dynamic Fetch API Pipeline
   async function loadAllStreamsPipeline() {
