@@ -1063,6 +1063,36 @@ button[onclick^="deleteStream"]:hover {
   function renderStreams() {
     const container = document.getElementById('streamsContainer');
     if (!container) return;
+    // 1. Get the active tab data (Make sure this matches your upcoming data filter)
+  let filtered = STREAMS.filter(s => s.status === currentTab);
+
+  // 2. Read the user's chosen sort method from our dropdown menu
+  const sortSelect = document.getElementById('streamSort');
+  const sortValue = sortSelect ? sortSelect.value : 'closest';
+
+  // 3. Apply the sorting algorithms on the fly
+  filtered.sort((a, b) => {
+    if (sortValue === 'closest') {
+      return new Date(a.targetDate) - new Date(b.targetDate);
+    }
+    if (sortValue === 'farthest') {
+      return new Date(b.targetDate) - new Date(a.targetDate);
+    }
+    if (sortValue === 'waiting') {
+      // Sorts by notifications (highest to lowest)
+      const countA = a.notificationCount || 0; 
+      const countB = b.notificationCount || 0;
+      return countB - countA;
+    }
+    if (sortValue === 'alpha') {
+      const titleA = (a.title || "").toLowerCase();
+      const titleB = (b.title || "").toLowerCase();
+      return titleA.localeCompare(titleB);
+    }
+    return 0;
+  });
+
+  // 4. Your existing mapping logic (.map) to build the stream cards continues right below here...
 
     if(currentTab === 'suggestions') {
       let defaultInputValue = isAdmin ? ((adminRole === 'OWNER') ? 'EthanUnlocked' : 'TUW Admin') : '';
