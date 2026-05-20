@@ -1293,7 +1293,7 @@
     renderStreams();
   }
 
-  function handleLogin() {
+  window.handleLogin = function() {
     const u = document.getElementById('adminUser').value.trim(); const p = document.getElementById('adminPass').value;
     if (u === OWNER_USER && p === OWNER_PASS) { closeModal('adminLoginModal'); setAdmin(true, 'OWNER'); showToast('Welcome back, Owner EthanUnlocked!'); } 
     else if (u === STAFF_USER && p === STAFF_PASS) { closeModal('adminLoginModal'); setAdmin(true, 'STAFF'); showToast('Staff access granted.'); } 
@@ -1312,7 +1312,7 @@ window.switchTab = function(t) {
     triggerAudioPlaybackModule('tab');
 }
 
-  function openModal(id) { document.getElementById(id).classList.add('open'); }
+  window.openModal = function(id) { document.getElementById(id).classList.add('open'); }
   window.closeModal = (id) => { document.getElementById(id).classList.remove('open'); }
   function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
 
