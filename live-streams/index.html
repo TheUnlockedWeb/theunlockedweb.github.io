@@ -605,6 +605,16 @@ button[onclick^="deleteStream"]:hover {
     <button class="tab-btn" id="tabBtnUpcoming" onclick="switchTab('upcoming')"><i class="fa-solid fa-calendar-days"></i> Upcoming Scheduled</button>
     <button class="tab-btn" id="tabBtnPast" onclick="switchTab('past')"><i class="fa-solid fa-clock-rotate-left"></i> Past Streams</button>
   </div>
+  
+  <div class="sort-container">
+    <label for="streamSort">Sort By:</label>
+    <select id="streamSort" onchange="renderStreams()">
+      <option value="closest">Order of date & time (Closest to Farthest)</option>
+      <option value="farthest">Order of date & time (Farthest to Closest)</option>
+      <option value="waiting">How many are waiting</option>
+      <option value="alpha">A-Z</option>
+    </select>
+  </div>
 
   <div id="adminButtonContainer"></div>
   <div class="streams-container" id="streamsContainer"></div>
