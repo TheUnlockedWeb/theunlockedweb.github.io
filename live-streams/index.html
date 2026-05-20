@@ -1084,7 +1084,7 @@ function renderStreams() {
       let authorClass = msg.role === 'OWNER' ? 'owner-sug-author' : (msg.role === 'STAFF' ? 'staff-sug-author' : '');
       let textClass = msg.role === 'OWNER' ? 'owner-sug-text' : (msg.role === 'STAFF' ? 'staff-sug-text' : '');
       
-      // Your existing mapping layout for individual suggestion blocks goes here
+      // Your existing suggestions mapping layout goes here:
       return `
         <div class="suggestion-card">
           <span class="${authorClass}">${msg.username}</span>: <span class="${textClass}">${msg.text}</span>
@@ -1093,11 +1093,11 @@ function renderStreams() {
     }).join('');
 
     container.innerHTML = ownerTerminalElement + suggestionsListHTML;
-    return; // Stops here safely to unfreeze admin buttons
+    return; // Stops execution here so suggestions never touch stream code
   }
 
   // ==========================================
-  // 2. FILTER STREAMS BY TAB
+  // 2. FILTER STREAMS BY CURRENT TAB
   // ==========================================
   let filtered = STREAMS.filter(s => s.status === currentTab);
 
@@ -1130,21 +1130,34 @@ function renderStreams() {
   }
 
   // ==========================================
-  // 4. RENDER EMITTED STREAM CARDS
+  // 4. RENDER FINAL STREAM CARDS CONTAINER
   // ==========================================
   if (filtered.length === 0) {
     container.innerHTML = `<div class="no-streams">No listings active inside this tier view parameters.</div>`;
     return;
   }
 
-  // Map the sorted streams directly into your existing card layouts
+  // Map the sorted/filtered streams to your HTML card designs
   container.innerHTML = filtered.map((s) => {
-    // This is where your code outputs your beautiful stream HTML cards!
+    // If we are looking at the live tab, render the viewer counter badge
+    if (currentTab === 'live') {
+      const viewers = s.viewerCount || 0; // Fallback to 0 if property is missing
+      return `
+        <div class="stream-card live-card" data-id="${s.id}">
+          <div class="live-badge">🔴 LIVE</div>
+          <div class="viewer-count"><i class="fa-solid fa-user"></i> ${viewers} watching</div>
+          <h3>${s.title}</h3>
+          <p>${s.description || ''}</p>
+        </div>
+      `;
+    }
+
+    // Default template layout for Scheduled, Premieres, and Past Streams tabs
     return `
       <div class="stream-card" data-id="${s.id}">
         <h3>${s.title}</h3>
         <p>${s.description || ''}</p>
-        </div>
+      </div>
     `;
   }).join('');
 }
