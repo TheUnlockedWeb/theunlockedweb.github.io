@@ -10,6 +10,32 @@
   <link rel="stylesheet" href="../assets/style.css">
   <link rel="icon" href="../assets/resources/favicon.ico">
   <style>
+    /* Style both the Edit and Delete buttons */
+button[onclick^="editStream"], 
+button[onclick^="deleteStream"] {
+    background-color: #2a2d32; /* Sleek dark theme background */
+    color: #ffffff;
+    border: 1px solid #4f545c;
+    padding: 6px 14px;
+    border-radius: 20px; /* Gives them that clean, pill-shaped edge */
+    font-family: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-right: 8px;
+}
+
+/* Hover effect for Edit */
+button[onclick^="editStream"]:hover {
+    background-color: #3a3f47;
+    border-color: #7289da; /* Adds a nice subtle blue highlight */
+}
+
+/* Hover effect for Delete */
+button[onclick^="deleteStream"]:hover {
+    background-color: #ba2525; /* Turns a warning red on hover */
+    border-color: #e03e3e;
+}
     /* ── Page header ─────────────────────── */
     .page-header {
       padding: 52px 0 30px;
@@ -1332,6 +1358,17 @@ window.switchTab = function(t) {
   } else {
     console.error("Could not find the modal element to add a stream. Check your HTML IDs!");
   }
+};
+  window.editStream = function(id) {
+    alert("Edit action triggered for stream ID: " + id);
+    // Future database edit code goes here
+};
+
+window.deleteStream = function(id) {
+    if (confirm("Are you sure you want to delete this scheduled stream?")) {
+        alert("Delete action triggered for stream ID: " + id);
+        // Future database delete code goes here
+    }
 };
 </script>
 </body>
