@@ -1343,8 +1343,17 @@ window.switchTab = function(t) {
   function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
 
 window.onload = () => {
+    // 1. Initial page load
     loadAllStreamsPipeline();
-    startCountdownTimerPipeline();
+    startCountdownTimerPipeline(); 
+    
+    // 2. Background Sync (The other block of code)
+    setInterval(() => {
+      console.log("Checking database for new Premieres or scheduled streams...");
+      loadAllStreamsPipeline();
+    }, 10000); 
+
+    // 3. Admin button handlers
     document.getElementById('adminBtn').onclick = () => isAdmin ? setAdmin(false) : openModal('adminLoginModal');
     document.getElementById('adminLoginBtn').onclick = handleLogin;
   };
@@ -1371,8 +1380,9 @@ window.deleteStream = function(id) {
         // Future database delete code goes here
     }
 };
-  function startCountdownTimerPipeline() {
+function startCountdownTimerPipeline() {
   setInterval(() => {
+    // 1. Find every countdown box on the screen
     const countdownElements = document.querySelectorAll('[data-target]');
     
     countdownElements.forEach(box => {
@@ -1386,11 +1396,44 @@ window.deleteStream = function(id) {
       const now = new Date().getTime();
       const difference = targetDate - now;
 
+      // 2. Handle when the stream goes LIVE
       if (difference <= 0) {
-        timeSpan.textContent = "LIVE NOW / STARTED";
+        timeSpan.textContent = "LIVE";
+        box.style.color = "#ff4a4a"; // Keep it vibrant red
+
+        // Start the silent 5-second transfer countdown
+        if (!box.dataset.transferring) {
+          box.dataset.transferring = "true"; // Prevents loop duplication
+          
+          setTimeout(() => {
+            // Find this specific stream in your global data array
+            const streamId = box.closest('.stream-card')?.dataset.id; 
+            const streamObj = STREAMS.find(s => s.id === streamId || s.targetDate === targetString);
+            
+            if (streamObj) {
+              streamObj.status = 'live'; // Swap its tab status to live
+              if (streamObj.isPremiere) streamObj.liveNow = true;
+              
+              // Refresh the dashboard view seamlessly
+              if (typeof renderStreams === 'function') {
+                renderStreams();
+              }
+            }
+          }, 5000); // 5000 milliseconds = 5 seconds
+        }
         return;
       }
 
+      // 3. Turn text RED if there is less than 2 minutes (120,000 milliseconds) remaining
+      if (difference <= 120000) {
+        box.style.color = "#ff4a4a"; 
+        box.style.borderColor = "rgba(255, 74, 74, 0.4)";
+      } else {
+        box.style.color = ""; // Uses your default CSS styles if above 2 mins
+        box.style.borderColor = "";
+      }
+
+      // 4. Standard countdown clock math
       const days = Math.floor(difference / (1000 * 60 * 60 * 24));
       const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
@@ -1403,7 +1446,7 @@ window.deleteStream = function(id) {
 
       timeSpan.textContent = displayString;
     });
-  }, 1000);
+  }, 1000); // Runs every 1 second
 }
 </script>
 </body>
