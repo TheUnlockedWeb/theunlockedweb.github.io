@@ -1431,20 +1431,21 @@ window.switchTab = function(t) {
   function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
 
 window.onload = () => {
-    // 1. Initial page load
+    // 1. Initial loads
     loadAllStreamsPipeline();
     startCountdownTimerPipeline(); 
     
-    // 2. Background Sync (The other block of code)
+    // 2. Background Sync Engine: Checks for changes every 10 seconds silently
     setInterval(() => {
       console.log("Checking database for new Premieres or scheduled streams...");
       loadAllStreamsPipeline();
     }, 10000); 
 
-    // 3. Admin button handlers
+    // 3. Admin button click handlers
     document.getElementById('adminBtn').onclick = () => isAdmin ? setAdmin(false) : openModal('adminLoginModal');
     document.getElementById('adminLoginBtn').onclick = handleLogin;
   };
+  
   window.addStream = function() {
   // Look for the modal element that handles adding new streams
   const addModal = document.getElementById('addStreamModal') || 
