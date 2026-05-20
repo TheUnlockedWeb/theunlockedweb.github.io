@@ -256,6 +256,7 @@
     /* ── Suggestions Board Styles ──────────────── */
     .tab-board-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 28px; }
     .board-input-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; background: rgba(255,255,255,0.01); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+    .board-input-group .board-submit-btn { align-self: flex-start; padding: 10px 22px; font-size: 0.85rem; }
     .board-row-inputs { display: flex; gap: 10px; flex-wrap: wrap; }
     .board-input { background: #0d0d1b; border: 1px solid var(--border); border-radius: 6px; color: var(--text); padding: 10px 14px; font-family: 'Manrope', sans-serif; font-size: 0.85rem; }
     .board-input:focus { outline: none; border-color: var(--gold); }
@@ -435,7 +436,7 @@
     <button class="tab-btn active" id="tabBtnLive" onclick="switchTab('live')"><i class="fa-solid fa-circle-radial"></i> Live Now <span class="tab-pulse-indicator" id="livePulseAlert"></span></button>
     <button class="tab-btn" id="tabBtnPremieres" onclick="switchTab('premieres')"><i class="fa-solid fa-film"></i> Premieres</button>
     <button class="tab-btn" id="tabBtnSuggestions" onclick="switchTab('suggestions')"><i class="fa-solid fa-lightbulb"></i> Stream & Premiere Suggestions <span class="tab-counter-badge" id="sugCounterCircle">0</span></button>
-    <button class="tab-btn" id="tabBtnUpcoming" onclick="switchTab('upcoming')"><i class="fa-solid fa-calendar-days"></i>Scheduled Streams</button>
+    <button class="tab-btn" id="tabBtnUpcoming" onclick="switchTab('upcoming')"><i class="fa-solid fa-calendar-days"></i> Upcoming Scheduled</button>
     <button class="tab-btn" id="tabBtnPast" onclick="switchTab('past')"><i class="fa-solid fa-clock-rotate-left"></i> Past Streams</button>
   </div>
 
@@ -622,8 +623,21 @@
 
   const USER_SESSION_POSTS = new Set();
 
-  let masterSoundLogic = 'everything'; // 'everything', 'custom', 'random', 'none'
+  let masterSoundLogic = 'everything'; 
   let AUDIO_PRESETS = { post: '1', reply: '1', tab: '1', ban: '1', edit: '1', delete: '1' };
+
+  // ── CONTENT MODERATION FILTER ──
+  function containsBannedContent(text) {
+    if (!text) return false;
+    
+    const bannedPhrases = [
+      'skibidi', 'skibiddy', 'rizzler', 'gyatt', 'gyat', 'sigma', 'mewing', 'fanum tax', 'ohio',
+      'fuck', 'shit', 'bitch', 'asshole', 'dick', 'cunt', 'pussy', 'bastard'
+    ];
+
+    const lowerText = text.toLowerCase();
+    return bannedPhrases.some(word => lowerText.includes(word));
+  }
 
   function triggerAudioPlaybackModule(actionType) {
     if (masterSoundLogic === 'none') return;
@@ -636,7 +650,7 @@
       assignedIndex = Math.floor(Math.random() * 5 + 1).toString();
     } else if (masterSoundLogic === 'custom') {
       assignedIndex = AUDIO_PRESETS[actionType] || '1';
-      if (assignedIndex === 'none') return; // Isolated track set to none macro muting
+      if (assignedIndex === 'none') return; 
     }
 
     let soundFilename = '';
@@ -649,11 +663,10 @@
 
     if(soundFilename) {
       const audioInstance = new Audio(`./sounds/${soundFilename}`);
-      audioInstance.play().catch(e => console.log("Audio block context anomaly feedback intercept: ", e));
+      audioInstance.play().catch(e => console.log("Audio pipeline block intercept: ", e));
     }
   }
 
-  // Previews explicit audio assets safely from custom settings selectors panels directly
   function previewIsolatedTrack(actionType) {
     const selectorValue = document.getElementById(`sound${actionType.charAt(0).toUpperCase() + actionType.slice(1)}Select`).value;
     if (selectorValue === 'none') {
@@ -670,7 +683,7 @@
 
     if(soundFilename) {
       const previewAudio = new Audio(`./sounds/${soundFilename}`);
-      previewAudio.play().catch(e => console.error("Audio pipeline block failure tracker feedback: ", e));
+      previewAudio.play().catch(e => console.error("Audio failure feedback: ", e));
     }
   }
 
@@ -767,7 +780,7 @@
           });
         }
       }
-    } catch(err) { console.error("Dynamic pipelines trace logic warning output: ", err); }
+    } catch(err) { console.error("Dynamic warning layout fallback logic output: ", err); }
 
     adminManualOverrides.forEach(m => { if(!STREAMS.some(a => a.videoId === m.videoId)) STREAMS.push(m); });
     evaluateLiveStatusDot();
@@ -1027,15 +1040,25 @@
     }).join('');
   }
 
+  // ── SUBMISSION LOGIC WITH MODERATION FILTERS ──
   function submitGlobalSuggestion() {
     const msgInput = document.getElementById('globalSugMsg');
     const nameInput = document.getElementById('globalSugName');
     if(!msgInput || !msgInput.value.trim()) return;
 
+    let textContent = msgInput.value.trim();
     let authorName = isAdmin ? ((adminRole === 'OWNER') ? 'EthanUnlocked' : 'TUW Admin') : (nameInput.value.trim() || 'Anonymous');
+
+    // Filter Trigger Check
+    if (containsBannedContent(textContent) || containsBannedContent(authorName)) {
+      showToast("Submission blocked: Content violates guidelines.");
+      msgInput.value = '';
+      return;
+    }
+
     const uniqueId = 'sug-' + Date.now();
 
-    BOARD_IDEAS.unshift({ id: uniqueId, name: authorName, text: msgInput.value.trim(), role: isAdmin ? adminRole : 'USER', time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), replies: [], isBanned: false });
+    BOARD_IDEAS.unshift({ id: uniqueId, name: authorName, text: textContent, role: isAdmin ? adminRole : 'USER', time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), replies: [], isBanned: false });
     USER_SESSION_POSTS.add(uniqueId);
     
     hasScrolledToBottomToClear = false;
@@ -1049,6 +1072,14 @@
     if(!msgVal) return;
     
     let authorName = isAdmin ? ((adminRole === 'OWNER') ? 'EthanUnlocked' : 'TUW Admin') : (wrapper.querySelector('.reply-user-name').value.trim() || 'Anonymous');
+
+    // Filter Trigger Check
+    if (containsBannedContent(msgVal) || containsBannedContent(authorName)) {
+      showToast("Reply blocked: Content violates guidelines.");
+      wrapper.querySelector('.reply-user-msg').value = '';
+      return;
+    }
+
     const uniqueReplyId = 'rep-' + Date.now();
     const match = BOARD_IDEAS.find(idea => idea.id === parentId);
     
@@ -1096,6 +1127,12 @@
     const newText = document.getElementById('editIdeaContent').value.trim();
     if(!newText) return;
 
+    if (containsBannedContent(newText)) {
+      showToast("Modification rejected: Language filter triggered.");
+      closeModal('editIdeaModal');
+      return;
+    }
+
     if(!parentId) {
       const match = BOARD_IDEAS.find(x => x.id === targetId); if(match) match.text = newText;
     } else {
@@ -1123,6 +1160,16 @@
     }
     saveBoardState(); renderStreams(); showToast('Post hidden.');
     triggerAudioPlaybackModule('ban');
+  }
+
+  function toggleReplyInput(btn) {
+    const panel = btn.nextElementSibling;
+    panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
+  }
+
+  function updateCounterSettingFilter(val) {
+    counterConfigMode = val;
+    saveSettingsState();
   }
 
   function setAdmin(val, role = '') {
@@ -1160,6 +1207,7 @@
 
   function openModal(id) { document.getElementById(id).classList.add('open'); }
   function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+  function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
 
   window.onload = () => {
     loadAllStreamsPipeline();
