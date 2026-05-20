@@ -683,7 +683,25 @@
 
 <div class="toast" id="toast"></div>
 
-<script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, updateDoc, deleteDoc, getDocs, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  // ── YOUR REAL FIREBASE SECURE CONNECTIVITY LINKS ──
+  const firebaseConfig = {
+    apiKey: "AIzaSyBKEpTxjWnoY6JECWlOYOhHabW-igQRRRc",
+    authDomain: "tuw-streams-suggestions.firebaseapp.com",
+    projectId: "tuw-streams-suggestions",
+    storageBucket: "tuw-streams-suggestions.appspot.com",
+    messagingSenderId: "739277076144",
+    appId: "1:739277076144:web:30f9d458a79c201e322d75",
+    measurementId: "G-214H7QNJDW"
+  };
+
+  // Initialize Firebase App and Services
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  
   const API_KEY = 'AIzaSyAYdcohjswp3jcgWZgDFTwYiZsMwSeLrwY';
   const CHANNEL_ID = 'UCi8DgxMDGJ-Qsjqfdi-uoIw';
   const STORAGE_KEY = 'tuw_streams_data_v2';
