@@ -1302,15 +1302,15 @@
 
   function evaluateLiveStatusDot() { const p = document.getElementById('livePulseAlert'); if(p) p.style.display = STREAMS.some(s => s.status === 'live') ? 'block' : 'none'; }
   
-  function switchTab(t) { 
-    currentTab = t; 
-    document.querySelectorAll('.tab-btn').forEach(b => { 
-      b.classList.remove('active'); 
-      if(b.id.toLowerCase().includes(t.toLowerCase())) b.classList.add('active'); 
-    }); 
-    renderStreams(); 
+window.switchTab = function(t) {
+    currentTab = t;
+    document.querySelectorAll('.tab-btn').forEach(b => {
+        b.classList.remove('active');
+        if(b.id.toLowerCase().includes(t.toLowerCase())) b.classList.add('active');
+    });
+    renderStreams();
     triggerAudioPlaybackModule('tab');
-  }
+}
 
   function openModal(id) { document.getElementById(id).classList.add('open'); }
   window.closeModal = (id) => { document.getElementById(id).classList.remove('open'); }
