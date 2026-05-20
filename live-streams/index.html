@@ -1060,37 +1060,94 @@ button[onclick^="deleteStream"]:hover {
     renderStreams();
   }
 
-  function renderStreams() {
-    const container = document.getElementById('streamsContainer');
-    if (!container) return;
-    // 1. Get the active tab data (Make sure this matches your upcoming data filter)
+function renderStreams() {
+  const container = document.getElementById('streamsContainer');
+  if (!container) return;
+
+  // ==========================================
+  // 1. SUGGESTIONS TAB (Early Exit - Fixes Freezing)
+  // ==========================================
+  if (currentTab === 'suggestions') {
+    let defaultInputValue = isAdmin ? ((adminRole === 'OWNER') ? 'EthanUnlocked' : 'TUW Admin') : '';
+    let ownerTerminalElement = (isAdmin && adminRole === 'OWNER') ? `
+      <div class="owner-terminal-box">
+        <div class="terminal-title">👑 OWNER MODERATION COMMAND SYSTEM</div>
+        <div class="terminal-row">
+          <input type="text" class="terminal-input" id="ownerCmdInput" placeholder="Type /ban <username> and press Enter..." onkeydown="handleOwnerControl(event)">
+        </div>
+      </div>` : '';
+
+    const validatedActiveIdeas = BOARD_IDEAS.filter(msg => !msg.isBanned);
+    const paginatedIdeasList = validatedActiveIdeas.slice(0, visibleSuggestionsCount);
+
+    let suggestionsListHTML = paginatedIdeasList.map(msg => {
+      let authorClass = msg.role === 'OWNER' ? 'owner-sug-author' : (msg.role === 'STAFF' ? 'staff-sug-author' : '');
+      let textClass = msg.role === 'OWNER' ? 'owner-sug-text' : (msg.role === 'STAFF' ? 'staff-sug-text' : '');
+      
+      // Your existing mapping layout for individual suggestion blocks goes here
+      return `
+        <div class="suggestion-card">
+          <span class="${authorClass}">${msg.username}</span>: <span class="${textClass}">${msg.text}</span>
+        </div>
+      `;
+    }).join('');
+
+    container.innerHTML = ownerTerminalElement + suggestionsListHTML;
+    return; // Stops here safely to unfreeze admin buttons
+  }
+
+  // ==========================================
+  // 2. FILTER STREAMS BY TAB
+  // ==========================================
   let filtered = STREAMS.filter(s => s.status === currentTab);
 
-  // 2. Read the user's chosen sort method from our dropdown menu
-  const sortSelect = document.getElementById('streamSort');
-  const sortValue = sortSelect ? sortSelect.value : 'closest';
+  // ==========================================
+  // 3. APPLY SORTING ALGORITHMS (Skips Live Now Tab)
+  // ==========================================
+  if (currentTab !== 'live') {
+    const sortSelect = document.getElementById('streamSort');
+    const sortValue = sortSelect ? sortSelect.value : 'closest';
 
-  // 3. Apply the sorting algorithms on the fly
-  filtered.sort((a, b) => {
-    if (sortValue === 'closest') {
-      return new Date(a.targetDate) - new Date(b.targetDate);
-    }
-    if (sortValue === 'farthest') {
-      return new Date(b.targetDate) - new Date(a.targetDate);
-    }
-    if (sortValue === 'waiting') {
-      // Sorts by notifications (highest to lowest)
-      const countA = a.notificationCount || 0; 
-      const countB = b.notificationCount || 0;
-      return countB - countA;
-    }
-    if (sortValue === 'alpha') {
-      const titleA = (a.title || "").toLowerCase();
-      const titleB = (b.title || "").toLowerCase();
-      return titleA.localeCompare(titleB);
-    }
-    return 0;
-  });
+    filtered.sort((a, b) => {
+      if (sortValue === 'closest') {
+        return new Date(a.targetDate) - new Date(b.targetDate);
+      }
+      if (sortValue === 'farthest') {
+        return new Date(b.targetDate) - new Date(a.targetDate);
+      }
+      if (sortValue === 'waiting') {
+        const countA = a.notificationCount || 0; 
+        const countB = b.notificationCount || 0;
+        return countB - countA;
+      }
+      if (sortValue === 'alpha') {
+        const titleA = (a.title || "").toLowerCase();
+        const titleB = (b.title || "").toLowerCase();
+        return titleA.localeCompare(titleB);
+      }
+      return 0;
+    });
+  }
+
+  // ==========================================
+  // 4. RENDER EMITTED STREAM CARDS
+  // ==========================================
+  if (filtered.length === 0) {
+    container.innerHTML = `<div class="no-streams">No listings active inside this tier view parameters.</div>`;
+    return;
+  }
+
+  // Map the sorted streams directly into your existing card layouts
+  container.innerHTML = filtered.map((s) => {
+    // This is where your code outputs your beautiful stream HTML cards!
+    return `
+      <div class="stream-card" data-id="${s.id}">
+        <h3>${s.title}</h3>
+        <p>${s.description || ''}</p>
+        </div>
+    `;
+  }).join('');
+}
 
   // 4. Your existing mapping logic (.map) to build the stream cards continues right below here...
 
