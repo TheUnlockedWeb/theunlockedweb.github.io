@@ -1321,6 +1321,18 @@ window.switchTab = function(t) {
     document.getElementById('adminBtn').onclick = () => isAdmin ? setAdmin(false) : openModal('adminLoginModal');
     document.getElementById('adminLoginBtn').onclick = handleLogin;
   };
+  window.addStream = function() {
+  // Look for the modal element that handles adding new streams
+  const addModal = document.getElementById('addStreamModal') || 
+                   document.getElementById('streamModal') || 
+                   document.getElementById('entryModal');
+                   
+  if (addModal) {
+    addModal.classList.add('open');
+  } else {
+    console.error("Could not find the modal element to add a stream. Check your HTML IDs!");
+  }
+};
 </script>
 </body>
 </html>
