@@ -10,6 +10,54 @@
   <link rel="stylesheet" href="../assets/style.css">
   <link rel="icon" href="../assets/resources/favicon.ico">
   <style>
+    /* Container layout for the label and dropdown */
+.sort-container {
+  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: inherit;
+}
+
+/* Styled text label next to the dropdown */
+.sort-container label {
+  color: #8e9297; /* Discord-style muted gray */
+  font-size: 14px;
+  font-weight: 500;
+  user-select: none;
+}
+
+/* The Sort By dropdown selector */
+.sort-container select {
+  background-color: #2a2d32; /* Deep dark background */
+  color: #ffffff;            /* Crisp white text */
+  border: 1px solid #4f545c; /* Subtle slate border */
+  padding: 8px 16px;
+  border-radius: 20px;       /* Smooth pill shape */
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Hover state to make it feel responsive */
+.sort-container select:hover {
+  background-color: #35383e; /* Slightly lighter on hover */
+  border-color: #7289da;     /* Elegant blue accent border highlight */
+}
+
+/* Focus state for accessibility when clicked */
+.sort-container select:focus {
+  border-color: #7289da;
+  box-shadow: 0 0 0 2px rgba(114, 137, 218, 0.2);
+}
+
+/* Style the option dropdown list elements */
+.sort-container select option {
+  background-color: #2a2d32;
+  color: #ffffff;
+}
     /* Style both the Edit and Delete buttons */
 button[onclick^="editStream"], 
 button[onclick^="deleteStream"] {
