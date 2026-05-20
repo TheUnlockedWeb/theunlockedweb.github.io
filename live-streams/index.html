@@ -1342,8 +1342,9 @@ window.switchTab = function(t) {
   window.closeModal = (id) => { document.getElementById(id).classList.remove('open'); }
   function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
 
-  window.onload = () => {
+window.onload = () => {
     loadAllStreamsPipeline();
+    startCountdownTimerPipeline();
     document.getElementById('adminBtn').onclick = () => isAdmin ? setAdmin(false) : openModal('adminLoginModal');
     document.getElementById('adminLoginBtn').onclick = handleLogin;
   };
@@ -1370,6 +1371,40 @@ window.deleteStream = function(id) {
         // Future database delete code goes here
     }
 };
+  function startCountdownTimerPipeline() {
+  setInterval(() => {
+    const countdownElements = document.querySelectorAll('[data-target]');
+    
+    countdownElements.forEach(box => {
+      const timeSpan = box.querySelector('.countdown-time');
+      if (!timeSpan) return;
+
+      const targetString = box.getAttribute('data-target');
+      if (!targetString) return;
+
+      const targetDate = new Date(targetString).getTime();
+      const now = new Date().getTime();
+      const difference = targetDate - now;
+
+      if (difference <= 0) {
+        timeSpan.textContent = "LIVE NOW / STARTED";
+        return;
+      }
+
+      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+      let displayString = "";
+      if (days > 0) displayString += `${days}d `;
+      if (hours > 0 || days > 0) displayString += `${hours}h `;
+      displayString += `${minutes}m ${seconds}s`;
+
+      timeSpan.textContent = displayString;
+    });
+  }, 1000);
+}
 </script>
 </body>
 </html>
