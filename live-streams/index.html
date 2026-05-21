@@ -1065,7 +1065,7 @@ function renderStreams() {
   if (!container) return;
 
   // ==========================================
-  // 1. SUGGESTIONS TAB (Early Exit - Fixes Freezing)
+  // 1. SUGGESTIONS TAB (Keep at the very top!)
   // ==========================================
   if (currentTab === 'suggestions') {
     let defaultInputValue = isAdmin ? ((adminRole === 'OWNER') ? 'EthanUnlocked' : 'TUW Admin') : '';
@@ -1084,7 +1084,6 @@ function renderStreams() {
       let authorClass = msg.role === 'OWNER' ? 'owner-sug-author' : (msg.role === 'STAFF' ? 'staff-sug-author' : '');
       let textClass = msg.role === 'OWNER' ? 'owner-sug-text' : (msg.role === 'STAFF' ? 'staff-sug-text' : '');
       
-      // Your existing suggestions mapping layout goes here:
       return `
         <div class="suggestion-card">
           <span class="${authorClass}">${msg.username}</span>: <span class="${textClass}">${msg.text}</span>
@@ -1093,30 +1092,24 @@ function renderStreams() {
     }).join('');
 
     container.innerHTML = ownerTerminalElement + suggestionsListHTML;
-    return; // Stops execution here so suggestions never touch stream code
+    return; // Bails out completely so no other code runs for suggestions
   }
 
   // ==========================================
-  // 2. FILTER STREAMS BY CURRENT TAB
+  // 2. STREAMS FILTERING & SORTING
   // ==========================================
   let filtered = STREAMS.filter(s => s.status === currentTab);
 
-  // ==========================================
-  // 3. APPLY SORTING ALGORITHMS (Skips Live Now Tab)
-  // ==========================================
+  // Apply sorting to all stream tabs EXCEPT the live tab
   if (currentTab !== 'live') {
     const sortSelect = document.getElementById('streamSort');
     const sortValue = sortSelect ? sortSelect.value : 'closest';
 
     filtered.sort((a, b) => {
-      if (sortValue === 'closest') {
-        return new Date(a.targetDate) - new Date(b.targetDate);
-      }
-      if (sortValue === 'farthest') {
-        return new Date(b.targetDate) - new Date(a.targetDate);
-      }
+      if (sortValue === 'closest') return new Date(a.targetDate) - new Date(b.targetDate);
+      if (sortValue === 'farthest') return new Date(b.targetDate) - new Date(a.targetDate);
       if (sortValue === 'waiting') {
-        const countA = a.notificationCount || 0; 
+        const countA = a.notificationCount || 0;
         const countB = b.notificationCount || 0;
         return countB - countA;
       }
@@ -1130,29 +1123,28 @@ function renderStreams() {
   }
 
   // ==========================================
-  // 4. RENDER FINAL STREAM CARDS CONTAINER
+  // 3. DISPLAY THE STREAM CARDS
   // ==========================================
   if (filtered.length === 0) {
     container.innerHTML = `<div class="no-streams">No listings active inside this tier view parameters.</div>`;
     return;
   }
 
-  // Map the sorted/filtered streams to your HTML card designs
   container.innerHTML = filtered.map((s) => {
-    // If we are looking at the live tab, render the viewer counter badge
+    // Live Tab Layout (Shows watcher count)
     if (currentTab === 'live') {
-      const viewers = s.viewerCount || 0; // Fallback to 0 if property is missing
+      const viewers = s.viewerCount || 0;
       return `
         <div class="stream-card live-card" data-id="${s.id}">
           <div class="live-badge">🔴 LIVE</div>
-          <div class="viewer-count"><i class="fa-solid fa-user"></i> ${viewers} watching</div>
+          <div class="viewer-count">${viewers} watching</div>
           <h3>${s.title}</h3>
           <p>${s.description || ''}</p>
         </div>
       `;
     }
 
-    // Default template layout for Scheduled, Premieres, and Past Streams tabs
+    // Default Upcoming / Premiere Layout
     return `
       <div class="stream-card" data-id="${s.id}">
         <h3>${s.title}</h3>
