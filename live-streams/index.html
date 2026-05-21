@@ -1063,7 +1063,7 @@ function renderStreams() {
   if (!container) return;
 
   // ==========================================
-  // 1. SUGGESTIONS TAB (Safely isolated early exit)
+  // 1. SUGGESTIONS TAB (Safely isolated block)
   // ==========================================
   if (currentTab === 'suggestions') {
     let defaultInputValue = isAdmin ? ((adminRole === 'OWNER') ? 'EthanUnlocked' : 'TUW Admin') : '';
@@ -1090,66 +1090,66 @@ function renderStreams() {
     }).join('');
 
     container.innerHTML = ownerTerminalElement + suggestionsListHTML;
-    return; // Stops execution here so suggestions never crash on stream properties
-  }
 
-  // ==========================================
-  // 2. STREAMS FILTERING & SORTING
-  // ==========================================
-  let filtered = STREAMS.filter(s => s.status === currentTab);
+  } else {
+    // ==========================================
+    // 2. STREAMS FILTERING & SORTING
+    // ==========================================
+    let filtered = STREAMS.filter(s => s.status === currentTab);
 
-  // Apply sorting to all stream tabs EXCEPT the live tab
-  if (currentTab !== 'live') {
-    const sortSelect = document.getElementById('streamSort');
-    const sortValue = sortSelect ? sortSelect.value : 'closest';
+    // Apply sorting to all stream tabs EXCEPT the live tab
+    if (currentTab !== 'live') {
+      const sortSelect = document.getElementById('streamSort');
+      const sortValue = sortSelect ? sortSelect.value : 'closest';
 
-    filtered.sort((a, b) => {
-      if (sortValue === 'closest') return new Date(a.targetDate) - new Date(b.targetDate);
-      if (sortValue === 'farthest') return new Date(b.targetDate) - new Date(a.targetDate);
-      if (sortValue === 'waiting') {
-        const countA = a.notificationCount || 0;
-        const countB = b.notificationCount || 0;
-        return countB - countA;
+      filtered.sort((a, b) => {
+        if (sortValue === 'closest') return new Date(a.targetDate) - new Date(b.targetDate);
+        if (sortValue === 'farthest') return new Date(b.targetDate) - new Date(a.targetDate);
+        if (sortValue === 'waiting') {
+          const countA = a.notificationCount || 0;
+          const countB = b.notificationCount || 0;
+          return countB - countA;
+        }
+        if (sortValue === 'alpha') {
+          const titleA = (a.title || "").toLowerCase();
+          const titleB = (b.title || "").toLowerCase();
+          return titleA.localeCompare(titleB);
+        }
+        return 0;
+      });
+    }
+
+    // ==========================================
+    // 3. DISPLAY THE STREAM CARDS
+    // ==========================================
+    if (filtered.length === 0) {
+      container.innerHTML = `<div class="no-streams">No listings active inside this tier view parameters.</div>`;
+      return;
+    }
+
+    container.innerHTML = filtered.map((s) => {
+      // Live Tab Layout (Shows watcher count, skips sorting element)
+      if (currentTab === 'live') {
+        const viewers = s.viewerCount || 0;
+        return `
+          <div class="stream-card live-card" data-id="${s.id}">
+            <div class="live-badge">🔴 LIVE</div>
+            <div class="viewer-count">${viewers} watching</div>
+            <h3>${s.title}</h3>
+            <p>${s.description || ''}</p>
+          </div>
+        `;
       }
-      if (sortValue === 'alpha') {
-        const titleA = (a.title || "").toLowerCase();
-        const titleB = (b.title || "").toLowerCase();
-        return titleA.localeCompare(titleB);
-      }
-      return 0;
-    });
-  }
 
-  // ==========================================
-  // 3. DISPLAY THE STREAM CARDS
-  // ==========================================
-  if (filtered.length === 0) {
-    container.innerHTML = `<div class="no-streams">No listings active inside this tier view parameters.</div>`;
-    return;
-  }
-
-  container.innerHTML = filtered.map((s) => {
-    // Live Tab Layout (Shows watcher count, skips sorting element)
-    if (currentTab === 'live') {
-      const viewers = s.viewerCount || 0;
+      // Default Upcoming / Premiere Layout
       return `
-        <div class="stream-card live-card" data-id="${s.id}">
-          <div class="live-badge">🔴 LIVE</div>
-          <div class="viewer-count">${viewers} watching</div>
+        <div class="stream-card" data-id="${s.id}">
           <h3>${s.title}</h3>
           <p>${s.description || ''}</p>
         </div>
       `;
-    }
-
-    // Default Upcoming / Premiere Layout
-    return `
-      <div class="stream-card" data-id="${s.id}">
-        <h3>${s.title}</h3>
-        <p>${s.description || ''}</p>
-      </div>
-    `;
-  }).join('');
+    }).join('');
+  }
 }
 
   // 4. Your existing mapping logic (.map) to build the stream cards continues right below here...
