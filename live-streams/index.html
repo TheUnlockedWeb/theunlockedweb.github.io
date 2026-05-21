@@ -1065,7 +1065,7 @@ function renderStreams() {
   if (!container) return;
 
   // ==========================================
-  // 1. SUGGESTIONS TAB (Keep at the very top!)
+  // 1. SUGGESTIONS TAB (Safely isolated early exit)
   // ==========================================
   if (currentTab === 'suggestions') {
     let defaultInputValue = isAdmin ? ((adminRole === 'OWNER') ? 'EthanUnlocked' : 'TUW Admin') : '';
@@ -1092,7 +1092,7 @@ function renderStreams() {
     }).join('');
 
     container.innerHTML = ownerTerminalElement + suggestionsListHTML;
-    return; // Bails out completely so no other code runs for suggestions
+    return; // Stops execution here so suggestions never crash on stream properties
   }
 
   // ==========================================
@@ -1131,7 +1131,7 @@ function renderStreams() {
   }
 
   container.innerHTML = filtered.map((s) => {
-    // Live Tab Layout (Shows watcher count)
+    // Live Tab Layout (Shows watcher count, skips sorting element)
     if (currentTab === 'live') {
       const viewers = s.viewerCount || 0;
       return `
