@@ -1,6 +1,6 @@
 # TheUnlockedWeb
 
-_**NOTE: Due to Linewise restrictions on my coding device, all maintenences are delayed until further notice!**_
+##_**NOTE: Due to Linewise restrictions on my coding device, all maintenences are delayed until further notice!**_
 
 Personal website for [EthanUnlocked's gaming hits](https://www.youtube.com/@ethan1957-p2y) — hosted on GitHub Pages.
 
