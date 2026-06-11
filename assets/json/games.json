@@ -239,16 +239,16 @@
     ]
   },
             {
-    "id": "deleting",
-    "title": "DELETING SOON!",
-    "desc": "When the next Maintenence comes, this game will be deleted!",
-    "thumbnail": "pokedoku.png",
-    "icon": "fa-solid fa-danger",
+    "id": "dialgadex",
+    "title": "DialgaDex",
+    "desc": "Find info on pokemon and the best for each type HERE!",
+    "thumbnail": "dialgadex.png",
+    "icon": "fa-solid fa-ball",
     "iconBg": "rgba(255,0,0,.13)",
     "iconColor": "#ff0000",
     "tags": [
-      { "label": "...", "color": "gold" },
-      { "label": "___________", "color": "purple" }
+      { "label": "Index", "color": "gold" },
+      { "label": "Created by EthanUnlocked", "color": "purple" }
     ]
   },
                 {
