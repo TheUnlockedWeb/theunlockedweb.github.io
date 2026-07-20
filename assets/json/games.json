@@ -238,57 +238,30 @@
       { "label": "Ported by EthanUnlocked", "color": "purple" }
     ]
   },
-            {
-    "id": "dialgadex",
-    "title": "DialgaDex",
-    "desc": "Find info on pokemon and the best for each type HERE!",
-    "url": "https://ethanunlocked690.github.io/dialgadex/",
-    "thumbnail": "dialgadex.png",
+                    {
+    "id": "obstacle-dodge",
+    "title": "Obstacle Dodge",
+    "desc": "Just have fun to try and dodge as many obstacles as you can!",
+    "thumbnail": "",
+    "icon": "fa-solid fa-question_mark",
+    "iconBg": "rgba(255,0,0,.13)",
+    "iconColor": "#ff0000",
+    "tags": [
+      { "label": "...", "color": "gold" },
+      { "label": "Created by _______", "color": "purple" }
+    ]
+  },
+                  {
+    "id": "coming-soon",
+    "title": "Coming soon...",
+    "desc": "Come back later to see this game!",
+    "thumbnail": "obstacle-dodge-thumbnail.png",
     "icon": "fa-solid fa-ball",
     "iconBg": "rgba(255,0,0,.13)",
     "iconColor": "#ff0000",
     "tags": [
-      { "label": "Index", "color": "gold" },
+      { "label": "Fun", "color": "gold" },
       { "label": "Created by EthanUnlocked", "color": "purple" }
-    ]
-  },
-                {
-    "id": "coming-soon",
-    "title": "Coming soon...",
-    "desc": "Come back later to see this game!",
-    "thumbnail": "coming-soon.gif",
-    "icon": "fa-solid fa-question_mark",
-    "iconBg": "rgba(255,0,0,.13)",
-    "iconColor": "#ff0000",
-    "tags": [
-      { "label": "...", "color": "gold" },
-      { "label": "Created by _______", "color": "purple" }
-    ]
-  },
-                  {
-    "id": "coming-soon",
-    "title": "Coming soon...",
-    "desc": "Come back later to see this game!",
-    "thumbnail": "coming-soon.gif",
-    "icon": "fa-solid fa-question_mark",
-    "iconBg": "rgba(255,0,0,.13)",
-    "iconColor": "#ff0000",
-    "tags": [
-      { "label": "...", "color": "gold" },
-      { "label": "Created by _______", "color": "purple" }
-    ]
-  },
-                  {
-    "id": "coming-soon",
-    "title": "Coming soon...",
-    "desc": "Come back later to see this game!",
-    "thumbnail": "coming-soon.gif",
-    "icon": "fa-solid fa-question_mark",
-    "iconBg": "rgba(255,0,0,.13)",
-    "iconColor": "#ff0000",
-    "tags": [
-      { "label": "...", "color": "gold" },
-      { "label": "Created by _______", "color": "purple" }
     ]
   },
                   {
