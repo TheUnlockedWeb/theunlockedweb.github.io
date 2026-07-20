@@ -256,13 +256,13 @@
     "id": "coming-soon",
     "title": "Coming soon...",
     "desc": "Come back later to see this game!",
-    "thumbnail": "obstacle-dodge-thumbnail.png",
-    "icon": "fa-solid fa-ball",
+    "thumbnail": "Screenshot 2026-07-20 122823.png",
+    "icon": "fa-solid fa-rocket",
     "iconBg": "rgba(255,0,0,.13)",
     "iconColor": "#ff0000",
     "tags": [
-      { "label": "Fun", "color": "gold" },
-      { "label": "Created by EthanUnlocked", "color": "purple" }
+      { "label": "...", "color": "gold" },
+      { "label": "___________", "color": "purple" }
     ]
   },
                   {
