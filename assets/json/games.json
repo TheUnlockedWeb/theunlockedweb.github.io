@@ -84,7 +84,7 @@
       { "label": "Ported by LaDoodleInTheHat", "color": "purple" }
     ]
   },
-                {
+  {
     "id": "escape-road-3",
     "title": "Escape Road 3",
     "desc": "Escape Road 3",
@@ -98,7 +98,7 @@
       { "label": "Created by EthanUnlocked", "color": "purple" }
     ]
   },
-    {
+  {
     "id": "drive-mad",
     "title": "Drive Mad",
     "desc": "Drive Madly",
@@ -126,7 +126,7 @@
       { "label": "Made by LaDoodleInTheHat", "color": "green" }
     ]
   },
-      {
+  {
     "id": "reaction-test",
     "title": "Reaction Test",
     "desc": "How fast is your reaction? Test it here!",
@@ -140,7 +140,7 @@
       { "label": "Created by EthanUnlocked", "color": "purple" }
     ]
   },
-        {
+  {
     "id": "icon-kit",
     "title": "Online Icon Kit",
     "desc": "Design and download your own Geometry Dash icon set!",
@@ -154,7 +154,7 @@
       { "label": "Ported by EthanUnlocked", "color": "purple" }
     ]
   },
-          {
+  {
     "id": "brawl-stars-catalog",
     "title": "Brawl Stars Catalog",
     "desc": "Check out all the Brawl Stars Skins!",
@@ -168,7 +168,7 @@
       { "label": "Created by EthanUnlocked", "color": "purple" }
     ]
   },
-            {
+  {
     "id": "poke-breeze",
     "title": "PokéGoBreeze",
     "desc": "The ultimate Pokémon GO wiki with conters, pokedex, and more!",
@@ -182,7 +182,7 @@
       { "label": "Ported by EthanUnlocked (For now)", "color": "purple" }
     ]
   },
-              {
+  {
     "id": "trading-list",
     "title": "Pokémon GO Trading List Maker",
     "desc": "Choose what pokemon you will give and want in a trade",
@@ -196,7 +196,7 @@
       { "label": "Created by EthanUnlocked", "color": "purple" }
     ]
   },
-                {
+  {
     "id": "tictactoe",
     "title": "TicTacToe",
     "desc": "Ethan has used his Thonny skills to create a turtle drawing a TicTacToe game! (Turtle is the name of the pen for some reason) and it's playable!",
@@ -210,7 +210,7 @@
       { "label": "Created by EthanUnlocked", "color": "purple" }
     ]
   },
-                  {
+  {
     "id": "fan-kit",
     "title": "Supercell FanKit",
     "desc": "The official Brawl Stars FanKit with all audio, skins, stats and more (well maybe not stats, maybe just cosmetics lol)",
@@ -224,7 +224,7 @@
       { "label": "Ported by EthanUnlocked", "color": "purple" }
     ]
   },
-          {
+  {
     "id": "67-speed",
     "title": "67speed Clone",
     "desc": "How many 67's can you do in 20 seconds?",
@@ -238,7 +238,7 @@
       { "label": "Ported by EthanUnlocked", "color": "purple" }
     ]
   },
-                    {
+  {
     "id": "obstacle-dodge",
     "title": "Obstacle Dodge",
     "desc": "Just have fun to try and dodge as many obstacles as you can!",
@@ -252,7 +252,7 @@
       { "label": "Created by _______", "color": "purple" }
     ]
   },
-                  {
+  {
     "id": "coming-soon",
     "title": "Coming soon...",
     "desc": "Come back later to see this game!",
@@ -265,7 +265,7 @@
       { "label": "___________", "color": "purple" }
     ]
   },
-                  {
+  {
     "id": "coming-soon",
     "title": "Coming soon...",
     "desc": "Come back later to see this game!",
@@ -278,7 +278,7 @@
       { "label": "Created by _______", "color": "purple" }
     ]
   },
-                    {
+  {
     "id": "coming-soon",
     "title": "Coming soon...",
     "desc": "Come back later to see this game!",
@@ -291,7 +291,7 @@
       { "label": "Created by _______", "color": "purple" }
     ]
   },
-                      {
+  {
     "id": "coming-soon",
     "title": "Coming soon...",
     "desc": "Come back later to see this game!",
@@ -304,7 +304,20 @@
       { "label": "Created by _______", "color": "purple" }
     ]
   },
-                  {
+  {
+    "id": "coming-soon",
+    "title": "Coming soon...",
+    "desc": "Come back later to see this game!",
+    "thumbnail": "coming-soon.gif",
+    "icon": "fa-solid fa-question_mark",
+    "iconBg": "rgba(255,0,0,.13)",
+    "iconColor": "#ff0000",
+    "tags": [
+      { "label": "...", "color": "gold" },
+      { "label": "Created by _______", "color": "purple" }
+    ]
+  },
+  {
     "id": "no-game",
     "title": "We need ideas!",
     "desc": "We need more suggestions! Suggest more games in the suggestions page!",
