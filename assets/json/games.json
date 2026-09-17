@@ -169,17 +169,16 @@
     ]
   },
   {
-    "id": "poke-breeze",
-    "title": "PokéGoBreeze",
-    "desc": "The ultimate Pokémon GO wiki with conters, pokedex, and more!",
-    "url": "https://poke-go-breeze.vercel.app/",
-    "thumbnail": "pokebreeze.png",
-    "icon": "fa-solid fa-soccer",
+    "id": "coming-soon",
+    "title": "Coming soon...",
+    "desc": "Come back later to see this game!",
+    "thumbnail": "coming-soon.gif",
+    "icon": "fa-solid fa-question_mark",
     "iconBg": "rgba(255,0,0,.13)",
     "iconColor": "#ff0000",
     "tags": [
-      { "label": "Index + more", "color": "gold" },
-      { "label": "Ported by EthanUnlocked (For now)", "color": "purple" }
+      { "label": "...", "color": "gold" },
+      { "label": "Created by _______", "color": "purple" }
     ]
   },
   {
