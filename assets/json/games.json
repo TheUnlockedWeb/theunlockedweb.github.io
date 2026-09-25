@@ -169,16 +169,17 @@
     ]
   },
   {
-    "id": "coming-soon",
-    "title": "Coming soon...",
-    "desc": "Come back later to see this game!",
+    "id": "pokedex",
+    "title": "The Ultra Dex",
+    "desc": "Search for pokemon, learn about them, and do more stuff with them!",
+    "url": "../webgames/pokedex/",
     "thumbnail": "coming-soon.gif",
     "icon": "fa-solid fa-question_mark",
     "iconBg": "rgba(255,0,0,.13)",
     "iconColor": "#ff0000",
     "tags": [
-      { "label": "...", "color": "gold" },
-      { "label": "Created by _______", "color": "purple" }
+      { "label": "Pokedex", "color": "gold" },
+      { "label": "Created by EthanUnlocked", "color": "purple" }
     ]
   },
   {
