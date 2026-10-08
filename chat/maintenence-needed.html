@@ -427,25 +427,62 @@ onAuthStateChanged(auth, user => {
 });
 
 /* ── Sign in ──────────────────────────────────── */
+// 1. Fixed Google Sign-In (adds fallback if popup is blocked)
 el('googleSignInBtn').addEventListener('click', async () => {
   const btn = el('googleSignInBtn');
   el('authError').textContent = '';
   btn.disabled = true;
   try {
     await signInWithPopup(auth, provider);
-    // onAuthStateChanged fires → showChat
   } catch (e) {
-    btn.disabled = false;
-    if (e.code !== 'auth/popup-closed-by-user') {
+    if (e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user') {
+      // Fallback to redirect if popup fails
+      await signInWithRedirect(auth, provider);
+    } else {
+      btn.disabled = false;
       el('authError').textContent = 'Sign-in failed — ' + (e.message || 'please try again.');
     }
+  }
+});
+
+// 2. Email Sign-In / Register
+el('emailSignInBtn')?.addEventListener('click', async () => {
+  const email = el('emailInput').value;
+  const pass = el('passwordInput').value;
+  el('authError').textContent = '';
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+  } catch (e) {
+    el('authError').textContent = 'Email sign-in failed — ' + e.message;
+  }
+});
+
+el('emailSignUpBtn')?.addEventListener('click', async () => {
+  const email = el('emailInput').value;
+  const pass = el('passwordInput').value;
+  el('authError').textContent = '';
+  try {
+    await createUserWithEmailAndPassword(auth, email, pass);
+  } catch (e) {
+    el('authError').textContent = 'Sign-up failed — ' + e.message;
+  }
+});
+
+// 3. Discord Sign-In
+el('discordSignInBtn')?.addEventListener('click', async () => {
+  const discordProvider = new OAuthProvider('oidc.discord');
+  el('authError').textContent = '';
+  try {
+    await signInWithPopup(auth, discordProvider);
+  } catch (e) {
+    el('authError').textContent = 'Discord sign-in failed — ' + e.message;
   }
 });
 
 function showAuth() {
   el('authOverlay').classList.remove('hidden');
   el('chatShell').style.display = 'none';
-  el('googleSignInBtn').disabled = false;
+  if (el('googleSignInBtn')) el('googleSignInBtn').disabled = false;
   el('authError').textContent = '';
 }
 
