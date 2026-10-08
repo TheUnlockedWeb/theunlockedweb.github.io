@@ -885,7 +885,6 @@ document.addEventListener('keydown', e => {
 });
 
 /* ── Utils ────────────────────────────────────── */
-function el(id) { return document.getElementById(id); }
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function linkify(s) { return s.replace(/(https?:\/\/[^\s<>"]+)/g,'<a href="$1" target="_blank" rel="noopener noreferrer" style="color:var(--gold)">$1</a>'); }
 let toastTimer;
