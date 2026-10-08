@@ -939,53 +939,56 @@ async function sendMessage(channelId, messageText) {
     }
   }
 }
-// --- Navigation Helper ---
-function switchAuthView(activeViewId) {
-  ['mainAuthView', 'emailView', 'guestView', 'moreOptionsView', 'totpView'].forEach(id => {
-    el(id).classList.add('hidden');
-  });
-  el(activeViewId).classList.remove('hidden');
-  el('authError').textContent = '';
-}
+document.addEventListener('DOMContentLoaded', () => {
+  // 1. Ensure el() helper exists here inside DOMContentLoaded
+  function el(id) { return document.getElementById(id); }
 
-// Menu Button Triggers
-el('showEmailViewBtn').addEventListener('click', () => switchAuthView('emailView'));
-el('showGuestViewBtn').addEventListener('click', () => switchAuthView('guestView'));
-el('showMoreViewBtn').addEventListener('click', () => switchAuthView('moreOptionsView'));
-el('showTotpViewBtn').addEventListener('click', () => switchAuthView('totpView'));
-
-// Back buttons
-document.querySelectorAll('.back-btn').forEach(btn => {
-  btn.addEventListener('click', () => switchAuthView('mainAuthView'));
-});
-
-// --- Guest Login Handler ---
-el('guestSignInBtn').addEventListener('click', async () => {
-  const firstName = el('guestFirstName').value.trim();
-  const lastName = el('guestLastName').value.trim();
-  const avatar = el('guestAvatar').value.trim() || 'https://via.placeholder.com/150';
-
-  if (!firstName) {
-    el('authError').textContent = 'Please enter a first name.';
-    return;
-  }
-
-  const fullName = lastName ? `${firstName} ${lastName}` : firstName;
-
-  try {
-    // 1. Sign in anonymously with Firebase
-    const userCredential = await signInAnonymously(auth);
-    const user = userCredential.user;
-
-    // 2. Set profile display name & avatar
-    await updateProfile(user, {
-      displayName: fullName + ' (Guest)',
-      photoURL: avatar
+  // 2. Navigation Helper
+  function switchAuthView(activeViewId) {
+    ['mainAuthView', 'emailView', 'guestView', 'moreOptionsView', 'totpView'].forEach(id => {
+      const view = el(id);
+      if (view) view.classList.add('hidden');
     });
-
-  } catch (e) {
-    el('authError').textContent = 'Guest login failed — ' + e.message;
+    const target = el(activeViewId);
+    if (target) target.classList.remove('hidden');
+    const err = el('authError');
+    if (err) err.textContent = '';
   }
+
+  // 3. Menu Button Triggers
+  el('showEmailViewBtn')?.addEventListener('click', () => switchAuthView('emailView'));
+  el('showGuestViewBtn')?.addEventListener('click', () => switchAuthView('guestView'));
+  el('showMoreViewBtn')?.addEventListener('click', () => switchAuthView('moreOptionsView'));
+  el('showTotpViewBtn')?.addEventListener('click', () => switchAuthView('totpView'));
+
+  // 4. Back Buttons
+  document.querySelectorAll('.back-btn').forEach(btn => {
+    btn.addEventListener('click', () => switchAuthView('mainAuthView'));
+  });
+
+  // 5. Guest Login
+  el('guestSignInBtn')?.addEventListener('click', async () => {
+    const firstName = el('guestFirstName')?.value.trim();
+    const lastName = el('guestLastName')?.value.trim();
+    const avatar = el('guestAvatar')?.value.trim() || 'https://via.placeholder.com/150';
+
+    if (!firstName) {
+      if (el('authError')) el('authError').textContent = 'Please enter a first name.';
+      return;
+    }
+
+    const fullName = lastName ? `${firstName} ${lastName}` : firstName;
+
+    try {
+      const userCredential = await signInAnonymously(auth);
+      await updateProfile(userCredential.user, {
+        displayName: fullName + ' (Guest)',
+        photoURL: avatar
+      });
+    } catch (e) {
+      if (el('authError')) el('authError').textContent = 'Guest login failed — ' + e.message;
+    }
+  });
 });
 </script>
 </body>
