@@ -228,38 +228,79 @@
   <div class="auth-card">
     <div class="auth-logo">TUW</div>
     <div class="auth-title">Community Chat</div>
-    <div class="auth-sub">Choose a sign-in method to join the chat.</div>
+    <div class="auth-sub" id="authSub">Choose a sign-in method to join the chat.</div>
 
-    <!-- Email & Password Inputs -->
-    <input type="email" id="emailInput" placeholder="Email address" style="width: 100%; padding: 10px; margin-bottom: 8px; box-sizing: border-box;" />
-    <input type="password" id="passwordInput" placeholder="Password" style="width: 100%; padding: 10px; margin-bottom: 8px; box-sizing: border-box;" />
+    <!-- MAIN LOGIN BUTTONS VIEW -->
+    <div id="mainAuthView">
+      <button class="auth-btn google-btn" id="googleSignInBtn">
+        <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        Continue with Google
+      </button>
 
-    <button id="emailSignInBtn" style="width: 100%; padding: 10px; margin-bottom: 6px; cursor: pointer;">Sign In with Email</button>
-    <button id="emailSignUpBtn" style="width: 100%; padding: 10px; margin-bottom: 12px; cursor: pointer;">Register New Account</button>
+      <button class="auth-btn discord-btn" id="discordBtn">
+        Continue with Discord
+      </button>
 
-    <div style="text-align: center; margin: 10px 0; color: #888;">— OR —</div>
+      <button class="auth-btn email-btn" id="showEmailViewBtn">
+        Continue with Email
+      </button>
 
-    <!-- Google Button -->
-    <button class="google-btn" id="googleSignInBtn" style="margin-bottom: 8px;">
-      <!-- Official Google G logo SVG -->
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
-        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-      </svg>
-      Continue with Google
-    </button>
+      <button class="auth-btn guest-btn" id="showGuestViewBtn">
+        Continue as Guest
+      </button>
 
-    <!-- Discord Button -->
-    <button id="discordSignInBtn" style="width: 100%; padding: 10px; background-color: #5865F2; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">
-      Continue with Discord
-    </button>
+      <button class="auth-btn more-btn" id="showMoreViewBtn">
+        Choose More Options
+      </button>
+    </div>
+
+    <!-- VIEW 1: EMAIL SIGN IN / REGISTER -->
+    <div id="emailView" class="hidden">
+      <input type="email" id="emailInput" class="auth-input" placeholder="Email Address">
+      <input type="password" id="passwordInput" class="auth-input" placeholder="Password">
+      <button class="auth-btn email-action-btn" id="emailSignInBtn">Sign In</button>
+      <button class="auth-btn secondary-btn" id="emailSignUpBtn">Register Account</button>
+      <button class="auth-btn back-btn">← Back to Options</button>
+    </div>
+
+    <!-- VIEW 2: GUEST SIGN IN -->
+    <div id="guestView" class="hidden">
+      <input type="text" id="guestFirstName" class="auth-input" placeholder="First Name *">
+      <input type="text" id="guestLastName" class="auth-input" placeholder="Last Name (Optional)">
+      <label style="color:#aaa; font-size:12px; display:block; margin-top:8px;">Avatar URL (Optional)</label>
+      <input type="url" id="guestAvatar" class="auth-input" placeholder="https://example.com/pfp.png">
+      <button class="auth-btn guest-action-btn" id="guestSignInBtn">Join Chat as Guest</button>
+      <button class="auth-btn back-btn">← Back to Options</button>
+    </div>
+
+    <!-- VIEW 3: MORE OPTIONS (TOTP Authenticator App / GitHub / Microsoft) -->
+    <div id="moreOptionsView" class="hidden">
+      <button class="auth-btn secondary-btn" id="githubSignInBtn">Continue with GitHub</button>
+      <button class="auth-btn secondary-btn" id="microsoftSignInBtn">Continue with Microsoft</button>
+      <button class="auth-btn totp-btn" id="showTotpViewBtn">Use Authenticator App (Authy / Google Auth)</button>
+      <button class="auth-btn back-btn">← Back to Options</button>
+    </div>
+
+    <!-- VIEW 4: TOTP / AUTHENTICATOR SETUP & VERIFY -->
+    <div id="totpView" class="hidden">
+      <p style="font-size:13px; color:#ccc; margin-bottom:10px;">Scan QR Code or enter setup key in your 2FA app:</p>
+      
+      <!-- Generated QR Code Image -->
+      <div style="text-align:center; margin: 10px 0;">
+        <img id="totpQrCode" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=otpauth://totp/TUW%20Chat?secret=JBSWY3DPEHPK3PXP" alt="TOTP QR Code" style="border-radius:6px; border:2px solid #333;" />
+      </div>
+
+      <div style="font-size:11px; color:#888; word-break:break-all; text-align:center; margin-bottom:10px;">
+        Setup Key: <strong style="color:#fff;" id="totpKeyText">JBSWY3DPEHPK3PXP</strong>
+      </div>
+
+      <input type="text" id="totpCodeInput" class="auth-input" placeholder="6-digit Authenticator Code" maxlength="6">
+      <button class="auth-btn totp-action-btn" id="verifyTotpBtn">Verify & Login</button>
+      <button class="auth-btn back-btn">← Back to Options</button>
+    </div>
 
     <div class="auth-error" id="authError"></div>
-    <div class="auth-note">
-      Your display name and profile details will be used in chat.
-    </div>
+    <div class="auth-note">Your display name and details will be used in chat.</div>
   </div>
 </div>
 
