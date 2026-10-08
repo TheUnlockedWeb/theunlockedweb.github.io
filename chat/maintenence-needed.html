@@ -774,29 +774,50 @@ function showToast(msg) {
   clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
 }
 
-/*  ── Banned Words  ───────────────────── */
-const bannedWords = ["ass hole", "cum", "fuck", "shit", "bitch", "goon", "gooner"];
+/*  ── Banned Words and warning feature  ───────────────────── */
+const functions = require("firebase-functions");
+const admin = require("firebase-admin");
+admin.initializeApp();
 
-function containsBannedWord(input) {
-  if (typeof input !== "string") return false;
-  const normalized = input.toLowerCase();
-  return bannedWords.some((word) => normalized.includes(word.toLowerCase()));
-}
+const BANNED_WORDS = ["ass hole", "cum", "fuck", "shit", "bitch", "goon", "gooner"];
 
-async function sendMessage(channelId, messageText) {
-  // Check on client side to notify the user immediately
-  if (containsBannedWord(messageText) || containsBannedWord(channelId)) {
-    alert("Your message or channel name contains prohibited words.");
-    return;
-  }
+exports.moderateMessages = functions.database
+  .ref("/channels/{channelId}/messages/{messageId}")
+  .onCreate(async (snapshot, context) => {
+    const messageData = snapshot.val();
+    const text = messageData.text || "";
+    const userId = messageData.authorId; // Ensure you send authorId when saving messages!
 
-  // Push message to Firebase Realtime Database
-  const messageRef = firebase.database().ref(`channels/${channelId}/messages`).push();
-  await messageRef.set({
-    text: messageText,
-    timestamp: Date.now()
+    if (!text || !userId) return null;
+
+    const lowerText = text.toLowerCase();
+    const containsBannedWord = BANNED_WORDS.some(word => lowerText.includes(word));
+
+    if (containsBannedWord) {
+      console.log(`Banned word detected from user: ${userId}. Deleting message...`);
+
+      // 1. DELETE THE MESSAGE
+      await snapshot.ref.remove();
+
+      // 2. FETCH CURRENT USER WARNINGS
+      const userRef = admin.database().ref(`/users/${userId}`);
+      const userSnap = await userRef.once("value");
+      const userData = userSnap.val() || {};
+
+      let currentWarnings = (userData.warnings || 0) + 1;
+      let updates = { warnings: currentWarnings };
+
+      // 3. IF 3 WARNINGS REACHED, MUTE FOR 7 DAYS
+      if (currentWarnings >= 3) {
+        const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+        const mutedUntil = Date.now() + SEVEN_DAYS_MS;
+        
+        updates.mutedUntil = mutedUntil;
+        updates.warnings = 0; // Reset warnings after muting (optional)
+        
+        console.log(`User ${userId} reached 3 warnings. Muted until ${new Date(mutedUntil)}`);
+      }
+
+      await userRef.update(updates);
+    }
   });
-}
-</script>
-</body>
-</html>
