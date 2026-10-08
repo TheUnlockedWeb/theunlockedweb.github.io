@@ -775,52 +775,50 @@ function showToast(msg) {
 }
 
 /*  ── Banned Words and warning feature  ───────────────────── */
-const functions = require("firebase-functions");
-const admin = require("firebase-admin");
-admin.initializeApp();
+async function sendMessage(channelId, messageText) {
+  const user = firebase.auth().currentUser;
+  if (!user) return;
 
-const BANNED_WORDS = ["ass hole", "cum", "fuck", "shit", "bitch", "goon", "gooner"];
+  // 1. Check if user is muted first
+  const userSnap = await firebase.database().ref(`users/${user.uid}`).once('value');
+  const userData = userSnap.val() || {};
+  
+  if (userData.mutedUntil && userData.mutedUntil > Date.now()) {
+    alert(`You are muted until ${new Date(userData.mutedUntil).toLocaleString()}`);
+    return;
+  }
 
-exports.moderateMessages = functions.database
-  .ref("/channels/{channelId}/messages/{messageId}")
-  .onCreate(async (snapshot, context) => {
-    const messageData = snapshot.val();
-    const text = messageData.text || "";
-    const userId = messageData.authorId; // Ensure you send authorId when saving messages!
+  // 2. Try sending the message
+  try {
+    const messageRef = firebase.database().ref(`channels/${channelId}/messages`).push();
+    await messageRef.set({
+      text: messageText,
+      authorId: user.uid,
+      timestamp: Date.now()
+    });
+  } catch (error) {
+    // If the rules blocked it because of banned words
+    if (error.code === "PERMISSION_DENIED" || error.message.includes("PERMISSION_DENIED")) {
+      
+      // Calculate warnings locally or via a database node
+      let warnings = (userData.warnings || 0) + 1;
+      let updates = { warnings: warnings };
 
-    if (!text || !userId) return null;
-
-    const lowerText = text.toLowerCase();
-    const containsBannedWord = BANNED_WORDS.some(word => lowerText.includes(word));
-
-    if (containsBannedWord) {
-      console.log(`Banned word detected from user: ${userId}. Deleting message...`);
-
-      // 1. DELETE THE MESSAGE
-      await snapshot.ref.remove();
-
-      // 2. FETCH CURRENT USER WARNINGS
-      const userRef = admin.database().ref(`/users/${userId}`);
-      const userSnap = await userRef.once("value");
-      const userData = userSnap.val() || {};
-
-      let currentWarnings = (userData.warnings || 0) + 1;
-      let updates = { warnings: currentWarnings };
-
-      // 3. IF 3 WARNINGS REACHED, MUTE FOR 7 DAYS
-      if (currentWarnings >= 3) {
-        const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
-        const mutedUntil = Date.now() + SEVEN_DAYS_MS;
-        
-        updates.mutedUntil = mutedUntil;
-        updates.warnings = 0; // Reset warnings after muting (optional)
-        
-        console.log(`User ${userId} reached 3 warnings. Muted until ${new Date(mutedUntil)}`);
+      if (warnings >= 3) {
+        const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
+        updates.mutedUntil = Date.now() + SEVEN_DAYS;
+        updates.warnings = 0;
+        alert("Warning 3/3: You sent a prohibited word and have been muted for 7 days!");
+      } else {
+        alert(`Warning ${warnings}/3: Prohibited words are not allowed!`);
       }
 
-      await userRef.update(updates);
+      // Save the warning count to the user's record
+      // (Requires admin SDK or relaxing rules on the warnings node for client updates)
+      await firebase.database().ref(`users/${user.uid}`).update(updates);
     }
-  });
+  }
+}
 </script>
 </body>
 </html>
