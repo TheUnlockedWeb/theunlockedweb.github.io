@@ -357,29 +357,50 @@ footer {
   box-sizing: border-box;
 }
 
+/* Unified Button Design */
 .auth-btn {
   width: 100%;
-  padding: 12px;
+  height: 46px;
+  padding: 0 16px;
   margin-bottom: 10px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  transition: opacity 0.2s;
+  gap: 12px;
+  transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.15s ease;
+  box-sizing: border-box;
 }
-.auth-btn:hover { opacity: 0.9; }
 
-.google-btn { background: #ffffff; color: #000; }
-.discord-btn { background: #5865F2; color: #fff; }
-.email-btn { background: #2f313d; color: #fff; }
-.guest-btn { background: #3ba55d; color: #fff; }
-.more-btn { background: transparent; border: 1px solid #444558; color: #aaa; }
-.secondary-btn { background: #262734; color: #fff; }
-.totp-btn { background: #eb459e; color: #fff; }
-.back-btn { background: transparent; color: #72767d; font-size: 12px; margin-top: 5px; }
+.auth-btn:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.auth-btn:active {
+  transform: translateY(0);
+}
+
+/* SVG Icon Alignment */
+.auth-btn svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* Individual Brand Colors */
+.google-btn { background: #ffffff; color: #000000; }
+.discord-btn { background: #5865F2; color: #ffffff; }
+.email-btn { background: #2f313d; color: #ffffff; }
+.guest-btn { background: #23a55a; color: #ffffff; }
+.more-btn { background: transparent; border: 1px solid #333446; color: #b9bbbe; }
+.secondary-btn { background: #2b2d31; color: #ffffff; }
+.totp-btn { background: #eb459e; color: #ffffff; }
+.back-btn { background: transparent; color: #949ba4; height: 36px; font-size: 13px; }
 
 .hidden { display: none !important; }
