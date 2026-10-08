@@ -344,3 +344,42 @@ footer {
   .pag-btn span { display: none; }
   .pag-btn { padding: 9px 13px; }
 }
+
+.auth-input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 10px;
+  background: #181920;
+  border: 1px solid #333446;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.auth-btn {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: opacity 0.2s;
+}
+.auth-btn:hover { opacity: 0.9; }
+
+.google-btn { background: #ffffff; color: #000; }
+.discord-btn { background: #5865F2; color: #fff; }
+.email-btn { background: #2f313d; color: #fff; }
+.guest-btn { background: #3ba55d; color: #fff; }
+.more-btn { background: transparent; border: 1px solid #444558; color: #aaa; }
+.secondary-btn { background: #262734; color: #fff; }
+.totp-btn { background: #eb459e; color: #fff; }
+.back-btn { background: transparent; color: #72767d; font-size: 12px; margin-top: 5px; }
+
+.hidden { display: none !important; }
