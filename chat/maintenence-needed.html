@@ -773,6 +773,30 @@ function showToast(msg) {
   const t = el('toast'); t.textContent = msg; t.classList.add('show');
   clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
 }
+
+/*  ── Banned Words  ───────────────────── */
+const bannedWords = ["ass hole", "cum", "fuck", "shit", "bitch", "goon", "gooner"];
+
+function containsBannedWord(input) {
+  if (typeof input !== "string") return false;
+  const normalized = input.toLowerCase();
+  return bannedWords.some((word) => normalized.includes(word.toLowerCase()));
+}
+
+async function sendMessage(channelId, messageText) {
+  // Check on client side to notify the user immediately
+  if (containsBannedWord(messageText) || containsBannedWord(channelId)) {
+    alert("Your message or channel name contains prohibited words.");
+    return;
+  }
+
+  // Push message to Firebase Realtime Database
+  const messageRef = firebase.database().ref(`channels/${channelId}/messages`).push();
+  await messageRef.set({
+    text: messageText,
+    timestamp: Date.now()
+  });
+}
 </script>
 </body>
 </html>
