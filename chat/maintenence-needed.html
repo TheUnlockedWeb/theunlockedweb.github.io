@@ -842,6 +842,36 @@ function appendMessage(msg) {
 function scrollToBottom(smooth = true) {
   const w = el('messagesWrap'); w.scrollTo({ top: w.scrollHeight, behavior: smooth ? 'smooth' : 'instant' });
 }
+  /* ── Discord Join Templates ── */
+const WELCOME_TEMPLATES = [
+  "A wild {name} appeared.",
+  "Welcome, {name}. We hope you brought pizza.",
+  "Everyone welcome {name}!",
+  "Glad you're here, {name}.",
+  "{name} just landed.",
+  "Swoosh! {name} just slid into the chat.",
+  "Good to see you, {name}.",
+  "Yay you made it, {name}!"
+];
+
+function generateWelcomeText(username) {
+  const template = WELCOME_TEMPLATES[Math.floor(Math.random() * WELCOME_TEMPLATES.length)];
+  const nameHtml = `<span class="username">${esc(username)}</span>`;
+  return template.replace('{name}', nameHtml);
+}
+
+// Function to post a welcome message to Firebase
+async function sendSystemWelcome(username) {
+  try {
+    await push(ref(db, `messages/${currentRoom}`), {
+      type: 'system',
+      text: generateWelcomeText(username),
+      ts: Date.now()
+    });
+  } catch (err) {
+    console.error("Failed to post welcome message:", err);
+  }
+}
 
 /* ── Typing ───────────────────────────────────── */
 function setTyping(active) {
