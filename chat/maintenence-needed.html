@@ -1082,6 +1082,33 @@ async function verifyAuthCode(code) {
     if (err) err.textContent = 'Invalid code. Please try again.';
   }
 }
+  /* ── GitHub Sign-In ── */
+  document.getElementById('githubBtn')?.addEventListener('click', async () => {
+    const provider = new GithubAuthProvider();
+    
+    try {
+      const result = await signInWithPopup(auth, provider);
+      console.log("Logged in with GitHub:", result.user);
+    } catch (error) {
+      console.error("GitHub login error:", error);
+      const err = document.getElementById('authError');
+      if (err) err.textContent = 'GitHub login failed: ' + error.message;
+    }
+  });
+
+  /* ── Microsoft Sign-In ── */
+  document.getElementById('microsoftBtn')?.addEventListener('click', async () => {
+    const provider = new OAuthProvider('microsoft.com');
+    
+    try {
+      const result = await signInWithPopup(auth, provider);
+      console.log("Logged in with Microsoft:", result.user);
+    } catch (error) {
+      console.error("Microsoft login error:", error);
+      const err = document.getElementById('authError');
+      if (err) err.textContent = 'Microsoft login failed: ' + error.message;
+    }
+  });
 </script>
 </body>
 </html>
