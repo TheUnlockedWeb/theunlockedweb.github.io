@@ -289,14 +289,27 @@
       <button class="auth-btn back-btn">← Back to Options</button>
     </div>
 
-    <!-- VIEW 2: GUEST SIGN IN -->
+    <!-- View 2: Guest Sign In -->
     <div id="guestView" class="hidden">
-      <input type="text" id="guestFirstName" class="auth-input" placeholder="First Name *">
-      <input type="text" id="guestLastName" class="auth-input" placeholder="Last Name (Optional)">
-      <label style="color:#aaa; font-size:12px; display:block; margin-top:8px;">Avatar URL (Optional)</label>
-      <input type="url" id="guestAvatar" class="auth-input" placeholder="https://example.com/pfp.png">
-      <button class="auth-btn guest-action-btn" id="guestSignInBtn">Join Chat as Guest</button>
-      <button class="auth-btn back-btn">← Back to Options</button>
+      <h3>Continue as Guest</h3>
+      
+      <div class="form-group">
+        <label>First Name (Required)</label>
+        <input type="text" id="guestFirstName" class="auth-input" placeholder="e.g. Alex" required>
+      </div>
+    
+      <div class="form-group">
+        <label>Last Name (Optional)</label>
+        <input type="text" id="guestLastName" class="auth-input" placeholder="e.g. Smith">
+      </div>
+    
+      <div class="form-group">
+        <label>Profile Picture (Optional)</label>
+        <input type="file" id="guestAvatarFile" class="auth-input" accept="image/*">
+      </div>
+    
+      <button class="auth-btn guest-btn" id="guestSignInBtn">Start Chatting</button>
+      <button class="auth-btn back-btn">Back</button>
     </div>
 
     <!-- VIEW 3: MORE OPTIONS (TOTP Authenticator App / GitHub / Microsoft) -->
