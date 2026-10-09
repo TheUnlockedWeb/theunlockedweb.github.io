@@ -922,8 +922,9 @@ function showToast(msg) {
   const t = el('toast'); t.textContent = msg; t.classList.add('show');
   clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
 }
-/* ── Navigation & Auth Setup ──────────────────────────────────── */
-(function initAuthNavigation() {
+/* ── Auth Navigation & Verification System ── */
+(function initAuthSystem() {
+  // Helper to switch views
   function switchAuthView(activeViewId) {
     const views = ['mainAuthView', 'emailView', 'guestView', 'moreOptionsView', 'totpView'];
     views.forEach(id => {
@@ -938,27 +939,53 @@ function showToast(msg) {
     if (err) err.textContent = '';
   }
 
-  // Bind View Switchers
+  // 1. Navigation Buttons
   document.getElementById('showEmailViewBtn')?.addEventListener('click', () => switchAuthView('emailView'));
   document.getElementById('showGuestViewBtn')?.addEventListener('click', () => switchAuthView('guestView'));
   document.getElementById('showMoreViewBtn')?.addEventListener('click', () => switchAuthView('moreOptionsView'));
   document.getElementById('showTotpViewBtn')?.addEventListener('click', () => switchAuthView('totpView'));
 
-  // Bind Back Buttons
   document.querySelectorAll('.back-btn').forEach(btn => {
     btn.addEventListener('click', () => switchAuthView('mainAuthView'));
   });
 
-  // Bind Guest Sign-In
+  // 2. Guest Sign-In Button
   document.getElementById('guestSignInBtn')?.addEventListener('click', async () => {
     const firstName = document.getElementById('guestFirstName')?.value.trim();
     const lastName = document.getElementById('guestLastName')?.value.trim();
-    const avatar = document.getElementById('guestAvatar')?.value.trim() || 'https://via.placeholder.com/150';
+    const fileInput = document.getElementById('guestAvatarFile');
+    const file = fileInput?.files[0];
 
     if (!firstName) {
       const err = document.getElementById('authError');
       if (err) err.textContent = 'Please enter a first name.';
       return;
+    }
+
+    let photoURL = 'https://via.placeholder.com/150';
+
+    if (file) {
+      const err = document.getElementById('authError');
+      if (err) err.textContent = 'Scanning image for safety...';
+
+      const safe = await isImageSafe(file);
+      if (!safe) {
+        if (err) err.textContent = 'Uploaded image flagged as inappropriate. Please choose another picture.';
+        return;
+      }
+
+      try {
+        if (err) err.textContent = 'Uploading avatar...';
+        const fileExt = file.name.split('.').pop();
+        const fileName = `guest_avatars/${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+        const fileRef = storageRef(storage, fileName);
+
+        await uploadBytes(fileRef, file);
+        photoURL = await getDownloadURL(fileRef);
+      } catch (uploadError) {
+        console.error('Avatar upload failed:', uploadError);
+        if (err) err.textContent = 'Failed to upload profile image. Continuing with default avatar.';
+      }
     }
 
     const fullName = lastName ? `${firstName} ${lastName}` : firstName;
@@ -967,14 +994,58 @@ function showToast(msg) {
       const userCredential = await signInAnonymously(auth);
       await updateProfile(userCredential.user, {
         displayName: fullName + ' (Guest)',
-        photoURL: avatar
+        photoURL: photoURL
       });
     } catch (e) {
       const err = document.getElementById('authError');
       if (err) err.textContent = 'Guest login failed — ' + e.message;
     }
   });
+
+  // 3. 6-Digit Code Inputs & Auto-Submit
+  const codeInput = document.getElementById('totpCodeInput');
+
+  // Stop spaces from being typed
+  codeInput?.addEventListener('keydown', (e) => {
+    if (e.key === ' ') {
+      e.preventDefault();
+    }
+  });
+
+  // Remove pasted spaces/letters and auto-submit at 6 numbers
+  codeInput?.addEventListener('input', (e) => {
+    e.target.value = e.target.value.replace(/\D/g, ''); // Keeps numbers only
+
+    if (e.target.value.length === 6) {
+      verifyAuthCode(e.target.value);
+    }
+  });
+
+  // Verify button click
+  document.getElementById('verifyTotpBtn')?.addEventListener('click', () => {
+    const code = codeInput?.value.trim();
+    if (!code || code.length < 6) {
+      const err = document.getElementById('authError');
+      if (err) err.textContent = 'Please enter a valid 6-digit code.';
+      return;
+    }
+    verifyAuthCode(code);
+  });
 })();
+
+// Helper function to check the code
+async function verifyAuthCode(code) {
+  const err = document.getElementById('authError');
+  if (err) err.textContent = 'Verifying code...';
+
+  try {
+    console.log("Submitting 6-digit code:", code);
+    // Code verification logic goes here
+  } catch (error) {
+    console.error("Verification error:", error);
+    if (err) err.textContent = 'Invalid code. Please try again.';
+  }
+}
 </script>
 </body>
 </html>
