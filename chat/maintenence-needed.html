@@ -947,34 +947,34 @@ async function sendMessage(channelId, messageText) {
     }
   }
 }
-// --- Navigation & Auth Setup ---
-function switchAuthView(activeViewId) {
-  const views = ['mainAuthView', 'emailView', 'guestView', 'moreOptionsView', 'totpView'];
-  views.forEach(id => {
-    const view = document.getElementById(id);
-    if (view) view.classList.add('hidden');
-  });
-  
-  const target = document.getElementById(activeViewId);
-  if (target) target.classList.remove('hidden');
+/* ── Navigation & Auth Setup ──────────────────────────────────── */
+(function initAuthNavigation() {
+  function switchAuthView(activeViewId) {
+    const views = ['mainAuthView', 'emailView', 'guestView', 'moreOptionsView', 'totpView'];
+    views.forEach(id => {
+      const view = document.getElementById(id);
+      if (view) view.classList.add('hidden');
+    });
+    
+    const target = document.getElementById(activeViewId);
+    if (target) target.classList.remove('hidden');
 
-  const err = document.getElementById('authError');
-  if (err) err.textContent = '';
-}
+    const err = document.getElementById('authError');
+    if (err) err.textContent = '';
+  }
 
-function setupAuthListeners() {
-  // Navigation Menu Triggers
+  // Bind View Switchers
   document.getElementById('showEmailViewBtn')?.addEventListener('click', () => switchAuthView('emailView'));
   document.getElementById('showGuestViewBtn')?.addEventListener('click', () => switchAuthView('guestView'));
   document.getElementById('showMoreViewBtn')?.addEventListener('click', () => switchAuthView('moreOptionsView'));
   document.getElementById('showTotpViewBtn')?.addEventListener('click', () => switchAuthView('totpView'));
 
-  // Back Buttons
+  // Bind Back Buttons
   document.querySelectorAll('.back-btn').forEach(btn => {
     btn.addEventListener('click', () => switchAuthView('mainAuthView'));
   });
 
-  // Guest Login Action
+  // Bind Guest Sign-In
   document.getElementById('guestSignInBtn')?.addEventListener('click', async () => {
     const firstName = document.getElementById('guestFirstName')?.value.trim();
     const lastName = document.getElementById('guestLastName')?.value.trim();
@@ -999,19 +999,7 @@ function setupAuthListeners() {
       if (err) err.textContent = 'Guest login failed — ' + e.message;
     }
   });
-}
-
-// Run listener setup automatically
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', setupAuthListeners);
-} else {
-  setupAuthListeners();
-}
-    } catch (e) {
-      if (el('authError')) el('authError').textContent = 'Guest login failed — ' + e.message;
-    }
-  });
-});
+})();
 </script>
 </body>
 </html>
