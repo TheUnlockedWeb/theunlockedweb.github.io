@@ -629,22 +629,44 @@ function initialsAvatar(user, size, classList) {
 /* ── Auth state ───────────────────────────────── */
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    // 1. Hide auth modal & ALWAYS show chat interface
-    document.getElementById('authModal')?.classList.add('hidden');
-    document.getElementById('chatContainer')?.classList.remove('hidden');
+    console.log("Authenticated as:", user.displayName || user.email);
 
-    // 2. Set online status safely without crashing the UI
-    try {
-      const userPresenceRef = ref(db, `presence/${user.uid}`);
-      set(userPresenceRef, { online: true, lastSeen: Date.now() });
-      onDisconnect(userPresenceRef).remove();
-    } catch (e) {
-      console.warn("Presence update skipped:", e);
+    // 1. Hide the login overlay
+    const overlay = document.getElementById('authOverlay') || document.getElementById('authModal');
+    if (overlay) {
+      overlay.classList.add('hidden');
+      overlay.style.display = 'none'; // Extra check to force-hide
     }
+
+    // 2. Show the main chat UI
+    const chat = document.getElementById('chatContainer') || document.getElementById('chatShell');
+    if (chat) {
+      chat.classList.remove('hidden');
+      chat.style.display = 'flex'; // Ensure flexbox/block layout is active
+    }
+
+    // 3. Post Discord-style welcome message once per session
+    const name = user.displayName || 'Someone';
+    if (!sessionStorage.getItem('welcomed_' + user.uid)) {
+      sessionStorage.setItem('welcomed_' + user.uid, 'true');
+      if (typeof sendSystemWelcome === 'function') {
+        sendSystemWelcome(name);
+      }
+    }
+
   } else {
-    // Show auth modal if logged out
-    document.getElementById('authModal')?.classList.remove('hidden');
-    document.getElementById('chatContainer')?.classList.add('hidden');
+    // If signed out, show auth and hide chat
+    const overlay = document.getElementById('authOverlay') || document.getElementById('authModal');
+    if (overlay) {
+      overlay.classList.remove('hidden');
+      overlay.style.display = 'flex';
+    }
+    
+    const chat = document.getElementById('chatContainer') || document.getElementById('chatShell');
+    if (chat) {
+      chat.classList.add('hidden');
+      chat.style.display = 'none';
+    }
   }
 });
 
