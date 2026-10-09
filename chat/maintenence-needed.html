@@ -333,7 +333,15 @@
         Setup Key: <strong style="color:#fff;" id="totpKeyText">JBSWY3DPEHPK3PXP</strong>
       </div>
 
-      <input type="text" id="totpCodeInput" class="auth-input" placeholder="6-digit Authenticator Code" maxlength="6">
+      <input 
+          type="text" 
+          id="totpCodeInput" 
+          class="auth-input" 
+          placeholder="123456" 
+          maxlength="6" 
+          inputmode="numeric" 
+          autocomplete="one-time-code"
+        >
       <button class="auth-btn totp-action-btn" id="verifyTotpBtn">Verify & Login</button>
       <button class="auth-btn back-btn">← Back to Options</button>
     </div>
