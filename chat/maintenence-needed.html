@@ -1079,10 +1079,9 @@ async function verifyAuthCode(code) {
     if (err) err.textContent = 'Invalid code. Please try again.';
   }
 }
-  /* ── GitHub Sign-In ── */
+// GitHub Sign-In
   document.getElementById('githubBtn')?.addEventListener('click', async () => {
     const provider = new GithubAuthProvider();
-    
     try {
       const result = await signInWithPopup(auth, provider);
       console.log("Logged in with GitHub:", result.user);
@@ -1093,10 +1092,9 @@ async function verifyAuthCode(code) {
     }
   });
 
-  /* ── Microsoft Sign-In ── */
+  // Microsoft Sign-In
   document.getElementById('microsoftBtn')?.addEventListener('click', async () => {
     const provider = new OAuthProvider('microsoft.com');
-    
     try {
       const result = await signInWithPopup(auth, provider);
       console.log("Logged in with Microsoft:", result.user);
