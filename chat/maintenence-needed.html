@@ -566,10 +566,25 @@ function initialsAvatar(user, size, classList) {
 }
 
 /* ── Auth state ───────────────────────────────── */
-onAuthStateChanged(auth, user => {
-  currentUser = user;
-  if (user) showChat(user);
-  else      showAuth();
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // 1. Hide auth modal & ALWAYS show chat interface
+    document.getElementById('authModal')?.classList.add('hidden');
+    document.getElementById('chatContainer')?.classList.remove('hidden');
+
+    // 2. Set online status safely without crashing the UI
+    try {
+      const userPresenceRef = ref(db, `presence/${user.uid}`);
+      set(userPresenceRef, { online: true, lastSeen: Date.now() });
+      onDisconnect(userPresenceRef).remove();
+    } catch (e) {
+      console.warn("Presence update skipped:", e);
+    }
+  } else {
+    // Show auth modal if logged out
+    document.getElementById('authModal')?.classList.remove('hidden');
+    document.getElementById('chatContainer')?.classList.add('hidden');
+  }
 });
 
 /* ── Sign in ──────────────────────────────────── */
