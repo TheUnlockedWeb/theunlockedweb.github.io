@@ -593,6 +593,38 @@ function initialsAvatar(user, size, classList) {
   div.textContent = nameInitials(user.displayName || user.email || '?');
   return div;
 }
+  
+  function renderMessage(m) {
+  const chatBox = el('chatMessages');
+  if (!chatBox) return;
+
+  // 1. Handle System Welcome Messages FIRST
+  if (m.type === 'system') {
+    const sysDiv = document.createElement('div');
+    sysDiv.className = 'system-message';
+    
+    const timeStr = new Date(m.ts || Date.now()).toLocaleString([], { 
+      month: 'numeric', 
+      day: 'numeric', 
+      year: '2-digit', 
+      hour: '2-digit', 
+      minute: '2-digit', 
+      hour12: false 
+    });
+
+    sysDiv.innerHTML = `
+      <span class="join-arrow">➔</span>
+      <span>${m.text}</span>
+      <span class="timestamp">${timeStr}</span>
+    `;
+
+    chatBox.appendChild(sysDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+    return; // Exit early so it doesn't render as a normal user chat bubble!
+  }
+
+  // 2. Your existing normal message rendering code follows below...
+}
 
 /* ── Auth state ───────────────────────────────── */
 onAuthStateChanged(auth, (user) => {
