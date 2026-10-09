@@ -947,41 +947,42 @@ async function sendMessage(channelId, messageText) {
     }
   }
 }
-document.addEventListener('DOMContentLoaded', () => {
-  // 1. Ensure el() helper exists here inside DOMContentLoaded
-  function el(id) { return document.getElementById(id); }
+// --- Navigation & Auth Setup ---
+function switchAuthView(activeViewId) {
+  const views = ['mainAuthView', 'emailView', 'guestView', 'moreOptionsView', 'totpView'];
+  views.forEach(id => {
+    const view = document.getElementById(id);
+    if (view) view.classList.add('hidden');
+  });
+  
+  const target = document.getElementById(activeViewId);
+  if (target) target.classList.remove('hidden');
 
-  // 2. Navigation Helper
-  function switchAuthView(activeViewId) {
-    ['mainAuthView', 'emailView', 'guestView', 'moreOptionsView', 'totpView'].forEach(id => {
-      const view = el(id);
-      if (view) view.classList.add('hidden');
-    });
-    const target = el(activeViewId);
-    if (target) target.classList.remove('hidden');
-    const err = el('authError');
-    if (err) err.textContent = '';
-  }
+  const err = document.getElementById('authError');
+  if (err) err.textContent = '';
+}
 
-  // 3. Menu Button Triggers
-  el('showEmailViewBtn')?.addEventListener('click', () => switchAuthView('emailView'));
-  el('showGuestViewBtn')?.addEventListener('click', () => switchAuthView('guestView'));
-  el('showMoreViewBtn')?.addEventListener('click', () => switchAuthView('moreOptionsView'));
-  el('showTotpViewBtn')?.addEventListener('click', () => switchAuthView('totpView'));
+function setupAuthListeners() {
+  // Navigation Menu Triggers
+  document.getElementById('showEmailViewBtn')?.addEventListener('click', () => switchAuthView('emailView'));
+  document.getElementById('showGuestViewBtn')?.addEventListener('click', () => switchAuthView('guestView'));
+  document.getElementById('showMoreViewBtn')?.addEventListener('click', () => switchAuthView('moreOptionsView'));
+  document.getElementById('showTotpViewBtn')?.addEventListener('click', () => switchAuthView('totpView'));
 
-  // 4. Back Buttons
+  // Back Buttons
   document.querySelectorAll('.back-btn').forEach(btn => {
     btn.addEventListener('click', () => switchAuthView('mainAuthView'));
   });
 
-  // 5. Guest Login
-  el('guestSignInBtn')?.addEventListener('click', async () => {
-    const firstName = el('guestFirstName')?.value.trim();
-    const lastName = el('guestLastName')?.value.trim();
-    const avatar = el('guestAvatar')?.value.trim() || 'https://via.placeholder.com/150';
+  // Guest Login Action
+  document.getElementById('guestSignInBtn')?.addEventListener('click', async () => {
+    const firstName = document.getElementById('guestFirstName')?.value.trim();
+    const lastName = document.getElementById('guestLastName')?.value.trim();
+    const avatar = document.getElementById('guestAvatar')?.value.trim() || 'https://via.placeholder.com/150';
 
     if (!firstName) {
-      if (el('authError')) el('authError').textContent = 'Please enter a first name.';
+      const err = document.getElementById('authError');
+      if (err) err.textContent = 'Please enter a first name.';
       return;
     }
 
@@ -993,6 +994,19 @@ document.addEventListener('DOMContentLoaded', () => {
         displayName: fullName + ' (Guest)',
         photoURL: avatar
       });
+    } catch (e) {
+      const err = document.getElementById('authError');
+      if (err) err.textContent = 'Guest login failed — ' + e.message;
+    }
+  });
+}
+
+// Run listener setup automatically
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', setupAuthListeners);
+} else {
+  setupAuthListeners();
+}
     } catch (e) {
       if (el('authError')) el('authError').textContent = 'Guest login failed — ' + e.message;
     }
