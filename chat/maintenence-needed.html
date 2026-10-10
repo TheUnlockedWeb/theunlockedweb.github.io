@@ -507,13 +507,22 @@
 
 <div class="toast" id="toast"></div>
 
-  <!-- TOTP Authenticator Modal -->
-<div id="totpModal" class="auth-modal hidden" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+<!-- TOTP Authenticator Modal -->
+<div id="totpModal" class="auth-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: none; align-items: center; justify-content: center; z-index: 1000;">
   <div class="auth-card" style="background: #181926; padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; text-align: center; color: #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.5);">
-    <h3 style="margin-bottom: 10px; font-size: 20px;">Authenticator Verification</h3>
+    <h3 style="margin-bottom: 10px; font-size: 20px; color: #f59e0b;">Authenticator Verification</h3>
     <p style="color: #a5b4fc; font-size: 14px; margin-bottom: 20px;">Enter the 6-digit verification code from your authenticator app.</p>
     
-    <input type="text" id="totpCodeInput" maxlength="6" placeholder="123456" style="width: 100%; padding: 12px; font-size: 18px; text-align: center; letter-spacing: 4px; background: #222338; border: 1px solid #3b3c5c; border-radius: 8px; color: #fff; margin-bottom: 20px;" />
+    <input type="text" id="totpCodeInput" maxlength="6" placeholder="123456" style="width: 100%; padding: 12px; font-size: 18px; text-align: center; letter-spacing: 4px; background: #222338; border: 1px solid #3b3c5c; border-radius: 8px; color: #fff; margin-bottom: 15px; box-sizing: border-box;" />
+    
+    <div style="text-align: left; margin-bottom: 20px;">
+      <a href="#" id="toggleQrSection" style="color: #6366f1; font-size: 13px; text-decoration: none;">Don't have a code?</a>
+      <div id="qrCodeContainer" style="display: none; margin-top: 15px; background: #222338; padding: 15px; border-radius: 8px; text-align: center;">
+        <p style="font-size: 12px; color: #a5b4fc; margin-bottom: 10px;">Scan this QR code with Google Authenticator or Authy:</p>
+        <!-- Replace src with your generated dynamic QR code or static asset link -->
+        <div id="qrPlaceholder" style="background: white; width: 150px; height: 150px; margin: 0 auto; display: flex; align-items: center; justify-content: center; color: #000; font-size: 12px; border-radius: 4px;">[QR Code Image]</div>
+      </div>
+    </div>
     
     <div style="display: flex; gap: 10px;">
       <button id="verifyTotpBtn" style="flex: 1; padding: 12px; background: #6366f1; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Verify Code</button>
@@ -521,6 +530,19 @@
     </div>
   </div>
 </div>
+
+<script>
+  // Toggle QR code dropdown view
+  document.getElementById('toggleQrSection')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    const qrContainer = document.getElementById('qrCodeContainer');
+    if (qrContainer.style.display === 'none') {
+      qrContainer.style.display = 'block';
+    } else {
+      qrContainer.style.display = 'none';
+    }
+  });
+</script>
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
