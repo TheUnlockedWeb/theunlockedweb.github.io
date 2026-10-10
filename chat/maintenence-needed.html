@@ -377,6 +377,11 @@
       </svg>
       <span>Continue with Microsoft</span>
     </button>
+  <!-- Authenticator App Sign-In -->
+  <button class="auth-btn provider-btn auth-app-btn" id="authAppBtn">
+    <span class="provider-icon">🔑</span>
+    <span>Continue with Authenticator App</span>
+  </button>
     <!-- Back button -->
     <button class="auth-btn back-btn" style="margin-top: 15px;">Back</button>
   </div>
@@ -1294,7 +1299,17 @@ document.getElementById('microsoftBtn')?.addEventListener('click', async () => {
     const errEl = document.getElementById('authError');
     if (errEl) errEl.textContent = 'Microsoft sign-in failed: ' + error.message;
   }
-});
+  // Authenticator App Sign-In
+  document.getElementById('authAppBtn')?.addEventListener('click', () => {
+    // Show the MFA / TOTP verification view or modal
+    const authModal = document.getElementById('totpModal') || document.getElementById('mfaView');
+    if (authModal) {
+      authModal.classList.remove('hidden');
+      authModal.style.display = 'block';
+    } else {
+      alert('Authenticator verification module is initializing...');
+    }
+  });
 </script>
 </body>
 </html>
