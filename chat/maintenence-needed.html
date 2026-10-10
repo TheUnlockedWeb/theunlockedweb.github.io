@@ -1277,16 +1277,17 @@ async function verifyAuthCode(code) {
 
 const microsoftProvider = new OAuthProvider('microsoft.com');
 
-// Optional: Force account picker prompt every time
-microsoftProvider.setCustomParameters({
-  prompt: 'select_account'
-});
-
+// Microsoft Sign-In
 document.getElementById('microsoftBtn')?.addEventListener('click', async () => {
+  const microsoftProvider = new OAuthProvider('microsoft.com');
+  microsoftProvider.setCustomParameters({
+    prompt: 'select_account'
+  });
+
   try {
     const result = await signInWithPopup(auth, microsoftProvider);
     const user = result.user;
-    
+
     // Check if this is a newly created account to trigger system welcome message
     const isNewUser = result._tokenResponse?.isNewUser;
     if (isNewUser && typeof sendSystemWelcome === 'function') {
@@ -1297,17 +1298,19 @@ document.getElementById('microsoftBtn')?.addEventListener('click', async () => {
     const errEl = document.getElementById('authError');
     if (errEl) errEl.textContent = 'Microsoft sign-in failed: ' + error.message;
   }
-  // Authenticator App Sign-In
-  document.getElementById('authAppBtn')?.addEventListener('click', () => {
-    // Show the MFA / TOTP verification view or modal
-    const authModal = document.getElementById('totpModal') || document.getElementById('mfaView');
-    if (authModal) {
-      authModal.classList.remove('hidden');
-      authModal.style.display = 'block';
-    } else {
-      console.log("Authenticator verification module is initializing...");
-    }
-  });
+});
+
+// Authenticator App Sign-In
+document.getElementById('authAppBtn')?.addEventListener('click', () => {
+  // Show the MFA / TOTP verification view or modal
+  const authModal = document.getElementById('totpModal') || document.getElementById('mfaView');
+  if (authModal) {
+    authModal.classList.remove('hidden');
+    authModal.style.display = 'block';
+  } else {
+    console.log("Authenticator verification module is initializing...");
+  }
+});
 </script>
 </body>
 </html>
