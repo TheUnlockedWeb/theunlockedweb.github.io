@@ -507,6 +507,21 @@
 
 <div class="toast" id="toast"></div>
 
+  <!-- TOTP Authenticator Modal -->
+<div id="totpModal" class="auth-modal hidden" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+  <div class="auth-card" style="background: #181926; padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; text-align: center; color: #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.5);">
+    <h3 style="margin-bottom: 10px; font-size: 20px;">Authenticator Verification</h3>
+    <p style="color: #a5b4fc; font-size: 14px; margin-bottom: 20px;">Enter the 6-digit verification code from your authenticator app.</p>
+    
+    <input type="text" id="totpCodeInput" maxlength="6" placeholder="123456" style="width: 100%; padding: 12px; font-size: 18px; text-align: center; letter-spacing: 4px; background: #222338; border: 1px solid #3b3c5c; border-radius: 8px; color: #fff; margin-bottom: 20px;" />
+    
+    <div style="display: flex; gap: 10px;">
+      <button id="verifyTotpBtn" style="flex: 1; padding: 12px; background: #6366f1; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Verify Code</button>
+      <button id="closeTotpBtn" style="flex: 1; padding: 12px; background: #3b3c5c; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;" onclick="document.getElementById('totpModal').style.display='none'">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 function el(id) { return document.getElementById(id); }
