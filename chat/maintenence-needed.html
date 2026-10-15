@@ -1094,6 +1094,27 @@ el('newRoomVisibility')?.addEventListener(
   updatePrivateRoomInviteVisibility
 );
 
+  
+/* ── Room-type-specific options ───────────────── */
+function updateRoomTypeOptions() {
+  const isVoice = el('newRoomType')?.value === 'voice';
+  const readOnlyField = el('newRoomReadOnlyField');
+  const readOnlyCheckbox = el('newRoomReadOnly');
+
+  if (readOnlyField) {
+    readOnlyField.hidden = isVoice;
+  }
+
+  if (isVoice && readOnlyCheckbox) {
+    readOnlyCheckbox.checked = false;
+  }
+}
+
+el('newRoomType')?.addEventListener(
+  'change',
+  updateRoomTypeOptions
+);
+
 function closeCreateRoomModal() {
   createRoomModal?.classList.remove('open');
 
