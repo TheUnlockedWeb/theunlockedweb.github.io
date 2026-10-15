@@ -548,10 +548,10 @@ const FIREBASE_CONFIG = {
 const GROQ_KEY = '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';
 
 const DEFAULT_ROOMS = [
-  { id:'general',     name:'general',     desc:'General chat for everyone' },
-  { id:'gaming',      name:'gaming',       desc:'Talk about games'          },
-  { id:'suggestions', name:'suggestions',  desc:'Feature requests & ideas'  },
-  { id:'off-topic',   name:'off-topic',    desc:'Anything goes'             },
+  { id:'general',    name:'general',    desc:'General chat for everyone' },
+  { id:'gaming',     name:'gaming',     desc:'Talk about games'          },
+  { id:'suggestions',name:'suggestions', desc:'Feature requests & ideas'  },
+  { id:'off-topic',  name:'off-topic',   desc:'Anything goes'              },
 ];
 
 /* ── Init ─────────────────────────────────────── */
@@ -580,7 +580,6 @@ const AV = [
 const avatarStyle  = uid => AV[uid.split('').reduce((a,c)=>a+c.charCodeAt(0),0)%AV.length];
 const nameInitials = name => name.split(' ').map(w=>w[0]||'').join('').slice(0,2).toUpperCase()||'?';
 
-/* Render an avatar — uses Google photo if available, otherwise coloured initials */
 function renderAvatar(user, size, classList) {
   if (user.photoURL) {
     const img = document.createElement('img');
@@ -589,7 +588,7 @@ function renderAvatar(user, size, classList) {
     img.style.width  = size + 'px';
     img.style.height = size + 'px';
     img.alt = user.displayName || '';
-    img.referrerPolicy = 'no-referrer'; // required for Google profile pics
+    img.referrerPolicy = 'no-referrer';
     img.onerror = () => img.replaceWith(initialsAvatar(user, size, classList));
     return img;
   }
@@ -604,59 +603,38 @@ function initialsAvatar(user, size, classList) {
   div.textContent = nameInitials(user.displayName || user.email || '?');
   return div;
 }
-  
-  function renderMessage(m) {
-  const chatBox = el('chatMessages');
-  if (!chatBox) return;
 
-  // 1. Handle System Welcome Messages FIRST
-  if (m.type === 'system') {
-    const sysDiv = document.createElement('div');
-    sysDiv.className = 'system-message';
-    
-    const timeStr = new Date(m.ts || Date.now()).toLocaleString([], { 
-      month: 'numeric', 
-      day: 'numeric', 
-      year: '2-digit', 
-      hour: '2-digit', 
-      minute: '2-digit', 
-      hour12: false 
-    });
-
-    sysDiv.innerHTML = `
-      <span class="join-arrow">➔</span>
-      <span>${m.text}</span>
-      <span class="timestamp">${timeStr}</span>
-    `;
-
-    chatBox.appendChild(sysDiv);
-    chatBox.scrollTop = chatBox.scrollHeight;
-    return; // Exit early so it doesn't render as a normal user chat bubble!
-  }
-
-  // 2. Your existing normal message rendering code follows below...
-}
-
-/* ── Auth state ───────────────────────────────── */
+/* ── Auth state & Interface Switching ────────── */
 onAuthStateChanged(auth, (user) => {
+  currentUser = user;
+  const overlay = document.getElementById('authOverlay') || document.getElementById('authModal');
+  const chatShell = document.getElementById('chatShell') || document.getElementById('chatContainer');
+
   if (user) {
     console.log("Authenticated as:", user.displayName || user.email);
 
-    // 1. Hide the login overlay
-    const overlay = document.getElementById('authOverlay') || document.getElementById('authModal');
     if (overlay) {
       overlay.classList.add('hidden');
-      overlay.style.display = 'none'; // Extra check to force-hide
+      overlay.style.display = 'none';
+    }
+    if (chatShell) {
+      chatShell.classList.remove('hidden');
+      chatShell.style.display = 'flex';
     }
 
-    // 2. Show the main chat UI
-    const chat = document.getElementById('chatContainer') || document.getElementById('chatShell');
-    if (chat) {
-      chat.classList.remove('hidden');
-      chat.style.display = 'flex'; // Ensure flexbox/block layout is active
+    // Sidebar avatar update
+    const wrap = el('userAvatarWrap');
+    if (wrap) {
+      wrap.innerHTML = '';
+      wrap.appendChild(renderAvatar(user, 32, 'user-avatar'));
     }
+    if (el('userName')) el('userName').textContent = user.displayName || 'Anonymous';
+    if (el('userEmail')) el('userEmail').textContent = user.email || '';
 
-    // 3. Post Discord-style welcome message once per session
+    trackPresence(user);
+    seedDefaultRooms().then(loadRoomList);
+
+    // Welcome message check
     const name = user.displayName || 'Someone';
     if (!sessionStorage.getItem('welcomed_' + user.uid)) {
       sessionStorage.setItem('welcomed_' + user.uid, 'true');
@@ -664,99 +642,88 @@ onAuthStateChanged(auth, (user) => {
         sendSystemWelcome(name);
       }
     }
-
   } else {
-    // If signed out, show auth and hide chat
-    const overlay = document.getElementById('authOverlay') || document.getElementById('authModal');
+    console.log("No user signed in. Showing login interface.");
     if (overlay) {
       overlay.classList.remove('hidden');
       overlay.style.display = 'flex';
     }
-    
-    const chat = document.getElementById('chatContainer') || document.getElementById('chatShell');
-    if (chat) {
-      chat.classList.add('hidden');
-      chat.style.display = 'none';
+    if (chatShell) {
+      chatShell.classList.add('hidden');
+      chatShell.style.display = 'none';
     }
   }
 });
 
 /* ── Sign in ──────────────────────────────────── */
-// 1. Fixed Google Sign-In (adds fallback if popup is blocked)
-el('googleSignInBtn').addEventListener('click', async () => {
+el('googleSignInBtn')?.addEventListener('click', async () => {
   const btn = el('googleSignInBtn');
-  el('authError').textContent = '';
-  btn.disabled = true;
+  if (el('authError')) el('authError').textContent = '';
+  if (btn) btn.disabled = true;
   try {
     await signInWithPopup(auth, provider);
   } catch (e) {
     if (e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user') {
-      // Fallback to redirect if popup fails
       await signInWithRedirect(auth, provider);
     } else {
-      btn.disabled = false;
-      el('authError').textContent = 'Sign-in failed — ' + (e.message || 'please try again.');
+      if (btn) btn.disabled = false;
+      if (el('authError')) el('authError').textContent = 'Sign-in failed — ' + (e.message || 'please try again.');
     }
   }
 });
 
-// 2. Email Sign-In / Register
 el('emailSignInBtn')?.addEventListener('click', async () => {
-  const email = el('emailInput').value;
-  const pass = el('passwordInput').value;
-  el('authError').textContent = '';
+  const email = el('emailInput')?.value;
+  const pass = el('passwordInput')?.value;
+  if (el('authError')) el('authError').textContent = '';
   try {
     await signInWithEmailAndPassword(auth, email, pass);
   } catch (e) {
-    el('authError').textContent = 'Email sign-in failed — ' + e.message;
+    if (el('authError')) el('authError').textContent = 'Email sign-in failed — ' + e.message;
   }
 });
 
 el('emailSignUpBtn')?.addEventListener('click', async () => {
-  const email = el('emailInput').value;
-  const pass = el('passwordInput').value;
-  el('authError').textContent = '';
+  const email = el('emailInput')?.value;
+  const pass = el('passwordInput')?.value;
+  if (el('authError')) el('authError').textContent = '';
   try {
     await createUserWithEmailAndPassword(auth, email, pass);
   } catch (e) {
-    el('authError').textContent = 'Sign-up failed — ' + e.message;
+    if (el('authError')) el('authError').textContent = 'Sign-up failed — ' + e.message;
   }
 });
 
-// 3. Discord Sign-In
 el('discordSignInBtn')?.addEventListener('click', async () => {
   const discordProvider = new OAuthProvider('oidc.discord');
-  el('authError').textContent = '';
+  if (el('authError')) el('authError').textContent = '';
   try {
     await signInWithPopup(auth, discordProvider);
   } catch (e) {
-    el('authError').textContent = 'Discord sign-in failed — ' + e.message;
+    if (el('authError')) el('authError').textContent = 'Discord sign-in failed — ' + e.message;
   }
 });
 
-function showAuth() {
-  el('authOverlay').classList.remove('hidden');
-  el('chatShell').style.display = 'none';
-  if (el('googleSignInBtn')) el('googleSignInBtn').disabled = false;
-  el('authError').textContent = '';
-}
+el('githubBtn')?.addEventListener('click', async () => {
+  const gitHubProvider = new GithubAuthProvider();
+  try {
+    await signInWithPopup(auth, gitHubProvider);
+  } catch (error) {
+    console.error("GitHub login error:", error);
+    if (el('authError')) el('authError').textContent = 'GitHub login failed: ' + error.message;
+  }
+});
 
-/* ── Show chat ────────────────────────────────── */
-function showChat(user) {
-  el('authOverlay').classList.add('hidden');
-  el('chatShell').style.display = 'flex';
-
-  // Sidebar avatar
-  const wrap = el('userAvatarWrap');
-  wrap.innerHTML = '';
-  wrap.appendChild(renderAvatar(user, 32, 'user-avatar'));
-
-  el('userName').textContent  = user.displayName || 'Anonymous';
-  el('userEmail').textContent = user.email;
-
-  trackPresence(user);
-  seedDefaultRooms().then(loadRoomList);
-}
+el('microsoftBtn')?.addEventListener('click', async () => {
+  const microsoftProvider = new OAuthProvider('microsoft.com');
+  microsoftProvider.setCustomParameters({ prompt: 'select_account' });
+  try {
+    await signInWithPopup(auth, microsoftProvider);
+  } catch (error) {
+    console.error("Microsoft Sign-In Error:", error);
+    if (el('authError')) el('authError').textContent = 'Microsoft sign-in failed: ' + error.message;
+  }
+});
 
 /* ── Presence ─────────────────────────────────── */
 function trackPresence(user) {
@@ -765,7 +732,7 @@ function trackPresence(user) {
   onDisconnect(pRef).remove();
   onValue(ref(db, 'presence'), snap => {
     const n = snap.exists() ? Object.keys(snap.val()).length : 0;
-    el('onlineCount').textContent = `${n} online`;
+    if (el('onlineCount')) el('onlineCount').textContent = `${n} online`;
   });
 }
 
@@ -784,6 +751,7 @@ async function seedDefaultRooms() {
 
 /* ── Room list ────────────────────────────────── */
 function loadRoomList() {
+  if (!el('roomList')) return;
   el('roomList').innerHTML = '';
   roomsCache = {};
   onChildAdded(ref(db, 'rooms'), snap => {
@@ -830,15 +798,15 @@ function addRoomButton(roomId, data) {
 function selectRoom(roomId, data) {
   currentRoom = roomId; currentRoomData = data;
   document.querySelectorAll('.room-btn').forEach(b => b.classList.toggle('active', b.dataset.room === roomId));
-  el('roomName').textContent = data.name || roomId;
-  el('roomDesc').textContent = data.desc || '';
-  el('chatInput').placeholder = `Message #${data.name || roomId}...`;
+  if (el('roomName')) el('roomName').textContent = data.name || roomId;
+  if (el('roomDesc')) el('roomDesc').textContent = data.desc || '';
+  if (el('chatInput')) el('chatInput').placeholder = `Message #${data.name || roomId}...`;
 
   const ob = el('roomOwnerBadge');
-  if (data.ownerName && !data.system) { ob.style.display = ''; el('roomOwnerName').textContent = data.ownerName; }
-  else ob.style.display = 'none';
+  if (data.ownerName && !data.system) { if (ob) ob.style.display = ''; if (el('roomOwnerName')) el('roomOwnerName').textContent = data.ownerName; }
+  else if (ob) ob.style.display = 'none';
 
-  el('messagesWrap').innerHTML = '';
+  if (el('messagesWrap')) el('messagesWrap').innerHTML = '';
   lastAuthorId = null; lastDay = null;
   unsubMessages?.(); unsubMessages = null;
   unsubTyping?.();   unsubTyping   = null;
@@ -852,6 +820,7 @@ function selectRoom(roomId, data) {
   setTimeout(() => { initial = false; batch.forEach(m => appendMessage(m)); scrollToBottom(false); }, 400);
 
   unsubTyping = onValue(ref(db, `typing/${roomId}`), snap => {
+    if (!el('typingIndicator')) return;
     if (!snap.exists()) { el('typingIndicator').innerHTML = ''; return; }
     const others = Object.entries(snap.val()).filter(([uid]) => uid !== currentUser?.uid).map(([,v]) => v.name);
     if (!others.length) { el('typingIndicator').innerHTML = ''; return; }
@@ -864,6 +833,7 @@ function selectRoom(roomId, data) {
 /* ── Messages ─────────────────────────────────── */
 function appendMessage(msg) {
   const wrap = el('messagesWrap');
+  if (!wrap) return;
   const day  = new Date(msg.ts||Date.now()).toLocaleDateString('en-AU',{weekday:'long',month:'long',day:'numeric'});
 
   if (day !== lastDay) {
@@ -883,7 +853,6 @@ function appendMessage(msg) {
   const row = document.createElement('div');
   row.className = `msg${grouped?' grouped':''}${isOwn?' own':''}`;
 
-  // Avatar — use stored photoURL from the message if available
   const fakeUser = { uid: msg.uid, displayName: msg.author, photoURL: msg.photoURL || null };
   const av = grouped
     ? Object.assign(document.createElement('div'), { className: 'msg-avatar-initials' })
@@ -905,9 +874,10 @@ function appendMessage(msg) {
 }
 
 function scrollToBottom(smooth = true) {
-  const w = el('messagesWrap'); w.scrollTo({ top: w.scrollHeight, behavior: smooth ? 'smooth' : 'instant' });
+  const w = el('messagesWrap'); 
+  if (w) w.scrollTo({ top: w.scrollHeight, behavior: smooth ? 'smooth' : 'instant' });
 }
-  /* ── Discord Join Templates ── */
+
 const WELCOME_TEMPLATES = [
   "A wild {name} appeared.",
   "Welcome, {name}. We hope you brought pizza.",
@@ -925,7 +895,6 @@ function generateWelcomeText(username) {
   return template.replace('{name}', nameHtml);
 }
 
-// Function to post a welcome message to Firebase
 async function sendSystemWelcome(username) {
   try {
     await push(ref(db, `messages/${currentRoom}`), {
@@ -947,7 +916,7 @@ function setTyping(active) {
   isTyping = active;
 }
 
-/* ── Groq ─────────────────────────────────────── */
+/* ── Groq Moderation ──────────────────────────── */
 async function groq(system, user) {
   try {
     const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -966,124 +935,56 @@ const moderateMessage = t => groq(
   `You moderate a gaming community chat. REJECT: NSFW, hate speech, slurs, threats, spam, doxxing. ACCEPT: gaming chat, banter, "lol", "gg". Be lenient. Raw JSON: {"ok":true} or {"ok":false,"reason":"brief"}`,
   `Message: "${t}"`);
 
-const moderateRoomName = async n => {
-  if (!n || n.trim().length < 2) return { ok:false, reason:'Room name must be at least 2 characters.' };
-  const slug = n.toLowerCase().replace(/[^a-z0-9-]/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
-  if (!slug) return { ok:false, reason:'Use letters, numbers, and hyphens only.' };
-  const r = await groq(
-    `Check room names for a gaming community. REJECT: slurs, hate, sexual, impersonating admins. ACCEPT: topic names. Raw JSON: {"ok":true} or {"ok":false,"reason":"brief"}`,
-    `Room name: "${n}"`);
-  if (r.ok) r.slug = slug;
-  return r;
-};
-
 /* ── Send message ─────────────────────────────── */
 async function sendMessage() {
-  const input = el('chatInput'), text = input.value.trim();
+  const input = el('chatInput'), text = input?.value.trim();
   if (!text || !currentUser) return;
   if (text.length > 500) { showToast('❌ Message too long (max 500 chars)'); return; }
-  el('sendBtn').disabled = true; el('checkingBadge').classList.add('visible');
+  if (el('sendBtn')) el('sendBtn').disabled = true;
+  if (el('checkingBadge')) el('checkingBadge').classList.add('visible');
   setTyping(false);
   try {
     const r = await moderateMessage(text);
-    el('checkingBadge').classList.remove('visible');
-    if (!r.ok) { showToast('❌ ' + (r.reason || 'Message blocked.')); el('sendBtn').disabled = false; return; }
+    if (el('checkingBadge')) el('checkingBadge').classList.remove('visible');
+    if (!r.ok) { showToast('❌ ' + (r.reason || 'Message blocked.')); if (el('sendBtn')) el('sendBtn').disabled = false; return; }
     await push(ref(db, `messages/${currentRoom}`), {
       uid:      currentUser.uid,
       author:   currentUser.displayName || 'Anonymous',
-      photoURL: currentUser.photoURL || null,  // store so messages show correct avatar
+      photoURL: currentUser.photoURL || null,
       text,
       ts:       Date.now(),
     });
-    input.value = ''; input.style.height = ''; el('charCount').textContent = '0 / 500'; el('sendBtn').disabled = true;
+    if (input) { input.value = ''; input.style.height = ''; }
+    if (el('charCount')) el('charCount').textContent = '0 / 500';
+    if (el('sendBtn')) el('sendBtn').disabled = true;
   } catch {
-    el('checkingBadge').classList.remove('visible');
-    showToast('❌ Failed to send.'); el('sendBtn').disabled = false;
+    if (el('checkingBadge')) el('checkingBadge').classList.remove('visible');
+    showToast('❌ Failed to send.');
+    if (el('sendBtn')) el('sendBtn').disabled = false;
   }
 }
 
-el('chatInput').addEventListener('input', () => {
+el('chatInput')?.addEventListener('input', () => {
   const v = el('chatInput').value;
-  el('charCount').textContent = `${v.length} / 500`;
-  el('sendBtn').disabled = v.trim().length === 0;
+  if (el('charCount')) el('charCount').textContent = `${v.length} / 500`;
+  if (el('sendBtn')) el('sendBtn').disabled = v.trim().length === 0;
   el('chatInput').style.height = 'auto';
   el('chatInput').style.height = Math.min(el('chatInput').scrollHeight, 120) + 'px';
   clearTimeout(typingTimer);
   if (v.trim()) { if (!isTyping) setTyping(true); typingTimer = setTimeout(() => setTyping(false), 2500); }
   else setTyping(false);
 });
-el('chatInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (!el('sendBtn').disabled) sendMessage(); }
+el('chatInput')?.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (!el('sendBtn')?.disabled) sendMessage(); }
 });
-el('sendBtn').addEventListener('click', sendMessage);
-
-/* ── Create room ──────────────────────────────── */
-el('addRoomBtn').addEventListener('click', () => {
-  el('newRoomName').value = ''; el('newRoomDesc').value = '';
-  el('createRoomError').textContent = '';
-  const cb = el('createRoomConfirm'); cb.disabled = false; cb.textContent = 'Create Room';
-  openModal('createRoomModal');
-});
-el('createRoomClose').addEventListener('click',  () => closeModal('createRoomModal'));
-el('createRoomCancel').addEventListener('click', () => closeModal('createRoomModal'));
-el('createRoomConfirm').addEventListener('click', async () => {
-  const name = el('newRoomName').value.trim(), desc = el('newRoomDesc').value.trim();
-  el('createRoomError').textContent = '';
-  if (!name) { el('createRoomError').textContent = 'Room name is required.'; return; }
-  const btn = el('createRoomConfirm'); btn.disabled = true; btn.textContent = 'Checking...';
-  const check = await moderateRoomName(name);
-  if (!check.ok) { el('createRoomError').textContent = check.reason || 'Name not allowed.'; btn.disabled = false; btn.textContent = 'Create Room'; return; }
-  const slug = check.slug;
-  const exists = await get(ref(db, `rooms/${slug}`));
-  if (exists.exists()) { el('createRoomError').textContent = 'A room with that name already exists.'; btn.disabled = false; btn.textContent = 'Create Room'; return; }
-  btn.textContent = 'Creating...';
-  await set(ref(db, `rooms/${slug}`), {
-    name: slug, desc: desc || 'Custom room', system: false,
-    ownerId: currentUser.uid, ownerName: currentUser.displayName || 'Anonymous', createdAt: Date.now(),
-  });
-  closeModal('createRoomModal'); showToast(`✅ Room #${slug} created!`);
-  setTimeout(() => { const d = roomsCache[slug]; if (d) selectRoom(slug, d); }, 600);
-});
-
-/* ── Delete room ──────────────────────────────── */
-let pendingDeleteRoom = null;
-function openDeleteRoomModal(roomId, roomName) {
-  pendingDeleteRoom = roomId;
-  el('deleteRoomNameDisplay').textContent = `#${roomName}`;
-  el('deleteRoomConfirm').disabled = false; el('deleteRoomConfirm').textContent = 'Delete Room';
-  openModal('deleteRoomModal');
-}
-el('deleteRoomClose').addEventListener('click',  () => closeModal('deleteRoomModal'));
-el('deleteRoomCancel').addEventListener('click', () => closeModal('deleteRoomModal'));
-el('deleteRoomConfirm').addEventListener('click', async () => {
-  if (!pendingDeleteRoom) return;
-  const btn = el('deleteRoomConfirm'); btn.disabled = true; btn.textContent = 'Deleting...';
-  const snap = await get(ref(db, `rooms/${pendingDeleteRoom}`));
-  if (!snap.exists() || snap.val().ownerId !== currentUser.uid) {
-    showToast('❌ You no longer own this room.'); closeModal('deleteRoomModal'); return;
-  }
-  await Promise.all([
-    remove(ref(db, `rooms/${pendingDeleteRoom}`)),
-    remove(ref(db, `messages/${pendingDeleteRoom}`)),
-    remove(ref(db, `typing/${pendingDeleteRoom}`)),
-  ]);
-  closeModal('deleteRoomModal'); showToast('🗑️ Room deleted.'); pendingDeleteRoom = null;
-});
+el('sendBtn')?.addEventListener('click', sendMessage);
 
 /* ── Sign out ─────────────────────────────────── */
-el('signoutBtn').addEventListener('click', async () => {
+el('signoutBtn')?.addEventListener('click', async () => {
   setTyping(false);
   if (currentUser) await remove(ref(db, `presence/${currentUser.uid}`)).catch(() => {});
-  await signOut(auth); showToast('Signed out. See ya! 👋');
-});
-
-/* ── Modals ───────────────────────────────────── */
-function openModal(id)  { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-document.querySelectorAll('.modal-overlay').forEach(m =>
-  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); }));
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+  await signOut(auth);
+  showToast('Signed out. See ya! 👋');
 });
 
 /* ── Utils ────────────────────────────────────── */
@@ -1091,220 +992,11 @@ function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;'
 function linkify(s) { return s.replace(/(https?:\/\/[^\s<>"]+)/g,'<a href="$1" target="_blank" rel="noopener noreferrer" style="color:var(--gold)">$1</a>'); }
 let toastTimer;
 function showToast(msg) {
-  const t = el('toast'); t.textContent = msg; t.classList.add('show');
+  const t = el('toast');
+  if (!t) return;
+  t.textContent = msg; t.classList.add('show');
   clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
 }
-/* ── Auth Navigation & Verification System ── */
-(function initAuthSystem() {
-    /* ── Discord OAuth2 Handler (Spark Free Tier) ── */
-  const DISCORD_CLIENT_ID = "1558075497739456562"; // Replace with your actual Client ID
-  const REDIRECT_URI = encodeURIComponent("https://theunlockedweb.github.io/chat/maintenence-needed.html");
-  
-  // 1. Redirect to Discord Authorization Screen when clicked
-  document.getElementById('discordBtn')?.addEventListener('click', () => {
-    const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=identify%20email`;
-    window.location.href = discordAuthUrl;
-  });
-  
-  // 2. Process incoming Discord callback token if redirected back
-  async function handleDiscordCallback() {
-    const fragment = new URLSearchParams(window.location.hash.slice(1));
-    const accessToken = fragment.get('access_token');
-  
-    if (accessToken) {
-      const err = document.getElementById('authError');
-      if (err) err.textContent = 'Authenticating with Discord...';
-  
-      try {
-        // Fetch user details directly from Discord API
-        const response = await fetch('https://discord.com/api/users/@me', {
-          headers: { authorization: `Bearer ${accessToken}` }
-        });
-        const discordUser = await response.json();
-  
-        if (discordUser && discordUser.username) {
-          // Clean URL fragment
-          window.history.replaceState({}, document.title, window.location.pathname);
-  
-          // Authenticate anonymously & update profile display name with Discord handle & avatar
-          const userCredential = await signInAnonymously(auth);
-          const avatarUrl = discordUser.avatar 
-            ? `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png` 
-            : 'https://via.placeholder.com/150';
-  
-          await updateProfile(userCredential.user, {
-            displayName: `${discordUser.username} (Discord)`,
-            photoURL: avatarUrl
-          });
-        }
-      } catch (error) {
-        console.error('Discord Auth Error:', error);
-        if (err) err.textContent = 'Discord authentication failed. Please try again.';
-      }
-    }
-  }
-  
-  // Automatically check for Discord token on load
-  handleDiscordCallback();
-  // Helper to switch views
-  function switchAuthView(activeViewId) {
-    const views = ['mainAuthView', 'emailView', 'guestView', 'moreOptionsView', 'totpView'];
-    views.forEach(id => {
-      const view = document.getElementById(id);
-      if (view) view.classList.add('hidden');
-    });
-    
-    const target = document.getElementById(activeViewId);
-    if (target) target.classList.remove('hidden');
-
-    const err = document.getElementById('authError');
-    if (err) err.textContent = '';
-  }
-
-  // 1. Navigation Buttons
-  document.getElementById('showEmailViewBtn')?.addEventListener('click', () => switchAuthView('emailView'));
-  document.getElementById('showGuestViewBtn')?.addEventListener('click', () => switchAuthView('guestView'));
-  document.getElementById('showMoreViewBtn')?.addEventListener('click', () => switchAuthView('moreOptionsView'));
-  document.getElementById('showTotpViewBtn')?.addEventListener('click', () => switchAuthView('totpView'));
-
-  document.querySelectorAll('.back-btn').forEach(btn => {
-    btn.addEventListener('click', () => switchAuthView('mainAuthView'));
-  });
-
-  // 2. Guest Sign-In Button
-  document.getElementById('guestSignInBtn')?.addEventListener('click', async () => {
-    const firstName = document.getElementById('guestFirstName')?.value.trim();
-    const lastName = document.getElementById('guestLastName')?.value.trim();
-    const fileInput = document.getElementById('guestAvatarFile');
-    const file = fileInput?.files[0];
-
-    if (!firstName) {
-      const err = document.getElementById('authError');
-      if (err) err.textContent = 'Please enter a first name.';
-      return;
-    }
-
-    let photoURL = 'https://via.placeholder.com/150';
-
-    if (file) {
-      const err = document.getElementById('authError');
-      if (err) err.textContent = 'Scanning image for safety...';
-
-      const safe = await isImageSafe(file);
-      if (!safe) {
-        if (err) err.textContent = 'Uploaded image flagged as inappropriate. Please choose another picture.';
-        return;
-      }
-
-      try {
-        if (err) err.textContent = 'Uploading avatar...';
-        const fileExt = file.name.split('.').pop();
-        const fileName = `guest_avatars/${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
-        const fileRef = storageRef(storage, fileName);
-
-        await uploadBytes(fileRef, file);
-        photoURL = await getDownloadURL(fileRef);
-      } catch (uploadError) {
-        console.error('Avatar upload failed:', uploadError);
-        if (err) err.textContent = 'Failed to upload profile image. Continuing with default avatar.';
-      }
-    }
-
-    const fullName = lastName ? `${firstName} ${lastName}` : firstName;
-
-    try {
-      const userCredential = await signInAnonymously(auth);
-      await updateProfile(userCredential.user, {
-        displayName: fullName + ' (Guest)',
-        photoURL: photoURL
-      });
-    } catch (e) {
-      const err = document.getElementById('authError');
-      if (err) err.textContent = 'Guest login failed — ' + e.message;
-    }
-  });
-
-  // 3. 6-Digit Code Inputs & Auto-Submit
-  const codeInput = document.getElementById('totpCodeInput');
-
-  // Stop spaces from being typed
-  codeInput?.addEventListener('keydown', (e) => {
-    if (e.key === ' ') {
-      e.preventDefault();
-    }
-  });
-
-  // Remove pasted spaces/letters and auto-submit at 6 numbers
-  codeInput?.addEventListener('input', (e) => {
-    e.target.value = e.target.value.replace(/\D/g, ''); // Keeps numbers only
-
-    if (e.target.value.length === 6) {
-      verifyAuthCode(e.target.value);
-    }
-  });
-
-  // Verify button click
-  document.getElementById('verifyTotpBtn')?.addEventListener('click', () => {
-    const code = codeInput?.value.trim();
-    if (!code || code.length < 6) {
-      const err = document.getElementById('authError');
-      if (err) err.textContent = 'Please enter a valid 6-digit code.';
-      return;
-    }
-    verifyAuthCode(code);
-  });
-})();
-
-// Helper function to check the code
-async function verifyAuthCode(code) {
-  const err = document.getElementById('authError');
-  if (err) err.textContent = 'Verifying code...';
-
-  try {
-    console.log("Submitting 6-digit code:", code);
-    // Code verification logic goes here
-  } catch (error) {
-    console.error("Verification error:", error);
-    if (err) err.textContent = 'Invalid code. Please try again.';
-  }
-}
-// GitHub Sign-In
-  document.getElementById('githubBtn')?.addEventListener('click', async () => {
-    const provider = new GithubAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, provider);
-      console.log("Logged in with GitHub:", result.user);
-    } catch (error) {
-      console.error("GitHub login error:", error);
-      const err = document.getElementById('authError');
-      if (err) err.textContent = 'GitHub login failed: ' + error.message;
-    }
-  });
-
-const microsoftProvider = new OAuthProvider('microsoft.com');
-
-// Microsoft Sign-In
-document.getElementById('microsoftBtn')?.addEventListener('click', async () => {
-  const microsoftProvider = new OAuthProvider('microsoft.com');
-  microsoftProvider.setCustomParameters({
-    prompt: 'select_account'
-  });
-
-  try {
-    const result = await signInWithPopup(auth, microsoftProvider);
-    const user = result.user;
-
-    // Check if this is a newly created account to trigger system welcome message
-    const isNewUser = result._tokenResponse?.isNewUser;
-    if (isNewUser && typeof sendSystemWelcome === 'function') {
-      await sendSystemWelcome(user.displayName || 'Someone');
-    }
-  } catch (error) {
-    console.error("Microsoft Sign-In Error:", error);
-    const errEl = document.getElementById('authError');
-    if (errEl) errEl.textContent = 'Microsoft sign-in failed: ' + error.message;
-  }
-});
 </script>
 </body>
 </html>
