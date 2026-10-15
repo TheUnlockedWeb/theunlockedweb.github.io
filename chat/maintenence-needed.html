@@ -1166,6 +1166,37 @@ el('chatInput')?.addEventListener('keydown', e => {
 el('sendBtn')?.addEventListener('click', sendMessage);
 
   
+/* ── Direct Messages window ───────────────────── */
+const dmModal = el('dmModal');
+
+el('openDmsBtn')?.addEventListener('click', () => {
+  if (!currentUser) {
+    showToast('Please sign in to use Direct Messages.');
+    return;
+  }
+
+  dmModal?.classList.add('open');
+  el('dmUserSearch')?.focus();
+});
+
+function closeDmsModal() {
+  dmModal?.classList.remove('open');
+}
+
+el('closeDmsBtn')?.addEventListener('click', closeDmsModal);
+
+dmModal?.addEventListener('click', event => {
+  if (event.target === dmModal) {
+    closeDmsModal();
+  }
+});
+
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && dmModal?.classList.contains('open')) {
+    closeDmsModal();
+  }
+});
+  
 /* ── Create room controls ─────────────────────── */
 const createRoomModal = el('createRoomModal');
 
