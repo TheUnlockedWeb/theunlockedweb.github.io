@@ -1117,7 +1117,8 @@ el('addRoomBtn')?.addEventListener('click', () => {
   if (el('newRoomReadOnly')) {
     el('newRoomReadOnly').checked = false;
   }
-
+ updatePrivateRoomInviteVisibility();
+  
   createRoomModal?.classList.add('open');
 });
 
