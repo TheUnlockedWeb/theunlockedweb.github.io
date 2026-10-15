@@ -841,10 +841,13 @@ function appendMessage(msg) {
     const d = document.createElement('div'); d.className = 'day-divider'; d.textContent = day;
     wrap.appendChild(d);
   }
-  if (msg.type === 'system') {
-    const s = document.createElement('div'); s.className = 'msg-system'; s.textContent = msg.text;
-    wrap.appendChild(s); return;
-  }
+    if (msg.type === 'system') {
+        const s = document.createElement('div'); 
+        s.className = 'msg-system'; 
+        s.innerHTML = msg.text; // <-- Changed from textContent to innerHTML so spans render properly
+        wrap.appendChild(s); 
+        return;
+      }
 
   const grouped = msg.uid === lastAuthorId; lastAuthorId = msg.uid;
   const isOwn   = currentUser && msg.uid === currentUser.uid;
