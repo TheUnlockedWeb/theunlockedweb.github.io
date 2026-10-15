@@ -225,6 +225,74 @@
   padding: 24px 10px;
 }
 
+
+  /* ── Improved DM member search ────────────────── */
+  #dmUserSearch {
+    display: block;
+    width: 100%;
+    min-height: 46px;
+    box-sizing: border-box;
+    padding: 12px 15px;
+    margin-top: 8px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: rgba(255,255,255,.055);
+    color: var(--text);
+    font: 500 .9rem 'Manrope', sans-serif;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s, background .2s;
+  }
+  
+  #dmUserSearch::placeholder {
+    color: var(--muted);
+  }
+  
+  #dmUserSearch:focus {
+    border-color: var(--gold);
+    background: rgba(255,255,255,.075);
+    box-shadow: 0 0 0 4px var(--gold-gl);
+  }
+  
+  .dm-search-results > button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 58px;
+    padding: 10px 12px;
+    text-align: left;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    transition: background .15s, border-color .15s;
+  }
+  
+  .dm-search-results > button:hover {
+    background: rgba(255,255,255,.055);
+    border-color: var(--border);
+  }
+  
+  .dm-search-results .dm-member-details {
+    min-width: 0;
+    flex: 1;
+  }
+  
+  .dm-search-results .dm-member-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: .86rem;
+    font-weight: 700;
+  }
+  
+  .dm-search-results .dm-member-method {
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: .72rem;
+  }
+
 @media (max-width: 640px) {
   .dm-modal {
     height: 85vh;
