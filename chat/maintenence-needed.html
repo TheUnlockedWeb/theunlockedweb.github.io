@@ -482,6 +482,40 @@
       </select>
     </div>
 
+    
+<div class="modal-field" id="privateRoomInvitesField" hidden>
+  <label for="privateRoomInviteSearch">Invite existing members</label>
+
+  <input
+    type="search"
+    id="privateRoomInviteSearch"
+    placeholder="Search by username or email..."
+    autocomplete="off"
+  >
+
+  <p style="font-size:.75rem;color:var(--muted);margin-top:6px">
+    Search for registered accounts and select everyone who should be
+    allowed to join this private room.
+  </p>
+
+    <div
+      id="privateRoomInviteResults"
+      role="listbox"
+      aria-label="Matching accounts"
+      style="display:flex;flex-direction:column;gap:6px;margin-top:10px"
+    ></div>
+  
+    <div
+      id="privateRoomSelectedInvites"
+      style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px"
+    ></div>
+  
+    <p id="privateRoomInviteStatus"
+       role="status"
+       style="font-size:.75rem;color:var(--muted);margin-top:6px">
+    </p>
+  </div>
+
     <div class="modal-field" id="newRoomReadOnlyField">
       <label>
         <input type="checkbox" id="newRoomReadOnly"
