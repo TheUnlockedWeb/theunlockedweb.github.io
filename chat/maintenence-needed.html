@@ -634,14 +634,16 @@ onAuthStateChanged(auth, (user) => {
     trackPresence(user);
     seedDefaultRooms().then(loadRoomList);
 
-    // Welcome message check
-    const name = user.displayName || 'Someone';
-    if (!sessionStorage.getItem('welcomed_' + user.uid)) {
-      sessionStorage.setItem('welcomed_' + user.uid, 'true');
-      if (typeof sendSystemWelcome === 'function') {
-        sendSystemWelcome(name);
+  // Check if this is the user's first time ever logging in via Database flag
+      const welcomedRef = ref(db, `users/${user.uid}/welcomed`);
+      const welcomedSnap = await get(welcomedRef);
+      
+      if (!welcomedSnap.exists()) {
+        await set(welcomedRef, true); // Mark them as welcomed forever
+        if (typeof sendSystemWelcome === 'function') {
+          sendSystemWelcome(name);
+        }
       }
-    }
   } else {
     console.log("No user signed in. Showing login interface.");
     if (overlay) {
