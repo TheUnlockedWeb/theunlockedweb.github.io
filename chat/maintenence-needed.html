@@ -1066,6 +1066,34 @@ el('sendBtn')?.addEventListener('click', sendMessage);
 /* ── Create room controls ─────────────────────── */
 const createRoomModal = el('createRoomModal');
 
+  
+/* ── Private room invitation UI ──────────────── */
+const privateRoomInvitesField = el('privateRoomInvitesField');
+const privateRoomInviteSearch = el('privateRoomInviteSearch');
+const privateRoomInviteResults = el('privateRoomInviteResults');
+const privateRoomSelectedInvites = el('privateRoomSelectedInvites');
+const privateRoomInviteStatus = el('privateRoomInviteStatus');
+
+function updatePrivateRoomInviteVisibility() {
+  const isPrivate = el('newRoomVisibility')?.value === 'private';
+
+  if (privateRoomInvitesField) {
+    privateRoomInvitesField.hidden = !isPrivate;
+  }
+
+  if (!isPrivate) {
+    if (privateRoomInviteSearch) privateRoomInviteSearch.value = '';
+    if (privateRoomInviteResults) privateRoomInviteResults.replaceChildren();
+    if (privateRoomSelectedInvites) privateRoomSelectedInvites.replaceChildren();
+    if (privateRoomInviteStatus) privateRoomInviteStatus.textContent = '';
+  }
+}
+
+el('newRoomVisibility')?.addEventListener(
+  'change',
+  updatePrivateRoomInviteVisibility
+);
+
 function closeCreateRoomModal() {
   createRoomModal?.classList.remove('open');
 
