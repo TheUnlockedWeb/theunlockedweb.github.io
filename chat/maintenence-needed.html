@@ -1028,6 +1028,144 @@ el('chatInput')?.addEventListener('keydown', e => {
 });
 el('sendBtn')?.addEventListener('click', sendMessage);
 
+  
+/* ── Create room controls ─────────────────────── */
+const createRoomModal = el('createRoomModal');
+
+function closeCreateRoomModal() {
+  createRoomModal?.classList.remove('open');
+
+  if (el('createRoomError')) {
+    el('createRoomError').textContent = '';
+  }
+}
+
+el('addRoomBtn')?.addEventListener('click', () => {
+  if (!currentUser) {
+    showToast('Please sign in before creating a room.');
+    return;
+  }
+
+  if (el('newRoomName')) el('newRoomName').value = '';
+  if (el('newRoomDesc')) el('newRoomDesc').value = '';
+  if (el('newRoomType')) el('newRoomType').value = 'text';
+  if (el('newRoomVisibility')) {
+    el('newRoomVisibility').value = 'public';
+  }
+  if (el('newRoomReadOnly')) {
+    el('newRoomReadOnly').checked = false;
+  }
+
+  createRoomModal?.classList.add('open');
+});
+
+el('createRoomClose')?.addEventListener(
+  'click',
+  closeCreateRoomModal
+);
+
+el('createRoomCancel')?.addEventListener(
+  'click',
+  closeCreateRoomModal
+);
+
+createRoomModal?.addEventListener('click', event => {
+  if (event.target === createRoomModal) {
+    closeCreateRoomModal();
+  }
+});
+
+el('createRoomConfirm')?.addEventListener('click', async () => {
+  const name = el('newRoomName')?.value.trim();
+  const desc = el('newRoomDesc')?.value.trim() || '';
+
+  const error = el('createRoomError');
+  const button = el('createRoomConfirm');
+
+  if (error) error.textContent = '';
+
+  if (!currentUser) {
+    if (error) error.textContent = 'Please sign in first.';
+    return;
+  }
+
+  if (!name) {
+    if (error) error.textContent = 'Please enter a room name.';
+    el('newRoomName')?.focus();
+    return;
+  }
+
+  // These features need their permission and voice systems
+  // implemented before they can safely be enabled.
+  const roomType = el('newRoomType')?.value || 'text';
+  const visibility = el('newRoomVisibility')?.value || 'public';
+  const readOnly = el('newRoomReadOnly')?.checked || false;
+
+  if (roomType === 'voice') {
+    if (error) {
+      error.textContent =
+        'Voice rooms are not available until voice chat is implemented.';
+    }
+    return;
+  }
+
+  if (visibility === 'private') {
+    if (error) {
+      error.textContent =
+        'Private rooms will be enabled once member access is secured.';
+    }
+    return;
+  }
+
+  if (readOnly) {
+    if (error) {
+      error.textContent =
+        'Read-only mode will be enabled once channel permissions are implemented.';
+    }
+    return;
+  }
+
+  if (button) button.disabled = true;
+
+  try {
+    const roomRef = push(ref(db, 'rooms'));
+
+    const roomData = {
+      name,
+      desc,
+      system: false,
+      ownerId: currentUser.uid,
+      ownerName: currentUser.displayName || 'Anonymous',
+      roomType: 'text',
+      visibility: 'public',
+      readOnly: false,
+      createdAt: Date.now()
+    };
+
+    await set(roomRef, roomData);
+
+    roomsCache[roomRef.key] = {
+      ...roomData,
+      id: roomRef.key
+    };
+
+    addRoomButton(roomRef.key, roomData);
+    closeCreateRoomModal();
+    selectRoom(roomRef.key, roomData);
+
+    showToast('Room created successfully!');
+  } catch (err) {
+    console.error('Failed to create room:', err);
+
+    if (error) {
+      error.textContent =
+        'Could not create the room. Please try again.';
+    }
+  } finally {
+    if (button) button.disabled = false;
+  }
+});
+
 /* ── Sign out ─────────────────────────────────── */
 el('signoutBtn')?.addEventListener('click', async () => {
   setTyping(false);
