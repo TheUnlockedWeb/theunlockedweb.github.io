@@ -293,6 +293,27 @@
     font-size: .72rem;
   }
 
+  
+  .dm-unread-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 19px;
+    height: 19px;
+    padding: 0 5px;
+    border-radius: 999px;
+    box-sizing: border-box;
+    background: #ed4245;
+    color: white;
+    font-size: .67rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+  
+  .dm-unread-badge[hidden] {
+    display: none;
+  }
+
 @media (max-width: 640px) {
   .dm-modal {
     height: 85vh;
