@@ -1305,18 +1305,6 @@ document.getElementById('microsoftBtn')?.addEventListener('click', async () => {
     if (errEl) errEl.textContent = 'Microsoft sign-in failed: ' + error.message;
   }
 });
-
-// Authenticator App Sign-In
-document.getElementById('authAppBtn')?.addEventListener('click', () => {
-  // Show the MFA / TOTP verification view or modal
-  const authModal = document.getElementById('totpModal') || document.getElementById('mfaView');
-  if (authModal) {
-    authModal.classList.remove('hidden');
-    authModal.style.display = 'block';
-  } else {
-    console.log("Authenticator verification module is initializing...");
-  }
-});
 </script>
 </body>
 </html>
