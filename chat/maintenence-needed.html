@@ -437,20 +437,64 @@
   </main>
 </div>
 
+
 <!-- CREATE ROOM MODAL -->
 <div class="modal-overlay" id="createRoomModal">
   <div class="modal">
     <button class="modal-close" id="createRoomClose">×</button>
-    <h3><i class="fa-solid fa-hashtag" style="color:var(--gold);margin-right:8px"></i>Create a Room</h3>
+
+    <h3>
+      <i class="fa-solid fa-hashtag"
+         style="color:var(--gold);margin-right:8px"></i>
+      Create a Room
+    </h3>
+
     <div class="modal-field">
-      <label>Room Name</label>
-      <input type="text" id="newRoomName" placeholder="e.g. brawl-stars" maxlength="32">
+      <label for="newRoomType">Room Type</label>
+      <select id="newRoomType"
+        style="width:100%;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px;font-family:'Manrope',sans-serif">
+        <option value="text">Text Channel</option>
+        <option value="voice">Voice Channel</option>
+      </select>
     </div>
+
     <div class="modal-field">
-      <label>Description <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
-      <input type="text" id="newRoomDesc" placeholder="What's this room about?" maxlength="80">
+      <label for="newRoomName">Room Name</label>
+      <input type="text" id="newRoomName"
+        placeholder="e.g. brawl-stars" maxlength="32">
     </div>
+
+    <div class="modal-field">
+      <label for="newRoomDesc">
+        Description
+        <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">(optional)</span>
+      </label>
+      <input type="text" id="newRoomDesc"
+        placeholder="What's this room about?" maxlength="80">
+    </div>
+
+    <div class="modal-field">
+      <label for="newRoomVisibility">Visibility</label>
+      <select id="newRoomVisibility"
+        style="width:100%;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px;font-family:'Manrope',sans-serif">
+        <option value="public">Public — anyone can join</option>
+        <option value="private">Private — invited members only</option>
+      </select>
+    </div>
+
+    <div class="modal-field" id="newRoomReadOnlyField">
+      <label>
+        <input type="checkbox" id="newRoomReadOnly"
+          style="width:auto;margin-right:6px">
+        Read-only channel
+      </label>
+      <p style="font-size:.75rem;color:var(--muted);margin-top:5px">
+        Only the channel owner and authorised administrators will be able to send messages.
+      </p>
+    </div>
+
     <div class="modal-error" id="createRoomError"></div>
+
     <div class="modal-btns">
       <button class="btn-cancel" id="createRoomCancel">Cancel</button>
       <button class="btn-confirm" id="createRoomConfirm">Create Room</button>
@@ -605,7 +649,7 @@ function initialsAvatar(user, size, classList) {
 }
 
 /* ── Auth state & Interface Switching ────────── */
-onAuthStateChanged(auth, (user) => {
+ onAuthStateChanged(auth, async (user) => {
   currentUser = user;
   const overlay = document.getElementById('authOverlay') || document.getElementById('authModal');
   const chatShell = document.getElementById('chatShell') || document.getElementById('chatContainer');
