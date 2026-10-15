@@ -589,6 +589,56 @@
   </div>
 </div>
 
+  
+<!-- DIRECT MESSAGES MODAL -->
+<div class="modal-overlay" id="dmModal">
+  <div class="modal dm-modal">
+    <button class="modal-close" id="closeDmsBtn" aria-label="Close messages">×</button>
+
+    <h3>
+      <i class="fa-solid fa-message"
+         style="color:var(--gold);margin-right:8px"></i>
+      Direct Messages
+    </h3>
+
+    <div class="dm-layout">
+      <section class="dm-sidebar">
+        <label for="dmUserSearch">Find a member</label>
+        <input
+          id="dmUserSearch"
+          type="search"
+          placeholder="Search members..."
+          autocomplete="off"
+        >
+
+        <div class="dm-search-results" id="dmSearchResults">
+          <div class="dm-empty">
+            Member search will appear here once the account directory is connected.
+          </div>
+        </div>
+
+        <h4 style="font-size:.75rem;color:var(--muted);margin-top:18px">
+          CONVERSATIONS
+        </h4>
+        <div id="dmConversationList">
+          <div class="dm-empty">No conversations loaded yet.</div>
+        </div>
+      </section>
+
+      <section class="dm-conversation" id="dmConversationPanel">
+        <div class="dm-empty">
+          <i class="fa-solid fa-comments"
+             style="font-size:2rem;display:block;margin-bottom:12px"></i>
+          <strong>Select a member</strong>
+          <p style="margin-top:8px">
+            Choose a member to open your private conversation.
+          </p>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
 <!-- DELETE ROOM MODAL -->
 <div class="modal-overlay" id="deleteRoomModal">
   <div class="modal">
