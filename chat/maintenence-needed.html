@@ -377,40 +377,9 @@
       </svg>
       <span>Continue with Microsoft</span>
     </button>
-  <!-- Authenticator App Sign-In -->
-  <button class="auth-btn provider-btn auth-app-btn" id="authAppBtn">
-    <span class="provider-icon">🔑</span>
-    <span>Continue with Authenticator App</span>
-  </button>
     <!-- Back button -->
     <button class="auth-btn back-btn" style="margin-top: 15px;">Back</button>
   </div>
-
-    <!-- VIEW 4: TOTP / AUTHENTICATOR SETUP & VERIFY -->
-    <div id="totpView" class="hidden">
-      <p style="font-size:13px; color:#ccc; margin-bottom:10px;">Scan QR Code or enter setup key in your 2FA app:</p>
-      
-      <!-- Generated QR Code Image -->
-      <div style="text-align:center; margin: 10px 0;">
-        <img id="totpQrCode" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=otpauth://totp/TUW%20Chat?secret=JBSWY3DPEHPK3PXP" alt="TOTP QR Code" style="border-radius:6px; border:2px solid #333;" />
-      </div>
-
-      <div style="font-size:11px; color:#888; word-break:break-all; text-align:center; margin-bottom:10px;">
-        Setup Key: <strong style="color:#fff;" id="totpKeyText">JBSWY3DPEHPK3PXP</strong>
-      </div>
-
-      <input 
-          type="text" 
-          id="totpCodeInput" 
-          class="auth-input" 
-          placeholder="123456" 
-          maxlength="6" 
-          inputmode="numeric" 
-          autocomplete="one-time-code"
-        >
-      <button class="auth-btn totp-action-btn" id="verifyTotpBtn">Verify & Login</button>
-      <button class="auth-btn back-btn">← Back to Options</button>
-    </div>
 
     <div class="auth-error" id="authError"></div>
     <div class="auth-note">Your display name and details will be used in chat.</div>
