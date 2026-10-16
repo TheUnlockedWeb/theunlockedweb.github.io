@@ -971,6 +971,14 @@ function initialsAvatar(user, size, classList) {
       }
   } else {
     console.log("No user signed in. Showing login interface.");
+    
+        // Stop DM notifications when signed out
+    dmNotificationGeneration++;
+    dmNotificationUnsubscribe?.();
+    dmNotificationUnsubscribe = null;
+    dmUnreadCount = 0;
+    updateDmUnreadBadge();
+    
     if (overlay) {
       overlay.classList.remove('hidden');
       overlay.style.display = 'flex';
