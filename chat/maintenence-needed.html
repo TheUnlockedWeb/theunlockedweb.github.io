@@ -1539,6 +1539,49 @@ function playChatNotificationSound(type = 'dm') {
   }
 }
 
+/* ── Browser notification permissions ─────────── */
+async function requestChatNotificationPermission() {
+  if (!('Notification' in window)) {
+    console.warn('[Chat] Browser notifications are not supported.');
+    return false;
+  }
+
+  if (Notification.permission === 'granted') {
+    return true;
+  }
+
+  if (Notification.permission === 'denied') {
+    console.warn('[Chat] Notifications are blocked in browser settings.');
+    return false;
+  }
+
+  try {
+    const permission = await Notification.requestPermission();
+    return permission === 'granted';
+  } catch (error) {
+    console.warn('[Chat] Could not request notification permission:', error);
+    return false;
+  }
+}
+
+function showChatBrowserNotification(title, body, type = 'dm') {
+  if (!('Notification' in window)) return;
+  if (Notification.permission !== 'granted') return;
+
+  // Only show a browser notification when the user is away.
+  if (document.visibilityState === 'visible' && document.hasFocus()) return;
+
+  try {
+    new Notification(title, {
+      body,
+      tag: `chat-${type}-${Date.now()}`,
+      silent: true
+    });
+  } catch (error) {
+    console.warn('[Chat] Could not show browser notification:', error);
+  }
+}
+
 /* ── Direct Messages window ───────────────────── */
 const dmModal = el('dmModal');
 
