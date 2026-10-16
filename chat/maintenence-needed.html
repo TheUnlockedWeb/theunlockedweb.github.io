@@ -957,6 +957,7 @@ function initialsAvatar(user, size, classList) {
 
     trackPresence(user);
     seedDefaultRooms().then(loadRoomList);
+    startDmNotificationListener(user);
 
   // Check if this is the user's first time ever logging in via Database flag
       const welcomedRef = ref(db, `users/${user.uid}/welcomed`);
