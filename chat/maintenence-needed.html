@@ -1308,6 +1308,164 @@ el('chatInput')?.addEventListener('keydown', e => {
 });
 el('sendBtn')?.addEventListener('click', sendMessage);
 
+
+/* ── Real-time DM notifications ──────────────── */
+let dmNotificationUnsubscribe = null;
+let dmNotificationGeneration = 0;
+let dmUnreadCount = 0;
+
+function updateDmUnreadBadge() {
+  const badge = el('dmUnreadBadge');
+  if (!badge) return;
+
+  badge.textContent = dmUnreadCount > 99
+    ? '99+'
+    : String(dmUnreadCount);
+
+  badge.hidden = dmUnreadCount === 0;
+}
+
+function showIncomingChatToast(notification) {
+  const stack = el('chatNotificationStack');
+  if (!stack) return;
+
+  const toast = document.createElement('div');
+  toast.className = 'chat-notification';
+
+  const sender = {
+    uid: notification.senderUid || 'unknown',
+    displayName: notification.senderName || 'Someone',
+    photoURL: notification.senderPhotoURL || null
+  };
+
+  toast.appendChild(renderAvatar(sender, 42, 'msg-avatar'));
+
+  const content = document.createElement('div');
+  content.className = 'chat-notification-content';
+
+  const title = document.createElement('div');
+  title.className = 'chat-notification-title';
+  title.textContent = notification.type === 'invite'
+    ? 'Channel invitation'
+    : sender.displayName;
+
+  const message = document.createElement('div');
+  message.className = 'chat-notification-message';
+  message.textContent = notification.text || 'Sent you a message';
+
+  content.append(title, message);
+  toast.appendChild(content);
+
+  const close = document.createElement('button');
+  close.className = 'chat-notification-close';
+  close.type = 'button';
+  close.textContent = '×';
+  close.setAttribute('aria-label', 'Dismiss notification');
+  close.addEventListener('click', () => toast.remove());
+  toast.appendChild(close);
+
+  stack.prepend(toast);
+
+  // Keep the screen tidy if several messages arrive together.
+  while (stack.children.length > 4) {
+    stack.lastElementChild?.remove();
+  }
+
+  window.setTimeout(() => toast.remove(), 6500);
+}
+
+function handleIncomingDmNotification(notification) {
+  if (!currentUser) return;
+  if (notification.senderUid === currentUser.uid) return;
+
+  const type = notification.type === 'invite' ? 'invite' : 'dm';
+
+  dmUnreadCount += 1;
+  updateDmUnreadBadge();
+
+  if (typeof playChatNotificationSound === 'function') {
+    playChatNotificationSound(type);
+  }
+
+  if (document.visibilityState === 'visible' && document.hasFocus()) {
+    showIncomingChatToast(notification);
+  } else if ('Notification' in window &&
+             Notification.permission === 'granted') {
+    try {
+      new Notification(
+        type === 'invite' ? 'Channel invitation' : (notification.senderName || 'New message'),
+        {
+          body: notification.text || (
+            type === 'invite' ? 'You have a channel invitation.' : 'You received a message.'
+          ),
+          tag: `chat-${notification.messageId || Date.now()}`
+        }
+      );
+    } catch (error) {
+      console.warn('Browser notification unavailable:', error);
+    }
+  }
+}
+
+async function startDmNotificationListener(user) {
+  dmNotificationUnsubscribe?.();
+  dmNotificationUnsubscribe = null;
+
+  const generation = ++dmNotificationGeneration;
+  dmUnreadCount = 0;
+  updateDmUnreadBadge();
+
+  if (!user) return;
+
+  const inboxQuery = query(
+    ref(db, `dmNotifications/${user.uid}`),
+    limitToLast(100)
+  );
+
+  // Establish a baseline so old notifications don't all play on login.
+  let existingIds = new Set();
+
+  try {
+    const initialSnapshot = await get(inboxQuery);
+
+    if (generation !== dmNotificationGeneration || currentUser?.uid !== user.uid) {
+      return;
+    }
+
+    initialSnapshot.forEach(child => existingIds.add(child.key));
+  } catch (error) {
+    console.error('Could not initialise DM notifications:', error);
+    return;
+  }
+
+  if (generation !== dmNotificationGeneration || currentUser?.uid !== user.uid) {
+    return;
+  }
+
+  let ready = false;
+
+  dmNotificationUnsubscribe = onChildAdded(inboxQuery, snapshot => {
+    if (generation !== dmNotificationGeneration || currentUser?.uid !== user.uid) {
+      return;
+    }
+
+    // Existing children are replayed when the listener starts.
+    if (existingIds.has(snapshot.key)) return;
+
+    existingIds.add(snapshot.key);
+
+    const notification = snapshot.val();
+    if (!notification) return;
+
+    notification.messageId = snapshot.key;
+    handleIncomingDmNotification(notification);
+  });
+
+  // The listener's first initial replay has now been attached.
+  // Future additions that were not in the baseline are treated as new.
+  ready = true;
+  console.info('[Chat] Real-time DM notification listener active.', { ready });
+}
   
 /* ── Direct Messages window ───────────────────── */
 const dmModal = el('dmModal');
