@@ -1590,6 +1590,7 @@ el('openDmsBtn')?.addEventListener('click', () => {
     showToast('Please sign in to use Direct Messages.');
     return;
   }
+  
   requestChatNotificationPermission();
   dmModal?.classList.add('open');
   el('dmUserSearch')?.focus();
