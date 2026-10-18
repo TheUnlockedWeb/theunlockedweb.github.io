@@ -1416,6 +1416,7 @@ function handleIncomingDmNotification(notification) {
   }
 }
 
+
 async function startDmNotificationListener(user) {
   dmNotificationUnsubscribe?.();
   dmNotificationUnsubscribe = null;
@@ -1431,111 +1432,66 @@ async function startDmNotificationListener(user) {
     limitToLast(100)
   );
 
-  // Establish a baseline so old notifications don't all play on login.
-  let existingIds = new Set();
+  const seenIds = new Set();
+  let initialLoadComplete = false;
+
+  dmNotificationUnsubscribe = onChildAdded(
+    inboxQuery,
+    snapshot => {
+      if (
+        generation !== dmNotificationGeneration ||
+        currentUser?.uid !== user.uid
+      ) {
+        return;
+      }
+
+      // Ignore notifications that existed when monitoring began.
+      if (!initialLoadComplete) {
+        seenIds.add(snapshot.key);
+        return;
+      }
+
+      // Prevent the same notification from being processed twice.
+      if (seenIds.has(snapshot.key)) return;
+      seenIds.add(snapshot.key);
+
+      const notification = snapshot.val();
+      if (!notification) return;
+
+      notification.messageId = snapshot.key;
+      handleIncomingDmNotification(notification);
+    }
+  );
 
   try {
+    // Load existing notification IDs while the live listener is active.
     const initialSnapshot = await get(inboxQuery);
 
-    if (generation !== dmNotificationGeneration || currentUser?.uid !== user.uid) {
+    if (
+      generation !== dmNotificationGeneration ||
+      currentUser?.uid !== user.uid
+    ) {
+      dmNotificationUnsubscribe?.();
+      dmNotificationUnsubscribe = null;
       return;
     }
 
-    initialSnapshot.forEach(child => existingIds.add(child.key));
+    initialSnapshot.forEach(child => {
+      seenIds.add(child.key);
+    });
+
+    initialLoadComplete = true;
+
+    console.info(
+      '[Chat] Real-time DM notification listener active.'
+    );
   } catch (error) {
-    console.error('Could not initialise DM notifications:', error);
-    return;
-  }
-
-  if (generation !== dmNotificationGeneration || currentUser?.uid !== user.uid) {
-    return;
-  }
-
-  let ready = false;
-
-  dmNotificationUnsubscribe = onChildAdded(inboxQuery, snapshot => {
-    if (generation !== dmNotificationGeneration || currentUser?.uid !== user.uid) {
-      return;
-    }
-
-    // Existing children are replayed when the listener starts.
-    if (existingIds.has(snapshot.key)) return;
-
-    existingIds.add(snapshot.key);
-
-    const notification = snapshot.val();
-    if (!notification) return;
-
-    notification.messageId = snapshot.key;
-    handleIncomingDmNotification(notification);
-  });
-
-  // The listener's first initial replay has now been attached.
-  // Future additions that were not in the baseline are treated as new.
-  ready = true;
-  console.info('[Chat] Real-time DM notification listener active.', { ready });
-}
-  
-/* ── DM and invitation notification sounds ────── */
-let notificationAudioContext = null;
-
-function playChatNotificationSound(type = 'dm') {
-  try {
-    const AudioContextClass =
-      window.AudioContext || window.webkitAudioContext;
-
-    if (!AudioContextClass) return;
-
-    if (!notificationAudioContext) {
-      notificationAudioContext = new AudioContextClass();
-    }
-
-    const context = notificationAudioContext;
-
-    if (context.state === 'suspended') {
-      context.resume().catch(() => {});
-    }
-
-    const notes = type === 'invite'
-      ? [
-          { frequency: 660, delay: 0 },
-          { frequency: 830, delay: 0.13 },
-          { frequency: 990, delay: 0.26 }
-        ]
-      : [
-          { frequency: 740, delay: 0 },
-          { frequency: 880, delay: 0.12 }
-        ];
-
-    const start = context.currentTime;
-
-    for (const note of notes) {
-      const oscillator = context.createOscillator();
-      const gain = context.createGain();
-
-      oscillator.type = 'sine';
-      oscillator.frequency.value = note.frequency;
-
-      const noteStart = start + note.delay;
-
-      gain.gain.setValueAtTime(0.0001, noteStart);
-      gain.gain.exponentialRampToValueAtTime(
-        0.12,
-        noteStart + 0.025
-      );
-      gain.gain.exponentialRampToValueAtTime(
-        0.0001,
-        noteStart + 0.16
-      );
-
-      oscillator.connect(gain);
-      gain.connect(context.destination);
-
-      oscillator.start(noteStart);
-      oscillator.stop(noteStart + 0.17);
-    }
-  } catch (error) {
-    console.warn('[Chat] Could not play notification sound:', error);
+    console.error(
+      '[Chat] Could not initialise DM notifications:',
+      error
+    );
+    dmNotificationUnsubscribe?.();
+    dmNotificationUnsubscribe = null;
   }
 }
 
