@@ -513,7 +513,62 @@
   cursor: not-allowed;
   opacity: 0.55;
 }
-  </style>
+    /* Mobile login touch and layout fixes */
+#authOverlay {
+  z-index: 1000;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: manipulation;
+}
+
+#authOverlay .auth-card {
+  position: relative;
+  z-index: 1;
+  pointer-events: auto;
+  box-sizing: border-box;
+  max-height: calc(100dvh - var(--nav-h, 58px) - 24px);
+  overflow-y: auto;
+}
+
+#authOverlay button,
+#authOverlay input,
+#authOverlay a {
+  pointer-events: auto;
+  touch-action: manipulation;
+}
+
+.grain,
+.aurora,
+.aurora .orb {
+  pointer-events: none;
+}
+
+@media (max-width: 640px) {
+  #authOverlay {
+    align-items: flex-start;
+    padding: 16px 0;
+    box-sizing: border-box;
+  }
+
+  #authOverlay .auth-card {
+    width: calc(100% - 28px);
+    max-width: 420px;
+    max-height: none;
+    margin: auto;
+    padding: 28px 20px;
+  }
+
+  #authOverlay .auth-sub {
+    margin-bottom: 22px;
+  }
+
+  #authOverlay .auth-btn,
+  #authOverlay .google-btn {
+    min-height: 48px;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+</style>
 </head>
 <body>
 
