@@ -976,6 +976,53 @@ const app      = initializeApp(FIREBASE_CONFIG);
 const auth     = getAuth(app);
 const db       = getDatabase(app);
 const provider = new GoogleAuthProvider();
+  // Phones work more reliably with a full-page sign-in redirect
+// than with a pop-up that the browser may block.
+function shouldUseAuthRedirect() {
+  return window.matchMedia('(max-width: 768px)').matches ||
+         /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
+
+async function signInWithProvider(providerInstance, providerName, button) {
+  const errorBox = el('authError');
+
+  if (errorBox) errorBox.textContent = '';
+  if (button) button.disabled = true;
+
+  try {
+    if (shouldUseAuthRedirect()) {
+      await signInWithRedirect(auth, providerInstance);
+      // The browser navigates away, so don't re-enable the button here.
+      return;
+    }
+
+    await signInWithPopup(auth, providerInstance);
+  } catch (error) {
+    console.error(`${providerName} sign-in error:`, error);
+
+    if (errorBox) {
+      errorBox.textContent =
+        `${providerName} sign-in failed: ` +
+        (error.message || 'Please try again.');
+    }
+
+    if (button) button.disabled = false;
+  }
+}
+
+// Complete provider sign-in after the browser returns from Firebase.
+getRedirectResult(auth).catch(error => {
+  console.error('Sign-in redirect failed:', error);
+  const errorBox = el('authError');
+
+  if (errorBox) {
+    errorBox.textContent =
+      'Sign-in failed: ' + (error.message || 'Please try again.');
+  }
+
+  document.querySelectorAll('#authOverlay button:disabled')
+    .forEach(button => { button.disabled = false; });
+});
 
 let currentUser     = null;
 let currentRoom     = 'general';
