@@ -1134,74 +1134,48 @@ function initialsAvatar(user, size, classList) {
   }
 });
 
-/* ── Sign in ──────────────────────────────────── */
-el('googleSignInBtn')?.addEventListener('click', async () => {
-  const btn = el('googleSignInBtn');
-  if (el('authError')) el('authError').textContent = '';
-  if (btn) btn.disabled = true;
-  try {
-    await signInWithPopup(auth, provider);
-  } catch (e) {
-    if (e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user') {
-      await signInWithRedirect(auth, provider);
-    } else {
-      if (btn) btn.disabled = false;
-      if (el('authError')) el('authError').textContent = 'Sign-in failed — ' + (e.message || 'please try again.');
-    }
-  }
+/* ── Provider sign-in: popup on desktop, redirect on mobile ── */
+
+el('googleSignInBtn')?.addEventListener('click', () => {
+  signInWithProvider(
+    new GoogleAuthProvider(),
+    'Google',
+    el('googleSignInBtn')
+  );
 });
 
-el('emailSignInBtn')?.addEventListener('click', async () => {
-  const email = el('emailInput')?.value;
-  const pass = el('passwordInput')?.value;
-  if (el('authError')) el('authError').textContent = '';
-  try {
-    await signInWithEmailAndPassword(auth, email, pass);
-  } catch (e) {
-    if (el('authError')) el('authError').textContent = 'Email sign-in failed — ' + e.message;
-  }
-});
-
-el('emailSignUpBtn')?.addEventListener('click', async () => {
-  const email = el('emailInput')?.value;
-  const pass = el('passwordInput')?.value;
-  if (el('authError')) el('authError').textContent = '';
-  try {
-    await createUserWithEmailAndPassword(auth, email, pass);
-  } catch (e) {
-    if (el('authError')) el('authError').textContent = 'Sign-up failed — ' + e.message;
-  }
-});
-
-el('discordSignInBtn')?.addEventListener('click', async () => {
+function startDiscordSignIn(button) {
   const discordProvider = new OAuthProvider('oidc.discord');
-  if (el('authError')) el('authError').textContent = '';
-  try {
-    await signInWithPopup(auth, discordProvider);
-  } catch (e) {
-    if (el('authError')) el('authError').textContent = 'Discord sign-in failed — ' + e.message;
-  }
+
+  signInWithProvider(discordProvider, 'Discord', button);
+}
+
+// Support the ID used in the current HTML and the older ID, if present.
+el('discordBtn')?.addEventListener('click', () => {
+  startDiscordSignIn(el('discordBtn'));
 });
 
-el('githubBtn')?.addEventListener('click', async () => {
-  const gitHubProvider = new GithubAuthProvider();
-  try {
-    await signInWithPopup(auth, gitHubProvider);
-  } catch (error) {
-    console.error("GitHub login error:", error);
-    if (el('authError')) el('authError').textContent = 'GitHub login failed: ' + error.message;
-  }
+el('discordSignInBtn')?.addEventListener('click', () => {
+  startDiscordSignIn(el('discordSignInBtn'));
 });
 
-el('microsoftBtn')?.addEventListener('click', async () => {
+el('githubBtn')?.addEventListener('click', () => {
+  signInWithProvider(
+    new GithubAuthProvider(),
+    'GitHub',
+    el('githubBtn')
+  );
+});
+
+el('microsoftBtn')?.addEventListener('click', () => {
   const microsoftProvider = new OAuthProvider('microsoft.com');
   microsoftProvider.setCustomParameters({ prompt: 'select_account' });
-  try {
-    await signInWithPopup(auth, microsoftProvider);
-  } catch (error) {
-    console.error("Microsoft Sign-In Error:", error);
-    if (el('authError')) el('authError').textContent = 'Microsoft sign-in failed: ' + error.message;
-  }
+
+  signInWithProvider(
+    microsoftProvider,
+    'Microsoft',
+    el('microsoftBtn')
+  );
 });
 
 /* ── Presence ─────────────────────────────────── */
