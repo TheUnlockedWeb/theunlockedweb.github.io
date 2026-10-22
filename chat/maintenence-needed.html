@@ -429,6 +429,79 @@
     #openDmsBtn[hidden] {
   display: none !important;
 }
+    
+/* Direct Messages navbar button */
+.nav-pill-msg {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  padding: 9px 14px;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 999px;
+  background: linear-gradient(
+    135deg,
+    rgba(245, 158, 11, 0.16),
+    rgba(245, 158, 11, 0.06)
+  );
+  color: var(--gold);
+  font: 700 0.78rem 'Manrope', sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.nav-pill-msg:hover {
+  background: rgba(245, 158, 11, 0.22);
+  border-color: var(--gold);
+  box-shadow: 0 4px 18px rgba(245, 158, 11, 0.14);
+  transform: translateY(-1px);
+}
+
+.nav-pill-msg:active {
+  transform: scale(0.97);
+}
+
+.nav-pill-msg > i {
+  font-size: 0.9rem;
+}
+
+#openDmsBtn[hidden] {
+  display: none !important;
+}
+
+.dm-unread-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 5px;
+  box-sizing: border-box;
+  border-radius: 999px;
+  background: #ed4245;
+  color: #fff;
+  font-size: 0.67rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.dm-unread-badge[hidden] {
+  display: none !important;
+}
+
+@media (max-width: 640px) {
+  .nav-pill-msg {
+    padding: 8px 10px;
+    gap: 6px;
+    font-size: 0.72rem;
+  }
+}
   </style>
 </head>
 <body>
