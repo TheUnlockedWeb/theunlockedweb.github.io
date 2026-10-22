@@ -977,6 +977,7 @@ function initialsAvatar(user, size, classList) {
       }
   } else {
     console.log("No user signed in. Showing login interface.");
+    el('openDmsBtn')?.setAttribute('hidden', '');
     
         // Stop DM notifications when signed out
     dmNotificationGeneration++;
