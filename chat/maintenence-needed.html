@@ -1700,6 +1700,7 @@ el('newRoomVisibility')?.addEventListener(
 
   
 /* ── Room-type-specific options ───────────────── */
+
 function updateRoomTypeOptions() {
   const isVoice = el('newRoomType')?.value === 'voice';
   const readOnlyField = el('newRoomReadOnlyField');
@@ -1709,8 +1710,10 @@ function updateRoomTypeOptions() {
     readOnlyField.hidden = isVoice;
   }
 
-  if (isVoice && readOnlyCheckbox) {
+  // Read-only permissions are not implemented yet.
+  if (readOnlyCheckbox) {
     readOnlyCheckbox.checked = false;
+    readOnlyCheckbox.disabled = true;
   }
 }
 
