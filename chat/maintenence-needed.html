@@ -360,18 +360,81 @@
   font-size: 1rem;
   padding: 2px 4px;
 }
+```css
+/* Phone-friendly Direct Messages layout */
 @media (max-width: 640px) {
   .dm-modal {
-    height: 85vh;
+    width: calc(100% - 20px);
+    max-width: none;
+    height: calc(100dvh - 24px);
+    max-height: none;
+    box-sizing: border-box;
     padding: 20px 14px;
+    overflow: hidden;
+    border-radius: 16px;
+  }
+
+  .dm-modal > h3 {
+    padding-right: 30px;
+    flex-shrink: 0;
   }
 
   .dm-layout {
-    grid-template-columns: 1fr;
-    grid-template-rows: minmax(130px, 35%) minmax(0, 1fr);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .dm-sidebar,
+  .dm-conversation {
+    min-width: 0;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* On phones, show one DM view at a time. */
+  .dm-layout.mobile-conversation-open .dm-sidebar {
+    display: none;
+  }
+
+  .dm-layout:not(.mobile-conversation-open) .dm-conversation {
+    display: none;
+  }
+
+  .dm-mobile-back:not([hidden]) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    min-height: 44px;
+    width: 100%;
+    padding: 8px 4px;
+    margin-bottom: 8px;
+    border: 0;
+    background: transparent;
+    color: var(--gold);
+    font: 600 .85rem 'Manrope', sans-serif;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  #dmUserSearch {
+    min-height: 48px;
+    font-size: 16px; /* Prevents automatic zoom in iOS Safari. */
+  }
+
+  .dm-search-results > button {
+    min-height: 60px;
+    touch-action: manipulation;
   }
 }
-
+```
     /* ── Toast ─────────────────────────────────── */
     .toast { position: fixed; bottom: 80px; left: 50%; z-index: 300; transform: translateX(-50%) translateY(10px); background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 18px; font-size: .82rem; font-weight: 500; color: var(--text); font-family: 'Manrope', sans-serif; opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s; white-space: nowrap; }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
