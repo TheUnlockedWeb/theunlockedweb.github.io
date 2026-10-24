@@ -1787,6 +1787,26 @@ function showChatBrowserNotification(title, body, type = 'dm') {
 
 /* ── Direct Messages window ───────────────────── */
 const dmModal = el('dmModal');
+  const dmLayout = document.querySelector('#dmModal .dm-layout');
+const dmMobileBackBtn = el('dmMobileBackBtn');
+
+function showDmMemberListOnMobile() {
+  dmLayout?.classList.remove('mobile-conversation-open');
+}
+
+function showDmConversationOnMobile() {
+  if (window.matchMedia('(max-width: 640px)').matches) {
+    dmLayout?.classList.add('mobile-conversation-open');
+  }
+}
+
+dmMobileBackBtn?.addEventListener('click', showDmMemberListOnMobile);
+
+window.addEventListener('resize', () => {
+  if (!window.matchMedia('(max-width: 640px)').matches) {
+    showDmMemberListOnMobile();
+  }
+});
 
 el('openDmsBtn')?.addEventListener('click', () => {
   if (!currentUser) {
